@@ -1,5 +1,5 @@
-import { For } from 'solid-js';
-import { createStore } from 'solid-js/store';
+import { For } from "solid-js";
+import { createStore } from "solid-js/store";
 
 type Todo = { id: number; text: string; completed: boolean };
 
@@ -10,7 +10,7 @@ export const TodoList = () => {
     setTodos(todos.length, { id: todos.length, text, completed: false });
   };
   const toggleTodo = (id: number) => {
-    setTodos(id, 'completed', (c) => !c);
+    setTodos(id, "completed", (c) => !c);
   };
 
   return (
@@ -21,7 +21,7 @@ export const TodoList = () => {
           onClick={() => {
             if (!input.value.trim()) return;
             addTodo(input.value);
-            input.value = '';
+            input.value = "";
           }}
         >
           Add Todo
@@ -40,7 +40,7 @@ export const TodoList = () => {
                 />
                 <span
                   style={{
-                    'text-decoration': todo.completed ? 'line-through' : 'none',
+                    "text-decoration": todo.completed ? "line-through" : "none",
                   }}
                 >
                   {text}
