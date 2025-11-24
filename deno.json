@@ -1,0 +1,29 @@
+{
+  "nodeModulesDir": "auto",
+  "exclude": ["dist/", ".vite/", "node_modules/"],
+  "compilerOptions": {
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"]
+  },
+  "tasks": {
+    "dev": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4",
+    "build": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4 build",
+    "preview": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4 preview",
+    "test": "deno test --allow-read --allow-write --allow-env --allow-net",
+    "lint": "deno lint"
+  },
+  "imports": {
+    "solid-js": "npm:solid-js@^1.9.5",
+    "vite": "npm:vite@^7.1.4",
+    "vite-plugin-solid": "npm:vite-plugin-solid@2.11.9",
+    "solid-devtools": "npm:solid-devtools@^0.34.3",
+    "solid-devtools/vite": "npm:solid-devtools@^0.34.3/vite",
+    "@solidjs/testing-library": "npm:@solidjs/testing-library@^0.8.10",
+    "@testing-library/jest-dom": "npm:@testing-library/jest-dom@^6.6.3",
+    "@testing-library/jest-dom/vitest": "npm:@testing-library/jest-dom@^6.6.3/vitest",
+    "jsdom": "npm:jsdom@^25.0.1",
+    "vitest": "npm:vitest@^4.0.0",
+    "typescript": "npm:typescript@^5.7.2",
+    "@types/node": "npm:@types/node@^24.10.1"
+  }
+}
