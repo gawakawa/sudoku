@@ -4,10 +4,15 @@
 export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 /**
+ * Value that can be assigned to a cell (Digit or empty)
+ */
+export type CellValue = Digit | undefined;
+
+/**
  * Single cell in the Sudoku grid
  */
 export type Cell = {
-  value: Digit | undefined;
+  value: CellValue;
   isInitial: boolean;
 };
 

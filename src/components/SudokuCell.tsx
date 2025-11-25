@@ -1,9 +1,9 @@
 import type { Component } from "solid-js";
-import type { Cell, Digit } from "../types/Sudoku.ts";
+import type { Cell, CellValue, Digit } from "../types/Sudoku.ts";
 
 type SudokuCellProps = {
   cell: Cell;
-  onChange: (value: Digit | undefined) => void;
+  onChange: (value: CellValue) => void;
 };
 
 export const SudokuCell: Component<SudokuCellProps> = (props) => {

@@ -1,7 +1,7 @@
 import { createStore } from "solid-js/store";
 import type { Component } from "solid-js";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
-import type { Digit, Grid } from "./types/Sudoku.ts";
+import type { CellValue, Grid } from "./types/Sudoku.ts";
 
 // Sample Sudoku puzzle (easy difficulty)
 const initialGrid: Grid = [
@@ -109,7 +109,7 @@ const initialGrid: Grid = [
 export const App: Component = () => {
   const [grid, setGrid] = createStore<Grid>(initialGrid);
 
-  const handleChange = (row: number, col: number, value: Digit | undefined) => {
+  const handleChange = (row: number, col: number, value: CellValue) => {
     setGrid(row, col, "value", value);
   };
 
