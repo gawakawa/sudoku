@@ -44,6 +44,7 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
         w-12 h-12
         border border-gray-300
         text-center text-xl
+        caret-transparent
         focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
         ${
         props.cell.isInitial

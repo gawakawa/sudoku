@@ -105,4 +105,15 @@ describe("<SudokuCell />", () => {
     expect(initialInput.className).toContain("initial");
     expect(editableInput.className).not.toContain("initial");
   });
+
+  test("it hides the text cursor (caret) in the input", () => {
+    const cell: Cell = { value: undefined, isInitial: false };
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={() => {}} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    // Should have caret-transparent class to hide the cursor
+    expect(input.className).toContain("caret-transparent");
+  });
 });
