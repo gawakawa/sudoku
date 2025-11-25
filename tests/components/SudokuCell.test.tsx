@@ -116,4 +116,55 @@ describe("<SudokuCell />", () => {
     // Should have caret-transparent class to hide the cursor
     expect(input.className).toContain("caret-transparent");
   });
+
+  test("it deletes the value on Backspace regardless of cursor position", async () => {
+    const cell: Cell = { value: 5, isInitial: false };
+    const onChange = vi.fn();
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={onChange} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    // Move cursor to the beginning
+    input.focus();
+    input.setSelectionRange(0, 0);
+
+    // Press Backspace - should delete the value regardless of cursor position
+    await userEvent.keyboard("{Backspace}");
+    expect(onChange).toHaveBeenCalledWith(undefined);
+  });
+
+  test("it deletes the value on Delete regardless of cursor position", async () => {
+    const cell: Cell = { value: 5, isInitial: false };
+    const onChange = vi.fn();
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={onChange} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    // Move cursor to the beginning
+    input.focus();
+    input.setSelectionRange(0, 0);
+
+    // Press Delete - should delete the value regardless of cursor position
+    await userEvent.keyboard("{Delete}");
+    expect(onChange).toHaveBeenCalledWith(undefined);
+  });
+
+  test("it accepts new digit input regardless of cursor position", async () => {
+    const cell: Cell = { value: 5, isInitial: false };
+    const onChange = vi.fn();
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={onChange} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    // Move cursor to the beginning
+    input.focus();
+    input.setSelectionRange(0, 0);
+
+    // Type a new digit - should replace the entire value
+    await userEvent.keyboard("7");
+    expect(onChange).toHaveBeenCalledWith(7);
+  });
 });

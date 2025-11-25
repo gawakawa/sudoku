@@ -8,10 +8,16 @@ type SudokuCellProps = {
 
 export const SudokuCell: Component<SudokuCellProps> = (props) => {
   const handleKeyDown = (e: KeyboardEvent) => {
+    // Handle Backspace and Delete - clear the cell regardless of cursor position
+    if (e.key === "Backspace" || e.key === "Delete") {
+      e.preventDefault();
+      props.onChange(undefined);
+      return;
+    }
+
+    // Allow navigation keys
     if (
       [
-        "Backspace",
-        "Delete",
         "Tab",
         "ArrowLeft",
         "ArrowRight",
@@ -19,7 +25,16 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
         "ArrowDown",
       ].includes(e.key)
     ) return;
-    if (!/^[1-9]$/.test(e.key)) e.preventDefault();
+
+    // Handle digit input - replace the entire value regardless of cursor position
+    if (/^[1-9]$/.test(e.key)) {
+      e.preventDefault();
+      props.onChange(parseInt(e.key, 10) as Digit);
+      return;
+    }
+
+    // Block all other keys
+    e.preventDefault();
   };
 
   const handleInput = (e: InputEvent) => {
