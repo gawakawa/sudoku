@@ -7,20 +7,27 @@ type SudokuCellProps = {
 };
 
 export const SudokuCell: Component<SudokuCellProps> = (props) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (
+      [
+        "Backspace",
+        "Delete",
+        "Tab",
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown",
+      ].includes(e.key)
+    ) return;
+    if (!/^[1-9]$/.test(e.key)) e.preventDefault();
+  };
+
   const handleInput = (e: InputEvent) => {
-    const target = e.target as HTMLInputElement;
-    const value = target.value;
-
-    if (value === "") {
-      props.onChange(undefined);
-      return;
-    }
-
+    const value = (e.target as HTMLInputElement).value;
+    if (value === "") return props.onChange(undefined);
     const num = parseInt(value, 10);
-    // Only accept valid digits 1-9 (ignore NaN, 0, or > 9)
-    if (!Number.isNaN(num) && num >= 1 && num <= 9) {
-      props.onChange(num as Digit);
-    }
+    if (Number.isNaN(num) || num < 1 || num > 9) return;
+    props.onChange(num as Digit);
   };
 
   return (
@@ -28,7 +35,9 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
       type="text"
       inputmode="numeric"
       pattern="[1-9]"
+      maxLength={1}
       value={props.cell.value ?? ""}
+      onKeyDown={handleKeyDown}
       onInput={handleInput}
       readonly={props.cell.isInitial}
       class={`
@@ -42,7 +51,6 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
           : "text-blue-600 bg-white"
       }
       `}
-      maxLength={1}
     />
   );
 };

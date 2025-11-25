@@ -1,6 +1,7 @@
-import { fireEvent, render } from "@solidjs/testing-library";
+import { render } from "@solidjs/testing-library";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
+import userEvent from "@testing-library/user-event";
 import { SudokuCell } from "../../src/components/SudokuCell.tsx";
 import type { Cell } from "../../src/types/Sudoku.ts";
 
@@ -43,7 +44,7 @@ describe("<SudokuCell />", () => {
     expect(input).not.toHaveAttribute("readonly");
   });
 
-  test("it calls onChange with valid digit when user inputs 1-9", () => {
+  test("it calls onChange with valid digit when user inputs 1-9", async () => {
     const cell: Cell = { value: undefined, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
@@ -51,11 +52,11 @@ describe("<SudokuCell />", () => {
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
-    fireEvent.input(input, { target: { value: "8" } });
+    await userEvent.type(input, "8");
     expect(onChange).toHaveBeenCalledWith(8);
   });
 
-  test("it calls onChange with undefined when user clears the cell", () => {
+  test("it calls onChange with undefined when user clears the cell", async () => {
     const cell: Cell = { value: 5, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
@@ -63,11 +64,11 @@ describe("<SudokuCell />", () => {
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
-    fireEvent.input(input, { target: { value: "" } });
+    await userEvent.clear(input);
     expect(onChange).toHaveBeenCalledWith(undefined);
   });
 
-  test("it ignores invalid input (non-digits, 0, or numbers > 9)", () => {
+  test("it ignores invalid input (non-digits, 0, or numbers > 9)", async () => {
     const cell: Cell = { value: undefined, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
@@ -76,13 +77,13 @@ describe("<SudokuCell />", () => {
     const input = container.querySelector("input") as HTMLInputElement;
 
     // Invalid inputs should not trigger onChange
-    fireEvent.input(input, { target: { value: "0" } });
+    await userEvent.type(input, "0");
     expect(onChange).not.toHaveBeenCalled();
 
-    fireEvent.input(input, { target: { value: "10" } });
+    await userEvent.type(input, "a");
     expect(onChange).not.toHaveBeenCalled();
 
-    fireEvent.input(input, { target: { value: "abc" } });
+    await userEvent.type(input, "!");
     expect(onChange).not.toHaveBeenCalled();
   });
 
