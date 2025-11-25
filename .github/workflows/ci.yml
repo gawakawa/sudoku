@@ -27,7 +27,7 @@ jobs:
         run: deno lint
 
       - name: Type check
-        run: deno check
+        run: deno task check
 
       - name: Run component tests
         run: npm test

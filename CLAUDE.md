@@ -33,7 +33,7 @@ deno task preview      # Preview production build
 ```bash
 nix fmt                # Format Nix and TypeScript files (nixfmt + deno fmt)
 deno task lint         # Lint TypeScript with Deno
-deno check             # Type check without --node-modules-dir flag
+deno task check        # Type check src/ directory only
 ```
 
 ### Testing
@@ -86,7 +86,7 @@ GitHub Actions CI runs:
 
 1. Format check (`nix fmt -- --ci`)
 2. Lint check (`deno lint`)
-3. Type check (`deno check`)
+3. Type check (`deno task check`)
 4. Component tests (`npm test`)
 
 Uses Nix flake's `ci` package which bundles Deno and Node.js 24.

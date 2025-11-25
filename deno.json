@@ -4,14 +4,16 @@
   "compilerOptions": {
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "lib": ["dom", "dom.iterable", "esnext"]
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["./src/vite-env.d.ts"]
   },
   "tasks": {
     "dev": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4",
     "build": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4 build",
     "preview": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4 preview",
     "test": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vitest@^4.0.0",
-    "lint": "deno lint"
+    "lint": "deno lint",
+    "check": "deno check src/"
   },
   "imports": {
     "solid-js": "npm:solid-js@^1.9.5",

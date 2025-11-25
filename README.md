@@ -45,7 +45,7 @@ nix fmt
 deno task lint
 
 # Type check
-deno check
+deno task check
 
 # Run tests
 npm test
