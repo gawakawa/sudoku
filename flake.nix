@@ -25,6 +25,7 @@
         let
           ciPackages = with pkgs; [
             deno
+            nodejs_24
           ];
 
           devPackages =

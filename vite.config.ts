@@ -17,6 +17,7 @@ export default defineConfig({
     // if you have few tests, try commenting this
     // out to improve performance:
     isolate: false,
+    include: ["src/**/*.test.{ts,tsx}", "tests/**/*.test.{ts,tsx}"],
   },
   build: {
     target: "esnext",
