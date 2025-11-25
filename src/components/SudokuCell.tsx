@@ -1,33 +1,59 @@
 import type { Component } from "solid-js";
 import type { Cell, CellValue, Digit } from "../types/Sudoku.ts";
 
+type NavigationDirection = "up" | "down" | "left" | "right";
+
 type SudokuCellProps = {
   cell: Cell;
   onChange: (value: CellValue) => void;
+  onNavigate?: (direction: NavigationDirection) => void;
+  ref?: (el: HTMLInputElement) => void;
 };
 
 export const SudokuCell: Component<SudokuCellProps> = (props) => {
   const handleKeyDown = (e: KeyboardEvent) => {
     // Handle Backspace and Delete - clear the cell regardless of cursor position
     if (e.key === "Backspace" || e.key === "Delete") {
+      if (props.cell.isInitial) {
+        e.preventDefault();
+        return;
+      }
       e.preventDefault();
       props.onChange(undefined);
       return;
     }
 
-    // Allow navigation keys
-    if (
-      [
-        "Tab",
-        "ArrowLeft",
-        "ArrowRight",
-        "ArrowUp",
-        "ArrowDown",
-      ].includes(e.key)
-    ) return;
+    // Handle arrow key navigation
+    if (props.onNavigate) {
+      switch (e.key) {
+        case "ArrowUp":
+          e.preventDefault();
+          props.onNavigate("up");
+          return;
+        case "ArrowDown":
+          e.preventDefault();
+          props.onNavigate("down");
+          return;
+        case "ArrowLeft":
+          e.preventDefault();
+          props.onNavigate("left");
+          return;
+        case "ArrowRight":
+          e.preventDefault();
+          props.onNavigate("right");
+          return;
+      }
+    }
+
+    // Allow Tab key
+    if (e.key === "Tab") return;
 
     // Handle digit input - replace the entire value regardless of cursor position
     if (/^[1-9]$/.test(e.key)) {
+      if (props.cell.isInitial) {
+        e.preventDefault();
+        return;
+      }
       e.preventDefault();
       props.onChange(parseInt(e.key, 10) as Digit);
       return;
@@ -47,6 +73,7 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
 
   return (
     <input
+      ref={props.ref}
       type="text"
       inputmode="numeric"
       pattern="[1-9]"

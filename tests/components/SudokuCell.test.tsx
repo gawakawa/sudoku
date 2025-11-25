@@ -167,4 +167,43 @@ describe("<SudokuCell />", () => {
     await userEvent.keyboard("7");
     expect(onChange).toHaveBeenCalledWith(7);
   });
+
+  test("it does not allow digit input on initial cells", async () => {
+    const cell: Cell = { value: 5, isInitial: true };
+    const onChange = vi.fn();
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={onChange} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    input.focus();
+    await userEvent.keyboard("7");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test("it does not allow Backspace on initial cells", async () => {
+    const cell: Cell = { value: 5, isInitial: true };
+    const onChange = vi.fn();
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={onChange} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    input.focus();
+    await userEvent.keyboard("{Backspace}");
+    expect(onChange).not.toHaveBeenCalled();
+  });
+
+  test("it does not allow Delete on initial cells", async () => {
+    const cell: Cell = { value: 5, isInitial: true };
+    const onChange = vi.fn();
+    const { container } = render(() => (
+      <SudokuCell cell={cell} onChange={onChange} />
+    ));
+    const input = container.querySelector("input") as HTMLInputElement;
+
+    input.focus();
+    await userEvent.keyboard("{Delete}");
+    expect(onChange).not.toHaveBeenCalled();
+  });
 });

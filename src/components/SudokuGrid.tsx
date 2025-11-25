@@ -9,6 +9,28 @@ type SudokuGridProps = {
 };
 
 export const SudokuGrid: Component<SudokuGridProps> = (props) => {
+  const cellRefs: (HTMLInputElement | undefined)[][] = Array.from(
+    { length: 9 },
+    () => Array(9).fill(undefined),
+  );
+
+  const handleNavigate = (row: number, col: number, direction: string) => {
+    switch (direction) {
+      case "up":
+        cellRefs[Math.max(0, row - 1)]?.[col]?.focus();
+        break;
+      case "down":
+        cellRefs[Math.min(8, row + 1)]?.[col]?.focus();
+        break;
+      case "left":
+        cellRefs[row]?.[Math.max(0, col - 1)]?.focus();
+        break;
+      case "right":
+        cellRefs[row]?.[Math.min(8, col + 1)]?.focus();
+        break;
+    }
+  };
+
   return (
     <div class="inline-block border-4 border-gray-900 shadow-lg">
       <div class="grid grid-cols-9">
@@ -32,8 +54,16 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
                 >
                   <SudokuCell
                     cell={cell}
+                    ref={(el) => {
+                      if (!cellRefs[rowIndex()]) {
+                        cellRefs[rowIndex()] = [];
+                      }
+                      cellRefs[rowIndex()][colIndex()] = el;
+                    }}
                     onChange={(value: CellValue) =>
                       props.onChange(rowIndex(), colIndex(), value)}
+                    onNavigate={(direction) =>
+                      handleNavigate(rowIndex(), colIndex(), direction)}
                   />
                 </div>
               )}

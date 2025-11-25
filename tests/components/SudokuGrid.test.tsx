@@ -1,6 +1,7 @@
 import { render } from "@solidjs/testing-library";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
+import userEvent from "@testing-library/user-event";
 import { SudokuGrid } from "../../src/components/SudokuGrid.tsx";
 import type { Grid } from "../../src/types/Sudoku.ts";
 
@@ -113,5 +114,130 @@ describe("<SudokuGrid />", () => {
     firstInput.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
     expect(onChange).toHaveBeenCalledWith(0, 0, undefined);
+  });
+
+  test("it moves focus to the right cell when ArrowRight is pressed", async () => {
+    const grid: Grid = Array.from(
+      { length: 9 },
+      () =>
+        Array.from(
+          { length: 9 },
+          () => ({ value: undefined, isInitial: false }),
+        ),
+    );
+
+    const { container } = render(() => (
+      <SudokuGrid grid={grid} onChange={() => {}} />
+    ));
+
+    const inputs = container.querySelectorAll("input");
+    const firstInput = inputs[0] as HTMLInputElement; // row 0, col 0
+    const secondInput = inputs[1] as HTMLInputElement; // row 0, col 1
+
+    firstInput.focus();
+    expect(document.activeElement).toBe(firstInput);
+
+    await userEvent.keyboard("{ArrowRight}");
+    expect(document.activeElement).toBe(secondInput);
+  });
+
+  test("it moves focus to the left cell when ArrowLeft is pressed", async () => {
+    const grid: Grid = Array.from(
+      { length: 9 },
+      () =>
+        Array.from(
+          { length: 9 },
+          () => ({ value: undefined, isInitial: false }),
+        ),
+    );
+
+    const { container } = render(() => (
+      <SudokuGrid grid={grid} onChange={() => {}} />
+    ));
+
+    const inputs = container.querySelectorAll("input");
+    const secondInput = inputs[1] as HTMLInputElement; // row 0, col 1
+    const firstInput = inputs[0] as HTMLInputElement; // row 0, col 0
+
+    secondInput.focus();
+    expect(document.activeElement).toBe(secondInput);
+
+    await userEvent.keyboard("{ArrowLeft}");
+    expect(document.activeElement).toBe(firstInput);
+  });
+
+  test("it moves focus to the cell below when ArrowDown is pressed", async () => {
+    const grid: Grid = Array.from(
+      { length: 9 },
+      () =>
+        Array.from(
+          { length: 9 },
+          () => ({ value: undefined, isInitial: false }),
+        ),
+    );
+
+    const { container } = render(() => (
+      <SudokuGrid grid={grid} onChange={() => {}} />
+    ));
+
+    const inputs = container.querySelectorAll("input");
+    const firstInput = inputs[0] as HTMLInputElement; // row 0, col 0
+    const belowInput = inputs[9] as HTMLInputElement; // row 1, col 0
+
+    firstInput.focus();
+    expect(document.activeElement).toBe(firstInput);
+
+    await userEvent.keyboard("{ArrowDown}");
+    expect(document.activeElement).toBe(belowInput);
+  });
+
+  test("it moves focus to the cell above when ArrowUp is pressed", async () => {
+    const grid: Grid = Array.from(
+      { length: 9 },
+      () =>
+        Array.from(
+          { length: 9 },
+          () => ({ value: undefined, isInitial: false }),
+        ),
+    );
+
+    const { container } = render(() => (
+      <SudokuGrid grid={grid} onChange={() => {}} />
+    ));
+
+    const inputs = container.querySelectorAll("input");
+    const belowInput = inputs[9] as HTMLInputElement; // row 1, col 0
+    const firstInput = inputs[0] as HTMLInputElement; // row 0, col 0
+
+    belowInput.focus();
+    expect(document.activeElement).toBe(belowInput);
+
+    await userEvent.keyboard("{ArrowUp}");
+    expect(document.activeElement).toBe(firstInput);
+  });
+
+  test("it navigates with arrow keys even on initial cells", async () => {
+    const grid: Grid = Array.from(
+      { length: 9 },
+      (_, row) =>
+        Array.from({ length: 9 }, (_, col) => ({
+          value: row === 0 && col === 0 ? 5 : undefined,
+          isInitial: row === 0 && col === 0,
+        })),
+    );
+
+    const { container } = render(() => (
+      <SudokuGrid grid={grid} onChange={() => {}} />
+    ));
+
+    const inputs = container.querySelectorAll("input");
+    const initialCell = inputs[0] as HTMLInputElement; // row 0, col 0 (initial)
+    const nextCell = inputs[1] as HTMLInputElement; // row 0, col 1
+
+    initialCell.focus();
+    expect(document.activeElement).toBe(initialCell);
+
+    await userEvent.keyboard("{ArrowRight}");
+    expect(document.activeElement).toBe(nextCell);
   });
 });
