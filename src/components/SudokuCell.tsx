@@ -31,7 +31,17 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
       value={props.cell.value ?? ""}
       onInput={handleInput}
       readonly={props.cell.isInitial}
-      class={props.cell.isInitial ? "initial" : ""}
+      class={`
+        w-12 h-12 
+        border border-gray-300 
+        text-center text-xl
+        focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
+        ${
+        props.cell.isInitial
+          ? "font-bold text-gray-900 bg-gray-50 cursor-not-allowed"
+          : "text-blue-600 bg-white"
+      }
+      `}
       maxLength={1}
     />
   );

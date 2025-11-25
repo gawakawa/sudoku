@@ -114,8 +114,8 @@ export const App: Component = () => {
   };
 
   return (
-    <div>
-      <h1>Sudoku</h1>
+    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-8">数独</h1>
       <SudokuGrid grid={grid} onChange={handleChange} />
     </div>
   );
