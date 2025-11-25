@@ -1,4 +1,4 @@
-import { fireEvent, render } from "@solidjs/testing-library";
+import { render } from "@solidjs/testing-library";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { SudokuGrid } from "../../src/components/SudokuGrid";
