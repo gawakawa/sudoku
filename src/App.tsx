@@ -1,7 +1,7 @@
 import { createStore } from "solid-js/store";
 import type { Component } from "solid-js";
-import { SudokuGrid } from "./components/SudokuGrid";
-import type { Digit, Grid } from "./types/Sudoku";
+import { SudokuGrid } from "./components/SudokuGrid.tsx";
+import type { Digit, Grid } from "./types/Sudoku.ts";
 
 // Sample Sudoku puzzle (easy difficulty)
 const initialGrid: Grid = [

@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import type { Cell, Digit } from "../types/Sudoku";
+import type { Cell, Digit } from "../types/Sudoku.ts";
 
 type SudokuCellProps = {
   cell: Cell;

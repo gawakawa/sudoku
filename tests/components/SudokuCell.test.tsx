@@ -1,8 +1,8 @@
 import { fireEvent, render } from "@solidjs/testing-library";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
-import { SudokuCell } from "../../src/components/SudokuCell";
-import type { Cell } from "../../src/types/Sudoku";
+import { SudokuCell } from "../../src/components/SudokuCell.tsx";
+import type { Cell } from "../../src/types/Sudoku.ts";
 
 describe("<SudokuCell />", () => {
   test("it renders an empty cell when value is undefined", () => {

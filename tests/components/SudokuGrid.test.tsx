@@ -1,8 +1,8 @@
 import { render } from "@solidjs/testing-library";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
-import { SudokuGrid } from "../../src/components/SudokuGrid";
-import type { Grid } from "../../src/types/Sudoku";
+import { SudokuGrid } from "../../src/components/SudokuGrid.tsx";
+import type { Grid } from "../../src/types/Sudoku.ts";
 
 describe("<SudokuGrid />", () => {
   test("it renders a 9x9 grid with 81 input elements", () => {
