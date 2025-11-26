@@ -4,6 +4,7 @@ import "@testing-library/jest-dom/vitest";
 import userEvent from "@testing-library/user-event";
 import { SudokuGrid } from "../../src/components/SudokuGrid.tsx";
 import type { Grid } from "../../src/types/Sudoku.ts";
+import { Position } from "../../src/types/Sudoku.ts";
 
 describe("<SudokuGrid />", () => {
   test("it renders a 9x9 grid with 81 input elements", () => {
@@ -64,14 +65,14 @@ describe("<SudokuGrid />", () => {
     firstInput.value = "3";
     firstInput.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    expect(onChange).toHaveBeenCalledWith({ row: 0, col: 0 }, 3);
+    expect(onChange).toHaveBeenCalledWith(Position({ row: 0, col: 0 }), 3);
 
     // Change cell at row 1, col 2 (index 9 + 2 = 11)
     const input_1_2 = inputs[11] as HTMLInputElement;
     input_1_2.value = "7";
     input_1_2.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    expect(onChange).toHaveBeenCalledWith({ row: 1, col: 2 }, 7);
+    expect(onChange).toHaveBeenCalledWith(Position({ row: 1, col: 2 }), 7);
   });
 
   test("it renders initial cells as readonly", () => {
@@ -113,7 +114,10 @@ describe("<SudokuGrid />", () => {
     firstInput.value = "";
     firstInput.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    expect(onChange).toHaveBeenCalledWith({ row: 0, col: 0 }, undefined);
+    expect(onChange).toHaveBeenCalledWith(
+      Position({ row: 0, col: 0 }),
+      undefined,
+    );
   });
 
   test("it moves focus to the right cell when ArrowRight is pressed", async () => {
