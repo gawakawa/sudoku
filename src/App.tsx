@@ -8,13 +8,44 @@ export const App: Component = () => {
   const [grid, setGrid] = createStore<Grid>(generateInitialGrid());
 
   /**
-   * Find all cells with duplicate values
+   * Find cells with duplicate values in rows
    * @param _grid - Sudoku grid
    * @returns Set of positions with duplicates
    */
-  const findDuplicateCells = (_grid: Grid): Set<Position> => {
-    // TODO: Check for duplicates and return set of positions
+  const findRowDuplicates = (_grid: Grid): Set<Position> => {
+    // TODO: Check for row duplicates
     return new Set();
+  };
+
+  /**
+   * Find cells with duplicate values in columns
+   * @param _grid - Sudoku grid
+   * @returns Set of positions with duplicates
+   */
+  const findColumnDuplicates = (_grid: Grid): Set<Position> => {
+    // TODO: Check for column duplicates
+    return new Set();
+  };
+
+  /**
+   * Find cells with duplicate values in 3x3 blocks
+   * @param _grid - Sudoku grid
+   * @returns Set of positions with duplicates
+   */
+  const findBlockDuplicates = (_grid: Grid): Set<Position> => {
+    // TODO: Check for block duplicates
+    return new Set();
+  };
+
+  /**
+   * Find all cells with duplicate values by integrating row, column, and block checks
+   * @param grid - Sudoku grid
+   * @returns Set of positions with duplicates
+   */
+  const findDuplicateCells = (grid: Grid): Set<Position> => {
+    return findRowDuplicates(grid)
+      .union(findColumnDuplicates(grid))
+      .union(findBlockDuplicates(grid));
   };
 
   /**
