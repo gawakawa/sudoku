@@ -64,14 +64,14 @@ describe("<SudokuGrid />", () => {
     firstInput.value = "3";
     firstInput.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    expect(onChange).toHaveBeenCalledWith(0, 0, 3);
+    expect(onChange).toHaveBeenCalledWith({ row: 0, col: 0 }, 3);
 
     // Change cell at row 1, col 2 (index 9 + 2 = 11)
     const input_1_2 = inputs[11] as HTMLInputElement;
     input_1_2.value = "7";
     input_1_2.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    expect(onChange).toHaveBeenCalledWith(1, 2, 7);
+    expect(onChange).toHaveBeenCalledWith({ row: 1, col: 2 }, 7);
   });
 
   test("it renders initial cells as readonly", () => {
@@ -113,7 +113,7 @@ describe("<SudokuGrid />", () => {
     firstInput.value = "";
     firstInput.dispatchEvent(new InputEvent("input", { bubbles: true }));
 
-    expect(onChange).toHaveBeenCalledWith(0, 0, undefined);
+    expect(onChange).toHaveBeenCalledWith({ row: 0, col: 0 }, undefined);
   });
 
   test("it moves focus to the right cell when ArrowRight is pressed", async () => {
