@@ -1,5 +1,6 @@
 import { createStore } from "solid-js/store";
 import type { Component } from "solid-js";
+import type { Set } from "immutable";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./utils/generateInitialGrid.ts";

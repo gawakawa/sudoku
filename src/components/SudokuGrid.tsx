@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 import { For } from "solid-js";
-import type { CellValue, Grid, Position } from "../types/Sudoku.ts";
+import { Position } from "../types/Sudoku.ts";
+import type { CellValue, Grid } from "../types/Sudoku.ts";
 import { SudokuCell } from "./SudokuCell.tsx";
 
 type SudokuGridProps = {
@@ -62,7 +63,7 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
                     }}
                     onChange={(value: CellValue) =>
                       props.onChange(
-                        { row: rowIndex(), col: colIndex() },
+                        Position({ row: rowIndex(), col: colIndex() }),
                         value,
                       )}
                     onNavigate={(direction) =>

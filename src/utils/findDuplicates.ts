@@ -1,13 +1,29 @@
-import type { Grid, Position } from "../types/Sudoku.ts";
+import { Set } from "immutable";
+import { Position } from "../types/Sudoku.ts";
+import type { Grid } from "../types/Sudoku.ts";
 
 /**
  * Find cells with duplicate values in rows
- * @param _grid - Sudoku grid
+ * @param grid - Sudoku grid
  * @returns Set of positions with duplicates
  */
-export const findRowDuplicates = (_grid: Grid): Set<Position> => {
-  // TODO: Check for row duplicates
-  return new Set();
+export const findRowDuplicates = (grid: Grid): Set<Position> => {
+  return Set(
+    grid.flatMap((row, rowIndex) =>
+      row.flatMap((cell, colIndex) =>
+        row.flatMap((cell_, colIndex_) =>
+          colIndex < colIndex_ &&
+            cell.value !== undefined &&
+            cell.value === cell_.value
+            ? [
+              Position({ row: rowIndex, col: colIndex }),
+              Position({ row: rowIndex, col: colIndex_ }),
+            ]
+            : []
+        )
+      )
+    ),
+  );
 };
 
 /**
@@ -17,7 +33,7 @@ export const findRowDuplicates = (_grid: Grid): Set<Position> => {
  */
 export const findColumnDuplicates = (_grid: Grid): Set<Position> => {
   // TODO: Check for column duplicates
-  return new Set();
+  return Set();
 };
 
 /**
@@ -27,7 +43,7 @@ export const findColumnDuplicates = (_grid: Grid): Set<Position> => {
  */
 export const findBlockDuplicates = (_grid: Grid): Set<Position> => {
   // TODO: Check for block duplicates
-  return new Set();
+  return Set();
 };
 
 /**

@@ -6,6 +6,7 @@
     "npm:@testing-library/jest-dom@^6.6.3": "6.9.1",
     "npm:@testing-library/user-event@^14.6.1": "14.6.1_@testing-library+dom@10.4.1",
     "npm:@types/node@^24.10.1": "24.10.1",
+    "npm:immutable@^5.0.3": "5.1.4",
     "npm:jsdom@^25.0.1": "25.0.1",
     "npm:solid-devtools@~0.34.4": "0.34.4_solid-js@1.9.10__seroval@1.3.2_vite@7.2.4__@types+node@24.10.1__picomatch@4.0.3_@babel+core@7.28.5_@types+node@24.10.1",
     "npm:solid-js@^1.9.5": "1.9.10_seroval@1.3.2",
@@ -1192,6 +1193,9 @@
         "safer-buffer"
       ]
     },
+    "immutable@5.1.4": {
+      "integrity": "sha512-p6u1bG3YSnINT5RQmx/yRZBpenIl30kVxkTLDyHLIMk0gict704Q9n+thfDI7lTRm9vXdDYutVzXhzcThxTnXA=="
+    },
     "indent-string@4.0.0": {
       "integrity": "sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg=="
     },
@@ -1724,6 +1728,7 @@
         "npm:@tailwindcss/vite@^4.1.17",
         "npm:@testing-library/jest-dom@^6.6.3",
         "npm:@testing-library/user-event@^14.6.1",
+        "npm:immutable@^5.0.3",
         "npm:jsdom@^25.0.1",
         "npm:solid-devtools@~0.34.4",
         "npm:tailwindcss@^4.1.17",

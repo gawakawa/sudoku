@@ -1,3 +1,5 @@
+import { Record } from "immutable";
+
 /**
  * Digit value in a cell (1-9)
  */
@@ -20,10 +22,8 @@ export type Cell = {
 /**
  * Position in the grid
  */
-export type Position = {
-  row: number;
-  col: number;
-};
+export const Position = Record({ row: 0, col: 0 });
+export type Position = ReturnType<typeof Position>;
 
 /**
  * 9x9 Sudoku grid
