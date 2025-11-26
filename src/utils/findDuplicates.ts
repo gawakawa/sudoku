@@ -3,6 +3,15 @@ import { Position } from "../types/Sudoku.ts";
 import type { Grid } from "../types/Sudoku.ts";
 
 /**
+ * Transpose a grid (swap rows and columns)
+ * @param grid - Sudoku grid
+ * @returns Transposed grid
+ */
+export const transpose = (grid: Grid): Grid => {
+  return grid[0].map((_, colIndex) => grid.map((row) => row[colIndex]));
+};
+
+/**
  * Find cells with duplicate values in rows
  * @param grid - Sudoku grid
  * @returns Set of positions with duplicates
@@ -28,13 +37,16 @@ export const findRowDuplicates = (grid: Grid): Set<Position> => {
 
 /**
  * Find cells with duplicate values in columns
- * @param _grid - Sudoku grid
+ * @param grid - Sudoku grid
  * @returns Set of positions with duplicates
  */
-export const findColumnDuplicates = (_grid: Grid): Set<Position> => {
-  // TODO: Check for column duplicates
-  return Set();
+export const findColumnDuplicates = (grid: Grid): Set<Position> => {
+  return findRowDuplicates(transpose(grid)).map((pos) =>
+    Position({ row: pos.col, col: pos.row })
+  );
 };
+
+export const findColDuplicates = findColumnDuplicates;
 
 /**
  * Find cells with duplicate values in 3x3 blocks

@@ -1,7 +1,244 @@
 import { describe, expect, it } from "vitest";
-import { findRowDuplicates } from "../../src/utils/findDuplicates.ts";
+import {
+  findColDuplicates,
+  findRowDuplicates,
+  transpose,
+} from "../../src/utils/findDuplicates.ts";
 import { Position } from "../../src/types/Sudoku.ts";
 import type { Grid } from "../../src/types/Sudoku.ts";
+
+describe("transpose", () => {
+  it("should transpose a 9x9 grid correctly", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true },
+        { value: 2, isInitial: true },
+        { value: 3, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 4, isInitial: true },
+        { value: 5, isInitial: true },
+        { value: 6, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 7, isInitial: false },
+        { value: 8, isInitial: false },
+        { value: 9, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = transpose(grid);
+
+    // Check dimensions
+    expect(result.length).toBe(9);
+    expect(result[0].length).toBe(9);
+
+    // Check that grid[row][col] becomes result[col][row]
+    expect(result[0][0]).toEqual({ value: 1, isInitial: true });
+    expect(result[1][0]).toEqual({ value: 2, isInitial: true });
+    expect(result[2][0]).toEqual({ value: 3, isInitial: true });
+    expect(result[0][1]).toEqual({ value: 4, isInitial: true });
+    expect(result[1][1]).toEqual({ value: 5, isInitial: true });
+    expect(result[2][1]).toEqual({ value: 6, isInitial: true });
+    expect(result[0][2]).toEqual({ value: 7, isInitial: false });
+    expect(result[1][2]).toEqual({ value: 8, isInitial: false });
+    expect(result[2][2]).toEqual({ value: 9, isInitial: false });
+  });
+
+  it("should preserve all cell properties", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 2, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = transpose(grid);
+
+    // Check that isInitial is preserved
+    expect(result[0][0].isInitial).toBe(true);
+    expect(result[0][1].isInitial).toBe(false);
+  });
+});
 
 describe("findRowDuplicates", () => {
   it("should return empty set for grid with no duplicates", () => {
@@ -545,6 +782,552 @@ describe("findRowDuplicates", () => {
     ];
 
     const result = findRowDuplicates(grid);
+    expect(result.size).toBe(0);
+  });
+});
+
+describe("findColDuplicates", () => {
+  it("should return empty set for grid with no duplicates", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true },
+        { value: 4, isInitial: true },
+        { value: 7, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 2, isInitial: true },
+        { value: 5, isInitial: true },
+        { value: 8, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 3, isInitial: true },
+        { value: 6, isInitial: true },
+        { value: 9, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = findColDuplicates(grid);
+    expect(result.size).toBe(0);
+  });
+
+  it("should find duplicates in a single column", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 2, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 1, isInitial: false }, // duplicate - same column
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = findColDuplicates(grid);
+    expect(result.size).toBe(2);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
+  });
+
+  it("should find duplicates in multiple columns", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true },
+        { value: 5, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 1, isInitial: false }, // duplicate col 0
+        { value: 5, isInitial: false }, // duplicate col 1
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = findColDuplicates(grid);
+    expect(result.size).toBe(4);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+  });
+
+  it("should find all duplicates when value appears three times in a column", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 1, isInitial: false }, // duplicate
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: 1, isInitial: false }, // duplicate
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = findColDuplicates(grid);
+    expect(result.size).toBe(3);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
+  });
+
+  it("should ignore undefined values", () => {
+    const grid: Grid = [
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+      [
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+        { value: undefined, isInitial: false },
+      ],
+    ];
+
+    const result = findColDuplicates(grid);
     expect(result.size).toBe(0);
   });
 });
