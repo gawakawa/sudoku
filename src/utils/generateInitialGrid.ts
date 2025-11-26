@@ -1,0 +1,111 @@
+import type { Grid } from "../types/Sudoku.ts";
+
+/**
+ * Generate an initial Sudoku grid
+ * TODO: In the future, this will generate random puzzles
+ * @returns Initial Sudoku grid
+ */
+export function generateInitialGrid(): Grid {
+  // Sample Sudoku puzzle (easy difficulty)
+  return [
+    [
+      { value: 5, isInitial: true, hasError: false },
+      { value: 3, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 7, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+    ],
+    [
+      { value: 6, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 1, isInitial: true, hasError: false },
+      { value: 9, isInitial: true, hasError: false },
+      { value: 5, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+    ],
+    [
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 9, isInitial: true, hasError: false },
+      { value: 8, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 6, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+    ],
+    [
+      { value: 8, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 6, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 3, isInitial: true, hasError: false },
+    ],
+    [
+      { value: 4, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 8, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 3, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 1, isInitial: true, hasError: false },
+    ],
+    [
+      { value: 7, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 2, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 6, isInitial: true, hasError: false },
+    ],
+    [
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 6, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 2, isInitial: true, hasError: false },
+      { value: 8, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+    ],
+    [
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 4, isInitial: true, hasError: false },
+      { value: 1, isInitial: true, hasError: false },
+      { value: 9, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 5, isInitial: true, hasError: false },
+    ],
+    [
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 8, isInitial: true, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: undefined, isInitial: false, hasError: false },
+      { value: 7, isInitial: true, hasError: false },
+      { value: 9, isInitial: true, hasError: false },
+    ],
+  ];
+}
