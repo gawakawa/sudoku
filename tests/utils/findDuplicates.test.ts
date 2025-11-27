@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   findBlockDuplicates,
   findColDuplicates,
+  findDuplicates,
   findRowDuplicates,
   transpose,
 } from "../../src/utils/findDuplicates.ts";
@@ -458,5 +459,266 @@ describe("findBlockDuplicates", () => {
 
     const result = findBlockDuplicates(grid);
     expect(result.size).toBe(0);
+  });
+});
+
+describe("findDuplicates", () => {
+  it("should return empty set for grid with no duplicates", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 3, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 4, isInitial: true, hasError: false },
+        { value: 5, isInitial: true, hasError: false },
+        { value: 6, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 7, isInitial: true, hasError: false },
+        { value: 8, isInitial: true, hasError: false },
+        { value: 9, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      ...createEmptyGrid().slice(3),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(0);
+  });
+
+  it("should find row duplicates only", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 1, isInitial: false, hasError: false }, // duplicate in row
+        ...createEmptyRow().slice(3),
+      ],
+      ...createEmptyGrid().slice(1),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(2);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
+  });
+
+  it("should find column duplicates only", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(1),
+      ],
+      [
+        { value: 2, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(1),
+      ],
+      [
+        { value: 1, isInitial: false, hasError: false }, // duplicate in column
+        ...createEmptyRow().slice(1),
+      ],
+      ...createEmptyGrid().slice(3),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(2);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
+  });
+
+  it("should find block duplicates only", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 3, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 4, isInitial: true, hasError: false },
+        { value: 1, isInitial: false, hasError: false }, // duplicate in block
+        { value: 6, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 7, isInitial: true, hasError: false },
+        { value: 8, isInitial: true, hasError: false },
+        { value: 9, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      ...createEmptyGrid().slice(3),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(2);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+  });
+
+  it("should find duplicates in both row and column", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 1, isInitial: false, hasError: false }, // duplicate in row
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 3, isInitial: true, hasError: false },
+        { value: 2, isInitial: false, hasError: false }, // duplicate in column
+        ...createEmptyRow().slice(2),
+      ],
+      ...createEmptyGrid().slice(2),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(4);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+  });
+
+  it("should find duplicates in row and block", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 1, isInitial: false, hasError: false }, // duplicate in row and block
+        { value: 3, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      ...createEmptyGrid().slice(1),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(2);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+  });
+
+  it("should find duplicates in column and block", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 3, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 1, isInitial: false, hasError: false }, // duplicate in column and block
+        { value: 5, isInitial: true, hasError: false },
+        { value: 6, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      ...createEmptyGrid().slice(2),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(2);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+  });
+
+  it("should find duplicates in row, column, and block", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 3, isInitial: true, hasError: false },
+        { value: 4, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(4),
+      ],
+      [
+        { value: 1, isInitial: false, hasError: false }, // duplicate in column and block with (0,0)
+        { value: 2, isInitial: false, hasError: false }, // duplicate in column and block with (0,1)
+        { value: 5, isInitial: true, hasError: false },
+        { value: 4, isInitial: false, hasError: false }, // duplicate in row with (0,3)
+        ...createEmptyRow().slice(4),
+      ],
+      ...createEmptyGrid().slice(2),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(6);
+    // Column duplicates
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    // Row duplicates
+    expect(result.has(Position({ row: 0, col: 3 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 3 }))).toBe(true);
+  });
+
+  it("should handle same cell being duplicate in multiple ways", () => {
+    // Cell at (1,1) has value 1, which duplicates with:
+    // - (0,1) in same column
+    // - (1,0) in same row
+    // - (0,0) in same block (which also has value 1)
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 1, isInitial: false, hasError: false }, // duplicate in row and block
+        { value: 3, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      [
+        { value: 1, isInitial: false, hasError: false }, // duplicate in column and block
+        { value: 1, isInitial: false, hasError: false }, // duplicate in row, column, and block
+        { value: 6, isInitial: true, hasError: false },
+        ...createEmptyRow().slice(3),
+      ],
+      ...createEmptyGrid().slice(2),
+    ];
+
+    const result = findDuplicates(grid);
+    // All four cells with value 1 should be marked as duplicates
+    expect(result.size).toBe(4);
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+  });
+
+  it("should ignore undefined values", () => {
+    const grid: Grid = createEmptyGrid();
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(0);
+  });
+
+  it("should handle multiple separate duplicate groups", () => {
+    const grid: Grid = [
+      [
+        { value: 1, isInitial: true, hasError: false },
+        { value: 1, isInitial: false, hasError: false }, // duplicate group 1
+        { value: 3, isInitial: true, hasError: false },
+        { value: 2, isInitial: true, hasError: false },
+        { value: 2, isInitial: false, hasError: false }, // duplicate group 2
+        ...createEmptyRow().slice(5),
+      ],
+      [
+        { value: 5, isInitial: true, hasError: false },
+        { value: 5, isInitial: false, hasError: false }, // duplicate group 3
+        ...createEmptyRow().slice(2),
+      ],
+      ...createEmptyGrid().slice(2),
+    ];
+
+    const result = findDuplicates(grid);
+    expect(result.size).toBe(6);
+    // Group 1
+    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    // Group 2
+    expect(result.has(Position({ row: 0, col: 3 }))).toBe(true);
+    expect(result.has(Position({ row: 0, col: 4 }))).toBe(true);
+    // Group 3
+    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
   });
 });
