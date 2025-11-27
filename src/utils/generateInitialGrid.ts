@@ -3,6 +3,18 @@ import { Position } from "../types/Sudoku.ts";
 import { emptyCell } from "./createEmptyGrid.ts";
 
 /**
+ * Generate random subarray using bit mask
+ * @param arr Array to sample from
+ * @returns Random subarray
+ */
+const randomSubarray = <T>(arr: T[]): T[] => {
+  const r1 = Math.floor(Math.random() * 2 ** 53);
+  const r2 = Math.floor(Math.random() * 2 ** 53);
+  const mask = BigInt(r1) | (BigInt(r2) << 53n);
+  return arr.filter((_, i) => (mask >> BigInt(i)) & 1n);
+};
+
+/**
  * Generate a complete valid Sudoku grid (all cells filled)
  * TODO: Implement random generation algorithm
  * @returns Complete Sudoku grid with all 81 cells filled
@@ -31,64 +43,15 @@ const generateCompleteGrid = (): Grid => {
 
 /**
  * Generate random positions to remove from the grid
- * TODO: Implement random generation
- * @returns Array of positions to remove
+ * @returns Array of random positions to remove
  */
-const generateRandomPositions = (): Position[] => {
-  return [
-    Position({ row: 0, col: 2 }),
-    Position({ row: 0, col: 3 }),
-    Position({ row: 0, col: 5 }),
-    Position({ row: 0, col: 6 }),
-    Position({ row: 0, col: 7 }),
-    Position({ row: 0, col: 8 }),
-    Position({ row: 1, col: 1 }),
-    Position({ row: 1, col: 2 }),
-    Position({ row: 1, col: 6 }),
-    Position({ row: 1, col: 7 }),
-    Position({ row: 1, col: 8 }),
-    Position({ row: 2, col: 0 }),
-    Position({ row: 2, col: 3 }),
-    Position({ row: 2, col: 4 }),
-    Position({ row: 2, col: 5 }),
-    Position({ row: 2, col: 6 }),
-    Position({ row: 2, col: 8 }),
-    Position({ row: 3, col: 1 }),
-    Position({ row: 3, col: 2 }),
-    Position({ row: 3, col: 3 }),
-    Position({ row: 3, col: 5 }),
-    Position({ row: 3, col: 6 }),
-    Position({ row: 3, col: 7 }),
-    Position({ row: 4, col: 1 }),
-    Position({ row: 4, col: 2 }),
-    Position({ row: 4, col: 4 }),
-    Position({ row: 4, col: 6 }),
-    Position({ row: 4, col: 7 }),
-    Position({ row: 5, col: 1 }),
-    Position({ row: 5, col: 2 }),
-    Position({ row: 5, col: 3 }),
-    Position({ row: 5, col: 5 }),
-    Position({ row: 5, col: 6 }),
-    Position({ row: 5, col: 7 }),
-    Position({ row: 6, col: 0 }),
-    Position({ row: 6, col: 2 }),
-    Position({ row: 6, col: 3 }),
-    Position({ row: 6, col: 4 }),
-    Position({ row: 6, col: 5 }),
-    Position({ row: 6, col: 8 }),
-    Position({ row: 7, col: 0 }),
-    Position({ row: 7, col: 1 }),
-    Position({ row: 7, col: 2 }),
-    Position({ row: 7, col: 6 }),
-    Position({ row: 7, col: 7 }),
-    Position({ row: 8, col: 0 }),
-    Position({ row: 8, col: 1 }),
-    Position({ row: 8, col: 2 }),
-    Position({ row: 8, col: 3 }),
-    Position({ row: 8, col: 5 }),
-    Position({ row: 8, col: 6 }),
-  ];
-};
+const generateRandomPositions = (): Position[] =>
+  randomSubarray(Array.from({ length: 81 }, (_, i) => i)).map((index) =>
+    Position({
+      row: Math.floor(index / 9),
+      col: index % 9,
+    })
+  );
 
 /**
  * Remove cells from a complete grid to create a puzzle
