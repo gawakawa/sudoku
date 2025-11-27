@@ -50,12 +50,38 @@ export const findColDuplicates = findColumnDuplicates;
 
 /**
  * Find cells with duplicate values in 3x3 blocks
- * @param _grid - Sudoku grid
+ * @param grid - Sudoku grid
  * @returns Set of positions with duplicates
  */
-export const findBlockDuplicates = (_grid: Grid): Set<Position> => {
-  // TODO: Check for block duplicates
-  return Set();
+export const findBlockDuplicates = (grid: Grid): Set<Position> => {
+  const offsets = [0, 1, 2];
+  const blockStarts = [0, 3, 6];
+
+  return Set(
+    blockStarts.flatMap((blockRow) =>
+      blockStarts.flatMap((blockCol) => {
+        const blockCells = offsets.flatMap((dr) =>
+          offsets.map((dc) => {
+            const pos = { row: blockRow + dr, col: blockCol + dc };
+            return {
+              pos,
+              cell: grid[pos.row][pos.col],
+            };
+          })
+        );
+
+        return blockCells.flatMap(({ pos, cell }, index) =>
+          blockCells.flatMap(({ pos: pos_, cell: cell_ }, index_) =>
+            index < index_ &&
+              cell.value !== undefined &&
+              cell.value === cell_.value
+              ? [Position(pos), Position(pos_)]
+              : []
+          )
+        );
+      })
+    ),
+  );
 };
 
 /**
