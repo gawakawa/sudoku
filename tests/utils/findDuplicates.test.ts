@@ -10,9 +10,9 @@ import type { Cell, Grid } from "../../src/types/Sudoku.ts";
 // Helper to create empty cells and rows
 const emptyCell: Cell = { value: undefined, isInitial: false, hasError: false };
 const createEmptyRow = (): Cell[] =>
-  Array(9).fill(null).map(() => ({ ...emptyCell }));
+  Array.from({ length: 9 }, () => ({ ...emptyCell }));
 const createEmptyBoard = (): Grid =>
-  Array(9).fill(null).map(() => createEmptyRow());
+  Array.from({ length: 9 }, () => createEmptyRow());
 
 describe("transpose", () => {
   it("should transpose a 9x9 grid correctly", () => {
