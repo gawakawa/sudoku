@@ -90,7 +90,7 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
         focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
         ${
         props.cell.hasError
-          ? "bg-red-100 text-red-700 border-red-500"
+          ? "error bg-red-100 text-red-700 border-red-500"
           : props.cell.isInitial
           ? "initial font-bold text-gray-900 bg-gray-50 cursor-not-allowed"
           : "text-blue-600 bg-white"
