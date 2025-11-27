@@ -13,8 +13,18 @@ export const App: Component = () => {
    * Update hasError flags based on duplicate check results
    * @param _duplicates - Set of positions with duplicates
    */
-  const updateDuplicateErrors = (_duplicates: Set<Position>): void => {
-    // TODO: Update hasError for all cells
+  const updateDuplicateErrors = (duplicates: Set<Position>): void => {
+    // First, reset all hasError flags to false
+    grid.forEach((row, rowIndex) =>
+      row.forEach((_, colIndex) => {
+        setGrid(rowIndex, colIndex, "hasError", false);
+      })
+    );
+
+    // Then, set hasError to true for cells with duplicates
+    duplicates.forEach((pos) => {
+      setGrid(pos.row, pos.col, "hasError", true);
+    });
   };
 
   /**
