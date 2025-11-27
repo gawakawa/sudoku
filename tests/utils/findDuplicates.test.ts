@@ -5,11 +5,10 @@ import {
   transpose,
 } from "../../src/utils/findDuplicates.ts";
 import { Position } from "../../src/types/Sudoku.ts";
-import type { Cell, Grid } from "../../src/types/Sudoku.ts";
+import type { Grid } from "../../src/types/Sudoku.ts";
 import {
   createEmptyBoard,
   createEmptyRow,
-  emptyCell,
 } from "../../src/utils/createEmptyBoard.ts";
 
 describe("transpose", () => {
