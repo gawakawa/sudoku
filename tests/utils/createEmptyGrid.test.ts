@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
-  createEmptyBoard,
+  createEmptyGrid,
   createEmptyRow,
   emptyCell,
-} from "../../src/utils/createEmptyBoard.ts";
+} from "../../src/utils/createEmptyGrid.ts";
 
 describe("emptyCell", () => {
   it("should have undefined value", () => {
@@ -41,9 +41,9 @@ describe("createEmptyRow", () => {
   });
 });
 
-describe("createEmptyBoard", () => {
+describe("createEmptyGrid", () => {
   it("should create a 9x9 grid", () => {
-    const board = createEmptyBoard();
+    const board = createEmptyGrid();
     expect(board).toHaveLength(9);
     board.forEach((row) => {
       expect(row).toHaveLength(9);
@@ -51,7 +51,7 @@ describe("createEmptyBoard", () => {
   });
 
   it("should create cells with empty values", () => {
-    const board = createEmptyBoard();
+    const board = createEmptyGrid();
     board.forEach((row) => {
       row.forEach((cell) => {
         expect(cell.value).toBeUndefined();
@@ -62,14 +62,14 @@ describe("createEmptyBoard", () => {
   });
 
   it("should create independent cell objects", () => {
-    const board = createEmptyBoard();
+    const board = createEmptyGrid();
     board[0][0].value = 5;
     expect(board[0][1].value).toBeUndefined();
     expect(board[1][0].value).toBeUndefined();
   });
 
   it("should create independent row arrays", () => {
-    const board = createEmptyBoard();
+    const board = createEmptyGrid();
     const originalLength = board[0].length;
     board[0].push({ value: 5, isInitial: true, hasError: false });
     expect(board[1]).toHaveLength(originalLength);

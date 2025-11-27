@@ -7,9 +7,9 @@ import {
 import { Position } from "../../src/types/Sudoku.ts";
 import type { Grid } from "../../src/types/Sudoku.ts";
 import {
-  createEmptyBoard,
+  createEmptyGrid,
   createEmptyRow,
-} from "../../src/utils/createEmptyBoard.ts";
+} from "../../src/utils/createEmptyGrid.ts";
 
 describe("transpose", () => {
   it("should transpose a 9x9 grid correctly", () => {
@@ -32,7 +32,7 @@ describe("transpose", () => {
         { value: 9, isInitial: false, hasError: false },
         ...createEmptyRow().slice(3),
       ],
-      ...createEmptyBoard().slice(3),
+      ...createEmptyGrid().slice(3),
     ];
 
     const result = transpose(grid);
@@ -99,7 +99,7 @@ describe("transpose", () => {
         { value: 2, isInitial: false, hasError: false },
         ...createEmptyRow().slice(1),
       ],
-      ...createEmptyBoard().slice(2),
+      ...createEmptyGrid().slice(2),
     ];
 
     const result = transpose(grid);
@@ -125,7 +125,7 @@ describe("findRowDuplicates", () => {
         { value: 6, isInitial: true, hasError: false },
         ...createEmptyRow().slice(3),
       ],
-      ...createEmptyBoard().slice(2),
+      ...createEmptyGrid().slice(2),
     ];
 
     const result = findRowDuplicates(grid);
@@ -140,7 +140,7 @@ describe("findRowDuplicates", () => {
         { value: 1, isInitial: false, hasError: false }, // duplicate
         ...createEmptyRow().slice(3),
       ],
-      ...createEmptyBoard().slice(1),
+      ...createEmptyGrid().slice(1),
     ];
 
     const result = findRowDuplicates(grid);
@@ -162,7 +162,7 @@ describe("findRowDuplicates", () => {
         { value: 5, isInitial: false, hasError: false }, // duplicate
         ...createEmptyRow().slice(2),
       ],
-      ...createEmptyBoard().slice(2),
+      ...createEmptyGrid().slice(2),
     ];
 
     const result = findRowDuplicates(grid);
@@ -181,7 +181,7 @@ describe("findRowDuplicates", () => {
         { value: 1, isInitial: false, hasError: false }, // duplicate
         ...createEmptyRow().slice(3),
       ],
-      ...createEmptyBoard().slice(1),
+      ...createEmptyGrid().slice(1),
     ];
 
     const result = findRowDuplicates(grid);
@@ -192,7 +192,7 @@ describe("findRowDuplicates", () => {
   });
 
   it("should ignore undefined values", () => {
-    const grid: Grid = createEmptyBoard();
+    const grid: Grid = createEmptyGrid();
 
     const result = findRowDuplicates(grid);
     expect(result.size).toBe(0);
@@ -220,7 +220,7 @@ describe("findColDuplicates", () => {
         { value: 9, isInitial: true, hasError: false },
         ...createEmptyRow().slice(3),
       ],
-      ...createEmptyBoard().slice(3),
+      ...createEmptyGrid().slice(3),
     ];
 
     const result = findColDuplicates(grid);
@@ -241,7 +241,7 @@ describe("findColDuplicates", () => {
         { value: 1, isInitial: false, hasError: false }, // duplicate - same column
         ...createEmptyRow().slice(1),
       ],
-      ...createEmptyBoard().slice(3),
+      ...createEmptyGrid().slice(3),
     ];
 
     const result = findColDuplicates(grid);
@@ -262,7 +262,7 @@ describe("findColDuplicates", () => {
         { value: 5, isInitial: false, hasError: false }, // duplicate col 1
         ...createEmptyRow().slice(2),
       ],
-      ...createEmptyBoard().slice(2),
+      ...createEmptyGrid().slice(2),
     ];
 
     const result = findColDuplicates(grid);
@@ -287,7 +287,7 @@ describe("findColDuplicates", () => {
         { value: 1, isInitial: false, hasError: false }, // duplicate
         ...createEmptyRow().slice(1),
       ],
-      ...createEmptyBoard().slice(3),
+      ...createEmptyGrid().slice(3),
     ];
 
     const result = findColDuplicates(grid);
@@ -298,7 +298,7 @@ describe("findColDuplicates", () => {
   });
 
   it("should ignore undefined values", () => {
-    const grid: Grid = createEmptyBoard();
+    const grid: Grid = createEmptyGrid();
 
     const result = findColDuplicates(grid);
     expect(result.size).toBe(0);

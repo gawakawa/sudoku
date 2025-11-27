@@ -1,6 +1,6 @@
 import type { Grid } from "../types/Sudoku.ts";
 import { Position } from "../types/Sudoku.ts";
-import { emptyCell } from "./createEmptyBoard.ts";
+import { emptyCell } from "./createEmptyGrid.ts";
 
 /**
  * Generate a complete valid Sudoku grid (all cells filled)

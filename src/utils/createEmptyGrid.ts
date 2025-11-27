@@ -18,5 +18,5 @@ export const createEmptyRow = (): Cell[] =>
 /**
  * Creates an empty 9x9 grid
  */
-export const createEmptyBoard = (): Grid =>
+export const createEmptyGrid = (): Grid =>
   Array.from({ length: 9 }, () => createEmptyRow());
