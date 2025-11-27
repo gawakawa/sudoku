@@ -6,13 +6,11 @@ import {
 } from "../../src/utils/findDuplicates.ts";
 import { Position } from "../../src/types/Sudoku.ts";
 import type { Cell, Grid } from "../../src/types/Sudoku.ts";
-
-// Helper to create empty cells and rows
-const emptyCell: Cell = { value: undefined, isInitial: false, hasError: false };
-const createEmptyRow = (): Cell[] =>
-  Array.from({ length: 9 }, () => ({ ...emptyCell }));
-const createEmptyBoard = (): Grid =>
-  Array.from({ length: 9 }, () => createEmptyRow());
+import {
+  createEmptyBoard,
+  createEmptyRow,
+  emptyCell,
+} from "../../src/utils/createEmptyBoard.ts";
 
 describe("transpose", () => {
   it("should transpose a 9x9 grid correctly", () => {
