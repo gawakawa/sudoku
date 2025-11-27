@@ -111,8 +111,8 @@ export const removeCells = (grid: Grid, positions: Position[]): Grid => {
  * TODO: In the future, this will generate random puzzles
  * @returns Initial Sudoku grid
  */
-export function generateInitialGrid(): Grid {
+export const generateInitialGrid = (): Grid => {
   const completeGrid = generateCompleteGrid();
   const positions = generateRandomPositions();
   return removeCells(completeGrid, positions);
-}
+};
