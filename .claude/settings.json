@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd ${CLAUDE_PROJECT_DIR} && nix fmt"
+            "command": "cd ${CLAUDE_PROJECT_DIR} && nix fmt && deno task lint && deno task check"
           }
         ]
       }
