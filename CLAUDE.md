@@ -98,3 +98,9 @@ Uses Nix flake's `ci` package which bundles Deno and Node.js 24.
 - Current implementation has a hardcoded puzzle in `App.tsx`
 - Specification (`spec.md`) includes planned features: puzzle generation,
   validation, error highlighting, and game controls
+
+## Code Editing Guidelines
+
+- DO NOT use `mcp__serena__replace_regex` for code edits
+- Use standard editing tools (Edit, Write, etc.) instead of regex-based
+  replacements
