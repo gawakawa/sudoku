@@ -24,16 +24,16 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
   ) => {
     switch (direction) {
       case "up":
-        cellRefs[Math.max(0, row - 1)]?.[col]?.focus();
+        cellRefs[Math.max(0, row - 1)][col]?.focus();
         break;
       case "down":
-        cellRefs[Math.min(8, row + 1)]?.[col]?.focus();
+        cellRefs[Math.min(8, row + 1)][col]?.focus();
         break;
       case "left":
-        cellRefs[row]?.[Math.max(0, col - 1)]?.focus();
+        cellRefs[row][Math.max(0, col - 1)]?.focus();
         break;
       case "right":
-        cellRefs[row]?.[Math.min(8, col + 1)]?.focus();
+        cellRefs[row][Math.min(8, col + 1)]?.focus();
         break;
     }
   };
