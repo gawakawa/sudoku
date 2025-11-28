@@ -1,7 +1,6 @@
 import type { Component } from "solid-js";
 import type { Cell, CellValue, Digit } from "../types/Sudoku.ts";
-
-type NavigationDirection = "up" | "down" | "left" | "right";
+import type { NavigationDirection } from "./SudokuGrid.tsx";
 
 type SudokuCellProps = {
   cell: Cell;

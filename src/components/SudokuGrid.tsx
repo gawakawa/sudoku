@@ -4,6 +4,8 @@ import { Position } from "../types/Sudoku.ts";
 import type { CellValue, Grid } from "../types/Sudoku.ts";
 import { SudokuCell } from "./SudokuCell.tsx";
 
+export type NavigationDirection = "up" | "down" | "left" | "right";
+
 type SudokuGridProps = {
   grid: Grid;
   onChange: (pos: Position, value: CellValue) => void;
@@ -15,7 +17,11 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
     () => Array(9).fill(undefined),
   );
 
-  const handleNavigate = (row: number, col: number, direction: string) => {
+  const handleNavigate = (
+    row: number,
+    col: number,
+    direction: NavigationDirection,
+  ) => {
     switch (direction) {
       case "up":
         cellRefs[Math.max(0, row - 1)]?.[col]?.focus();
