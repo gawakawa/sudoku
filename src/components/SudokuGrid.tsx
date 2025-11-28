@@ -46,18 +46,12 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
             <For each={row}>
               {(cell, colIndex) => (
                 <div
-                  class={`
-                    ${
-                    colIndex() === 2 || colIndex() === 5
-                      ? "border-r-4 border-r-gray-900"
-                      : ""
-                  }
-                    ${
-                    rowIndex() === 2 || rowIndex() === 5
-                      ? "border-b-4 border-b-gray-900"
-                      : ""
-                  }
-                  `}
+                  classList={{
+                    "border-r-4 border-r-gray-900": colIndex() === 2 ||
+                      colIndex() === 5,
+                    "border-b-4 border-b-gray-900": rowIndex() === 2 ||
+                      rowIndex() === 5,
+                  }}
                 >
                   <SudokuCell
                     cell={cell}
