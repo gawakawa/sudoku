@@ -39,7 +39,7 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
   };
 
   return (
-    <div class="inline-block border-4 border-gray-900 shadow-lg">
+    <div class="inline-block border-2 border-gray-900">
       <div class="grid grid-cols-9">
         <For each={props.grid}>
           {(row, rowIndex) => (
@@ -47,9 +47,9 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
               {(cell, colIndex) => (
                 <div
                   classList={{
-                    "border-r-4 border-r-gray-900": colIndex() === 2 ||
+                    "border-r-2 border-r-gray-900": colIndex() === 2 ||
                       colIndex() === 5,
-                    "border-b-4 border-b-gray-900": rowIndex() === 2 ||
+                    "border-b-2 border-b-gray-900": rowIndex() === 2 ||
                       rowIndex() === 5,
                   }}
                 >
