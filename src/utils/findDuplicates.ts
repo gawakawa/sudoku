@@ -46,8 +46,6 @@ export const findColumnDuplicates = (grid: Grid): Set<Position> => {
   );
 };
 
-export const findColDuplicates = findColumnDuplicates;
-
 /**
  * Find cells with duplicate values in 3x3 blocks
  * @param grid - Sudoku grid
@@ -64,7 +62,7 @@ export const findBlockDuplicates = (grid: Grid): Set<Position> => {
           offsets.map((dc) => {
             const pos = { row: blockRow + dr, col: blockCol + dc };
             return {
-              pos,
+              pos: { row: blockRow + dr, col: blockCol + dc },
               cell: grid[pos.row][pos.col],
             };
           })

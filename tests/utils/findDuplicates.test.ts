@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   findBlockDuplicates,
-  findColDuplicates,
+  findColumnDuplicates,
   findDuplicates,
   findRowDuplicates,
   transpose,
@@ -201,7 +201,7 @@ describe("findRowDuplicates", () => {
   });
 });
 
-describe("findColDuplicates", () => {
+describe("findColumnDuplicates", () => {
   it("should return empty set for grid with no duplicates", () => {
     const grid: Grid = [
       [
@@ -225,7 +225,7 @@ describe("findColDuplicates", () => {
       ...createEmptyGrid().slice(3),
     ];
 
-    const result = findColDuplicates(grid);
+    const result = findColumnDuplicates(grid);
     expect(result.size).toBe(0);
   });
 
@@ -246,7 +246,7 @@ describe("findColDuplicates", () => {
       ...createEmptyGrid().slice(3),
     ];
 
-    const result = findColDuplicates(grid);
+    const result = findColumnDuplicates(grid);
     expect(result.size).toBe(2);
     expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
     expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
@@ -267,7 +267,7 @@ describe("findColDuplicates", () => {
       ...createEmptyGrid().slice(2),
     ];
 
-    const result = findColDuplicates(grid);
+    const result = findColumnDuplicates(grid);
     expect(result.size).toBe(4);
     expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
     expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
@@ -292,7 +292,7 @@ describe("findColDuplicates", () => {
       ...createEmptyGrid().slice(3),
     ];
 
-    const result = findColDuplicates(grid);
+    const result = findColumnDuplicates(grid);
     expect(result.size).toBe(3);
     expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
     expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
@@ -302,7 +302,7 @@ describe("findColDuplicates", () => {
   it("should ignore undefined values", () => {
     const grid: Grid = createEmptyGrid();
 
-    const result = findColDuplicates(grid);
+    const result = findColumnDuplicates(grid);
     expect(result.size).toBe(0);
   });
 });
