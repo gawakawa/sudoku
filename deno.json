@@ -17,6 +17,11 @@
   },
   "imports": {
     "solid-js": "npm:solid-js@^1.9.5",
+    "react": "npm:react@^19.2.0",
+    "react-dom": "npm:react-dom@^19.2.0",
+    "react-dom/client": "npm:react-dom@^19.2.0/client",
+    "immer": "npm:immer@^11.1.3",
+    "use-immer": "npm:use-immer@^0.11.0",
     "typescript": "npm:typescript@^5.7.2",
     "@types/node": "npm:@types/node@^24.10.1"
   },

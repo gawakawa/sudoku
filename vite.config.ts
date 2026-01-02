@@ -3,11 +3,26 @@
 
 import { defineConfig } from "vitest/config";
 import solidPlugin from "vite-plugin-solid";
+import react from "@vitejs/plugin-react";
 import devtools from "solid-devtools/vite";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  plugins: [devtools(), solidPlugin(), tailwindcss()],
+  plugins: [
+    devtools(),
+    // SolidJS plugin - exclude files in src/react/
+    solidPlugin({
+      include: /^(?!.*\/react\/).*\.(tsx|jsx)$/,
+    }),
+    // React plugin - only process files in src/react/
+    react({
+      include: /\/react\/.*\.(tsx|jsx)$/,
+      babel: {
+        plugins: [["babel-plugin-react-compiler", {}]],
+      },
+    }),
+    tailwindcss(),
+  ],
   server: {
     port: 3000,
   },

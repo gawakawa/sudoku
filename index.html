@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <link rel="shortcut icon" type="image/ico" href="/src/assets/favicon.ico" />
-    <title>Solid App</title>
+    <title>Sudoku - SolidJS vs React</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
+    <div id="root" class="flex min-h-screen">
+      <div id="solid-root" class="flex-1"></div>
+      <div id="react-root" class="flex-1"></div>
+    </div>
 
     <script src="/src/index.tsx" type="module"></script>
   </body>

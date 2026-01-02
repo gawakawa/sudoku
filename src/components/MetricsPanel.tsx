@@ -47,7 +47,7 @@ export const MetricsPanel: Component = () => {
   };
 
   return (
-    <div class="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-4 text-sm font-mono z-50 min-w-64">
+    <div class="mt-8 bg-white border border-gray-300 rounded-lg shadow-lg p-4 text-sm font-mono min-w-64">
       <h2 class="text-base font-bold mb-3 text-gray-800">
         Performance Metrics
       </h2>
