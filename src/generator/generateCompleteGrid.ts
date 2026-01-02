@@ -22,11 +22,23 @@ const shuffleDigits = (): Digit[] => {
 /**
  * Fill a 3x3 block in the grid with given values
  * @param grid Current grid state
- * @param pos Top-left position of the block
+ * @param startPos Top-left position of the block
  * @param values Array of 9 digits to fill the block
  * @returns New grid with the block filled
  */
-const fillBlock = (grid: Grid, pos: Position, values: Digit[]): Grid => grid;
+const fillBlock = (grid: Grid, startPos: Position, values: Digit[]): Grid => {
+  const offsets = [0, 1, 2];
+  const newGrid = grid.map((row) => [...row]);
+  offsets.forEach((dr) =>
+    offsets.forEach((dc) => {
+      newGrid[startPos.row + dr][startPos.col + dc] = {
+        value: values[dr * 3 + dc],
+        isInitial: true,
+      };
+    })
+  );
+  return newGrid;
+};
 
 /**
  * Generate a grid with three diagonal blocks filled
