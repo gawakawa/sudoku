@@ -9,7 +9,7 @@ import { solve } from "./solve.ts";
  */
 const shuffleDigits = (): Digit[] => {
   const digits: Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const factorial = digits.reduce((a, b) => a * b, 1);
+  const factorial = digits.reduce<number>((a, b) => a * b, 1);
   const r = Math.floor(Math.random() * factorial);
   for (let i = 8, q = r; i > 0; i--) {
     const j = q % (i + 1);
