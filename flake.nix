@@ -20,6 +20,7 @@
         {
           pkgs,
           system,
+          lib,
           ...
         }:
         let
@@ -38,9 +39,26 @@
             programs = {
               nixos.enable = true;
             };
+            settings.servers.chrome-devtools = {
+              command = "${pkgs.lib.getExe' pkgs.nodejs_24 "npx"}";
+              args = [
+                "-y"
+                "chrome-devtools-mcp@latest"
+                "--executablePath"
+                "${pkgs.lib.getExe pkgs.google-chrome}"
+              ];
+              env = {
+                PATH = "${pkgs.nodejs_24}/bin:${pkgs.bash}/bin";
+              };
+            };
           };
         in
         {
+          _module.args.pkgs = import inputs.nixpkgs {
+            inherit system;
+            config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "google-chrome" ];
+          };
+
           packages = {
             ci = pkgs.buildEnv {
               name = "ci";
