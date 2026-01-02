@@ -20,19 +20,28 @@ type Candidates = Set<Digit>;
  */
 type Domain = Map<Position, Candidates>;
 
+/** Result of finding the next cell to fill using MRV heuristic. */
+type MRVResult =
+  | { tag: "solved" }
+  | { tag: "found"; position: Position };
+
 const calcDomain = (_grid: Grid): Domain => Map();
 
 /**
  * Selects the next cell to fill using the MRV (Minimum Remaining Values) heuristic.
  * Choosing the cell with the fewest candidates reduces the search branching factor.
  * Only considers undetermined cells (size > 1); singletons are already determined.
- * @returns Position of the undetermined cell with fewest candidates, or undefined if all determined
  */
-const findMRVCell = (domain: Domain): Position | undefined =>
-  domain
+const findMRVCell = (domain: Domain): MRVResult => {
+  const pos = domain
     .filter((candidates) => candidates.size > 1)
     .entrySeq()
     .minBy(([_, candidates]) => candidates.size)?.[0];
+
+  return pos === undefined
+    ? { tag: "solved" }
+    : { tag: "found", position: pos };
+};
 
 const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
 
@@ -44,19 +53,18 @@ const updateDomain = (
 ): Domain | undefined => domain;
 
 const backtrack = (grid: Grid, domain: Domain): Grid | undefined => {
-  const pos = findMRVCell(domain);
+  const mrvResult = findMRVCell(domain);
 
-  // All cells are singletons = solved
-  if (pos === undefined) {
+  if (mrvResult.tag === "solved") {
     return grid;
   }
 
-  // Safe: findMRVCell guarantees size > 1
-  const candidates = domain.get(pos)!;
+  // Safe: Domain contains all 81 positions
+  const candidates = domain.get(mrvResult.position)!;
 
   for (const digit of candidates) {
-    const newGrid = setCell(grid, pos, digit);
-    const newDomain = updateDomain(domain, pos, digit);
+    const newGrid = setCell(grid, mrvResult.position, digit);
+    const newDomain = updateDomain(domain, mrvResult.position, digit);
 
     // Pruning: skip if contradiction detected
     if (newDomain === undefined) {
