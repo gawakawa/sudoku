@@ -1,5 +1,7 @@
 import { Map, Set } from "immutable";
+import { makePosition } from "../types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
+import { getAffectedPositions, indices } from "../utils/position.ts";
 
 /**
  * Possible digits for a cell: undetermined (size > 1), determined (singleton), or impossible (empty).
@@ -21,8 +23,34 @@ type Candidates = Set<Digit>;
  */
 type Domain = Map<Position, Candidates>;
 
+const digits: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const allDigits: Candidates = Set(digits);
+
 /** Initializes Domain with undetermined cells only (where grid value is undefined). */
-const calcDomain = (_grid: Grid): Domain => Map();
+const calcDomain = (grid: Grid): Domain => {
+  const entries: [Position, Candidates][] = indices.flatMap((row) =>
+    indices.flatMap((col) => {
+      if (grid[row][col].value !== undefined) return [];
+
+      const pos = makePosition({ row, col });
+      const peerValues: Candidates = Set(
+        getAffectedPositions(pos)
+          .toArray()
+          .flatMap((p) => {
+            const value = grid[p.row][p.col].value;
+            return value !== undefined ? [value] : [];
+          }),
+      );
+
+      const entry: [Position, Candidates] = [
+        pos,
+        allDigits.subtract(peerValues),
+      ];
+      return [entry];
+    })
+  );
+  return Map(entries);
+};
 
 type UpdateDomainResult =
   | { tag: "ok"; domain: Domain }
@@ -33,10 +61,21 @@ type UpdateDomainResult =
  * Returns contradiction if any cell has no candidates after propagation.
  */
 const updateDomain = (
-  _domain: Domain,
-  _pos: Position,
-  _digit: Digit,
-): UpdateDomainResult => ({ tag: "ok", domain: _domain });
+  domain: Domain,
+  pos: Position,
+  digit: Digit,
+): UpdateDomainResult => {
+  const peers = getAffectedPositions(pos);
+  const updated = domain.remove(pos).map((candidates, p) =>
+    peers.has(p) ? candidates.remove(digit) : candidates
+  );
+
+  if (updated.some((candidates) => candidates.isEmpty())) {
+    return { tag: "contradiction" };
+  }
+
+  return { tag: "ok", domain: updated };
+};
 
 /** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
 const findMRVCell = (
