@@ -13,6 +13,10 @@ type SudokuGridProps = {
   hasError: (row: number, col: number) => boolean;
 };
 
+/**
+ * Grid component that renders a 9x9 Sudoku board
+ * @param props - Grid properties including cell data and callbacks
+ */
 export const SudokuGrid: Component<SudokuGridProps> = (props) => {
   // Track component initialization for performance metrics
   incrementGridRender();
@@ -22,11 +26,17 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
     () => Array(9).fill(undefined),
   );
 
+  /**
+   * Handle arrow key navigation between cells
+   * @param row - Current cell row
+   * @param col - Current cell column
+   * @param direction - Navigation direction
+   */
   const handleNavigate = (
     row: number,
     col: number,
     direction: NavigationDirection,
-  ) => {
+  ): void => {
     switch (direction) {
       case "up":
         cellRefs[Math.max(0, row - 1)][col]?.focus();

@@ -69,8 +69,19 @@ export const useErrorStore = (): UseErrorStoreResult => {
     indices.map(() => indices.map(() => false)),
   );
 
+  /**
+   * Check if a cell has a duplicate error
+   * @param row - Row index
+   * @param col - Column index
+   * @returns True if the cell has a duplicate value in its row, column, or block
+   */
   const hasError = (row: number, col: number): boolean => errorStore[row][col];
 
+  /**
+   * Recalculate error states for cells affected by a change
+   * @param pos - Position of the changed cell
+   * @param grid - Current grid state
+   */
   const updateErrors = (pos: PositionType, grid: Grid): void => {
     getAffectedPositions(pos).forEach((p) => {
       setErrorStore(p.row, p.col, calculateCellError(grid, p.row, p.col));

@@ -12,22 +12,39 @@ export type MetricsData = {
   storeUpdates: number;
 };
 
+/**
+ * Increment the update counter for a specific cell
+ * @param cellId - Cell index (row * 9 + col)
+ */
 export const incrementCellUpdate = (cellId: number): void => {
   cellUpdates[cellId]++;
 };
 
+/**
+ * Increment the App component render counter
+ */
 export const incrementAppRender = (): void => {
   appRenders++;
 };
 
+/**
+ * Increment the SudokuGrid component render counter
+ */
 export const incrementGridRender = (): void => {
   gridRenders++;
 };
 
+/**
+ * Increment the store update counter
+ */
 export const incrementStoreUpdate = (): void => {
   storeUpdates++;
 };
 
+/**
+ * Get a snapshot of all current metrics
+ * @returns Copy of current metrics data
+ */
 export const getMetricsSnapshot = (): MetricsData => {
   return {
     cellUpdates: new Uint32Array(cellUpdates), // Copy to avoid mutation
@@ -38,6 +55,9 @@ export const getMetricsSnapshot = (): MetricsData => {
   };
 };
 
+/**
+ * Reset all metrics to zero
+ */
 export const resetMetrics = (): void => {
   cellUpdates.fill(0);
   appRenders = 0;

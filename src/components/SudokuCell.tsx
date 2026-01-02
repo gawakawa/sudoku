@@ -12,6 +12,10 @@ type SudokuCellProps = {
   ref?: (el: HTMLInputElement) => void;
 };
 
+/**
+ * Individual cell component for the Sudoku grid
+ * @param props - Cell properties including value, error state, and callbacks
+ */
 export const SudokuCell: Component<SudokuCellProps> = (props) => {
   // Track reactive updates for performance metrics
   createEffect(() => {
@@ -22,7 +26,11 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
     incrementCellUpdate(props.cellId);
   });
 
-  const handleKeyDown = (e: KeyboardEvent) => {
+  /**
+   * Handle keyboard input for cell navigation and value entry
+   * @param e - Keyboard event
+   */
+  const handleKeyDown = (e: KeyboardEvent): void => {
     // Handle Backspace and Delete - clear the cell regardless of cursor position
     if (e.key === "Backspace" || e.key === "Delete") {
       if (props.cell.isInitial) {
@@ -74,7 +82,11 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
     e.preventDefault();
   };
 
-  const handleInput = (e: InputEvent) => {
+  /**
+   * Handle direct input events (e.g., from mobile keyboards)
+   * @param e - Input event
+   */
+  const handleInput = (e: InputEvent): void => {
     const value = (e.target as HTMLInputElement).value;
     if (value === "") return props.onChange(undefined);
     const num = parseInt(value, 10);

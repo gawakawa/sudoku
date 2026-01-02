@@ -6,6 +6,9 @@ import { generateInitialGrid } from "./utils/generateInitialGrid.ts";
 import { useErrorStore } from "./lib/useErrorStore.ts";
 import { incrementAppRender, incrementStoreUpdate } from "./lib/metrics.ts";
 
+/**
+ * Main application component that manages the Sudoku game state
+ */
 export const App: Component = () => {
   // Track component initialization for performance metrics
   incrementAppRender();

@@ -7,12 +7,18 @@ import {
 } from "solid-js";
 import { getMetricsSnapshot, type MetricsData } from "../lib/metrics.ts";
 
+/**
+ * Panel component that displays real-time performance metrics
+ */
 export const MetricsPanel: Component = () => {
   const [metrics, setMetrics] = createSignal<MetricsData>(getMetricsSnapshot());
 
   let rafId: number;
 
-  const scheduleUpdate = () => {
+  /**
+   * Schedule the next metrics update on the next animation frame
+   */
+  const scheduleUpdate = (): void => {
     rafId = requestAnimationFrame(() => {
       setMetrics(getMetricsSnapshot());
       scheduleUpdate();
@@ -27,11 +33,18 @@ export const MetricsPanel: Component = () => {
     cancelAnimationFrame(rafId);
   });
 
-  // Calculate max cell update count for heatmap coloring
+  /**
+   * Calculate the maximum update count among all cells
+   * @returns Maximum cell update count for heatmap scaling
+   */
   const maxCellUpdates = (): number => Math.max(0, ...metrics().cellUpdates);
 
-  // Get cell color based on update count (white to red gradient)
-  const getCellColor = (cellId: number) => {
+  /**
+   * Get the background color for a cell based on its update count
+   * @param cellId - Cell index (row * 9 + col)
+   * @returns CSS color string (white to red gradient)
+   */
+  const getCellColor = (cellId: number): string => {
     const count = metrics().cellUpdates[cellId];
     const max = maxCellUpdates();
     if (max === 0) return "bg-gray-100";
