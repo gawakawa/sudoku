@@ -37,7 +37,6 @@
           mcpConfig = inputs.mcp-servers-nix.lib.mkConfig pkgs {
             programs = {
               nixos.enable = true;
-              serena.enable = true;
             };
           };
         in
