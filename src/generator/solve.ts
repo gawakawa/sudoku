@@ -23,7 +23,10 @@ type Candidates = Set<Digit>;
  */
 type Domain = Map<Position, Candidates>;
 
+/** All valid Sudoku digits (1-9). */
 const digits: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+/** Set containing all digits, used as initial candidates for empty cells. */
 const allDigits: Candidates = Set(digits);
 
 /** Initializes Domain with undetermined cells only (where grid value is undefined). */
@@ -52,6 +55,11 @@ const calcDomain = (grid: Grid): Domain => {
   return Map(entries);
 };
 
+/**
+ * Result of updating domain after assigning a digit to a cell.
+ * - `ok`: Propagation succeeded, returns updated domain
+ * - `contradiction`: A cell has no remaining candidates (invalid assignment)
+ */
 type UpdateDomainResult =
   | { tag: "ok"; domain: Domain }
   | { tag: "contradiction" };
@@ -85,8 +93,23 @@ const findMRVCell = (
   return { position: entry![0], candidates: entry![1] };
 };
 
+/**
+ * Result of solving a Sudoku puzzle.
+ * - `solved`: A valid solution was found
+ * - `unsolvable`: No valid solution exists for the given puzzle
+ */
 export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
 
+/**
+ * Recursive backtracking search with constraint propagation.
+ *
+ * Uses MRV (Minimum Remaining Values) heuristic to select the next cell,
+ * which minimizes branching factor by choosing the most constrained cell first.
+ *
+ * @param grid - Current grid state (immutable during recursion)
+ * @param domain - Map of undetermined cells to their candidate digits
+ * @returns Solved grid if solution exists, otherwise unsolvable
+ */
 const backtrack = (grid: Grid, domain: Domain): SolveResult => {
   if (domain.size === 0) {
     return { tag: "solved", grid };
@@ -111,6 +134,23 @@ const backtrack = (grid: Grid, domain: Domain): SolveResult => {
   return { tag: "unsolvable" };
 };
 
+/**
+ * Solves a Sudoku puzzle using constraint propagation and backtracking.
+ *
+ * Algorithm:
+ * 1. Calculate initial domain (possible candidates for each empty cell)
+ * 2. Use backtracking with MRV heuristic to find a solution
+ * 3. Propagate constraints after each assignment to prune search space
+ *
+ * @param grid - The Sudoku puzzle to solve (empty cells have undefined value)
+ * @returns Solved grid if solution exists, otherwise unsolvable
+ *
+ * @example
+ * const result = solve(puzzle);
+ * if (result.tag === "solved") {
+ *   console.log(result.grid);
+ * }
+ */
 export const solve = (grid: Grid): SolveResult => {
   const domain = calcDomain(grid);
   return backtrack(grid, domain);
