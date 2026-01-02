@@ -31,3 +31,6 @@ Thumbs.db
 .mcp.json
 .direnv
 result
+
+# Agent runtime data
+.serena
