@@ -1,48 +1,46 @@
 import { Map, Set } from "immutable";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 
-type Candidates = Map<Position, Set<Digit>>;
+/** Set of possible digits for a single cell */
+type Candidates = Set<Digit>;
 
-const calcCandidates = (_grid: Grid): Candidates => Map();
+/** Map from cell positions to their candidates, representing the search space */
+type Domain = Map<Position, Candidates>;
+
+const calcDomain = (_grid: Grid): Domain => Map();
 
 /**
  * Selects the next cell to fill using the MRV (Minimum Remaining Values) heuristic.
  * Choosing the cell with the fewest candidates reduces the search branching factor.
- * @param candidates Map of cell positions to their candidate digit sets
+ * @param domain Map of cell positions to their candidate digit sets
  * @returns Position of the cell with fewest candidates, or undefined if map is empty
  */
-const findMRVCell = (candidates: Candidates): Position | undefined =>
-  candidates.entrySeq().minBy(([_, set]) => set.size)?.[0];
+const findMRVCell = (domain: Domain): Position | undefined =>
+  domain.entrySeq().minBy(([_, candidates]) => candidates.size)?.[0];
 
 const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
 
-const updateCandidates = (
-  candidates: Candidates,
-  _pos: Position,
-  _digit: Digit,
-): Candidates => candidates;
+const updateDomain = (domain: Domain, _pos: Position, _digit: Digit): Domain =>
+  domain;
 
-const backtrack = (
-  grid: Grid,
-  candidates: Candidates,
-): Grid | undefined => {
-  const pos = findMRVCell(candidates);
+const backtrack = (grid: Grid, domain: Domain): Grid | undefined => {
+  const pos = findMRVCell(domain);
 
   if (pos === undefined) {
     return grid;
   }
 
-  const cellCandidates = candidates.get(pos) ?? Set();
+  const candidates = domain.get(pos) ?? Set();
 
-  if (cellCandidates.size === 0) {
+  if (candidates.size === 0) {
     return undefined;
   }
 
-  for (const digit of cellCandidates) {
+  for (const digit of candidates) {
     const newGrid = setCell(grid, pos, digit);
-    const newCandidates = updateCandidates(candidates, pos, digit);
+    const newDomain = updateDomain(domain, pos, digit);
 
-    const result = backtrack(newGrid, newCandidates);
+    const result = backtrack(newGrid, newDomain);
     if (result !== undefined) {
       return result;
     }
@@ -52,6 +50,6 @@ const backtrack = (
 };
 
 export const solve = (grid: Grid): Grid | undefined => {
-  const candidates = calcCandidates(grid);
-  return backtrack(grid, candidates);
+  const domain = calcDomain(grid);
+  return backtrack(grid, domain);
 };
