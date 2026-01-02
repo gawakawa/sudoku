@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { removeCells } from "../../src/utils/generateInitialGrid.ts";
-import { Position } from "../../src/types/Sudoku.ts";
-import type { Grid } from "../../src/types/Sudoku.ts";
+import { makePosition } from "../../src/types/Sudoku.ts";
+import type { Grid, Position } from "../../src/types/Sudoku.ts";
 import { emptyCell } from "../../src/utils/createEmptyGrid.ts";
 
 describe("removeCells", () => {
@@ -29,9 +29,9 @@ describe("removeCells", () => {
   it("should replace cells at specified positions with empty cells", () => {
     const grid = createTestGrid();
     const positions = [
-      Position({ row: 0, col: 0 }),
-      Position({ row: 4, col: 4 }),
-      Position({ row: 8, col: 8 }),
+      makePosition({ row: 0, col: 0 }),
+      makePosition({ row: 4, col: 4 }),
+      makePosition({ row: 8, col: 8 }),
     ];
 
     const result = removeCells(grid, positions);
@@ -48,7 +48,7 @@ describe("removeCells", () => {
 
   it("should preserve values at positions not specified for removal", () => {
     const grid = createTestGrid();
-    const positions = [Position({ row: 0, col: 0 })];
+    const positions = [makePosition({ row: 0, col: 0 })];
 
     const result = removeCells(grid, positions);
 
@@ -61,7 +61,7 @@ describe("removeCells", () => {
   it("should not mutate the original grid", () => {
     const grid = createTestGrid();
     const originalValue = grid[0][0].value;
-    const positions = [Position({ row: 0, col: 0 })];
+    const positions = [makePosition({ row: 0, col: 0 })];
 
     removeCells(grid, positions);
 
@@ -87,11 +87,11 @@ describe("removeCells", () => {
   it("should handle multiple positions correctly", () => {
     const grid = createTestGrid();
     const positions = [
-      Position({ row: 0, col: 0 }),
-      Position({ row: 0, col: 1 }),
-      Position({ row: 0, col: 2 }),
-      Position({ row: 1, col: 0 }),
-      Position({ row: 2, col: 0 }),
+      makePosition({ row: 0, col: 0 }),
+      makePosition({ row: 0, col: 1 }),
+      makePosition({ row: 0, col: 2 }),
+      makePosition({ row: 1, col: 0 }),
+      makePosition({ row: 2, col: 0 }),
     ];
 
     const result = removeCells(grid, positions);
@@ -110,8 +110,8 @@ describe("removeCells", () => {
   it("should create new cell objects, not reference emptyCell directly", () => {
     const grid = createTestGrid();
     const positions = [
-      Position({ row: 0, col: 0 }),
-      Position({ row: 0, col: 1 }),
+      makePosition({ row: 0, col: 0 }),
+      makePosition({ row: 0, col: 1 }),
     ];
 
     const result = removeCells(grid, positions);

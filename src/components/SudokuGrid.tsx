@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 import { For } from "solid-js";
-import { Position } from "../types/Sudoku.ts";
-import type { CellValue, Grid } from "../types/Sudoku.ts";
+import { makePosition } from "../types/Sudoku.ts";
+import type { CellValue, Grid, Position } from "../types/Sudoku.ts";
 import { SudokuCell } from "./SudokuCell.tsx";
 import { incrementGridRender } from "../lib/metrics.ts";
 
@@ -10,7 +10,7 @@ export type NavigationDirection = "up" | "down" | "left" | "right";
 type SudokuGridProps = {
   grid: Grid;
   onChange: (pos: Position, value: CellValue) => void;
-  hasError: (row: number, col: number) => boolean;
+  hasError: (pos: Position) => boolean;
 };
 
 /**
@@ -28,27 +28,25 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
 
   /**
    * Handle arrow key navigation between cells
-   * @param row - Current cell row
-   * @param col - Current cell column
+   * @param pos - Current cell position
    * @param direction - Navigation direction
    */
   const handleNavigate = (
-    row: number,
-    col: number,
+    pos: Position,
     direction: NavigationDirection,
   ): void => {
     switch (direction) {
       case "up":
-        cellRefs[Math.max(0, row - 1)][col]?.focus();
+        cellRefs[Math.max(0, pos.row - 1)][pos.col]?.focus();
         break;
       case "down":
-        cellRefs[Math.min(8, row + 1)][col]?.focus();
+        cellRefs[Math.min(8, pos.row + 1)][pos.col]?.focus();
         break;
       case "left":
-        cellRefs[row][Math.max(0, col - 1)]?.focus();
+        cellRefs[pos.row][Math.max(0, pos.col - 1)]?.focus();
         break;
       case "right":
-        cellRefs[row][Math.min(8, col + 1)]?.focus();
+        cellRefs[pos.row][Math.min(8, pos.col + 1)]?.focus();
         break;
     }
   };
@@ -71,7 +69,10 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
                   <SudokuCell
                     cell={cell}
                     cellId={rowIndex() * 9 + colIndex()}
-                    hasError={() => props.hasError(rowIndex(), colIndex())}
+                    hasError={() =>
+                      props.hasError(
+                        makePosition({ row: rowIndex(), col: colIndex() }),
+                      )}
                     ref={(el) => {
                       if (!cellRefs[rowIndex()]) {
                         cellRefs[rowIndex()] = [];
@@ -80,11 +81,14 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
                     }}
                     onChange={(value: CellValue) =>
                       props.onChange(
-                        Position({ row: rowIndex(), col: colIndex() }),
+                        makePosition({ row: rowIndex(), col: colIndex() }),
                         value,
                       )}
                     onNavigate={(direction) =>
-                      handleNavigate(rowIndex(), colIndex(), direction)}
+                      handleNavigate(
+                        makePosition({ row: rowIndex(), col: colIndex() }),
+                        direction,
+                      )}
                   />
                 </div>
               )}

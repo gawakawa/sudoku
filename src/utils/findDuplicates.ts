@@ -1,6 +1,6 @@
 import { Set } from "immutable";
-import { Position } from "../types/Sudoku.ts";
-import type { Grid } from "../types/Sudoku.ts";
+import { makePosition } from "../types/Sudoku.ts";
+import type { Grid, Position } from "../types/Sudoku.ts";
 
 /**
  * Transpose a grid (swap rows and columns)
@@ -25,8 +25,8 @@ export const findRowDuplicates = (grid: Grid): Set<Position> => {
             cell.value !== undefined &&
             cell.value === cell_.value
             ? [
-              Position({ row: rowIndex, col: colIndex }),
-              Position({ row: rowIndex, col: colIndex_ }),
+              makePosition({ row: rowIndex, col: colIndex }),
+              makePosition({ row: rowIndex, col: colIndex_ }),
             ]
             : []
         )
@@ -42,7 +42,7 @@ export const findRowDuplicates = (grid: Grid): Set<Position> => {
  */
 export const findColumnDuplicates = (grid: Grid): Set<Position> => {
   return findRowDuplicates(transpose(grid)).map((pos) =>
-    Position({ row: pos.col, col: pos.row })
+    makePosition({ row: pos.col, col: pos.row })
   );
 };
 
@@ -73,7 +73,7 @@ export const findBlockDuplicates = (grid: Grid): Set<Position> => {
             index < index_ &&
               cell.value !== undefined &&
               cell.value === cell_.value
-              ? [Position(pos), Position(pos_)]
+              ? [makePosition(pos), makePosition(pos_)]
               : []
           )
         );

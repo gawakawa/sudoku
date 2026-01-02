@@ -1,6 +1,6 @@
 import { Set } from "immutable";
-import type { Digit, Grid } from "../types/Sudoku.ts";
-import { Position } from "../types/Sudoku.ts";
+import type { Digit, Grid, Position } from "../types/Sudoku.ts";
+import { makePosition } from "../types/Sudoku.ts";
 import { createEmptyGrid, emptyCell } from "./createEmptyGrid.ts";
 
 /**
@@ -34,17 +34,11 @@ const shuffleDigits = (): Digit[] => {
 /**
  * Fill a 3x3 block in the grid with given values
  * @param grid Current grid state
- * @param row Top-left row of the block
- * @param col Top-left column of the block
+ * @param pos Top-left position of the block
  * @param values Array of 9 digits to fill the block
  * @returns New grid with the block filled
  */
-const fillBlock = (
-  grid: Grid,
-  row: number,
-  col: number,
-  values: Digit[],
-): Grid => grid;
+const fillBlock = (grid: Grid, pos: Position, values: Digit[]): Grid => grid;
 
 /**
  * Generate a grid with three diagonal blocks filled
@@ -53,20 +47,23 @@ const fillBlock = (
  */
 const generateDiagonalBlocks = (): Grid =>
   [0, 3, 6].reduce(
-    (grid, start) => fillBlock(grid, start, start, shuffleDigits()),
+    (grid, start) =>
+      fillBlock(
+        grid,
+        makePosition({ row: start, col: start }),
+        shuffleDigits(),
+      ),
     createEmptyGrid(),
   );
 
 /**
- * Calculate the candidate set for a cell at (row, col)
+ * Calculate the candidate set for a cell
  * Excludes digits already present in the same row, column, and 3x3 block
  * @param grid Current grid state
- * @param row Row index (0-8)
- * @param col Column index (0-8)
+ * @param pos Position of the cell
  * @returns Set of valid candidate digits for this cell
  */
-const getCandidates = (grid: Grid, row: number, col: number): Set<Digit> =>
-  Set();
+const getCandidates = (grid: Grid, pos: Position): Set<Digit> => Set();
 
 /**
  * Find the empty cell with the minimum remaining values (MRV heuristic)
@@ -75,8 +72,7 @@ const getCandidates = (grid: Grid, row: number, col: number): Set<Digit> =>
  */
 const findMRVCell = (
   grid: Grid,
-): { row: number; col: number; candidates: Set<Digit> } | undefined =>
-  undefined;
+): { pos: Position; candidates: Set<Digit> } | undefined => undefined;
 
 /**
  * Solve the remaining cells using backtracking with MRV heuristic
@@ -124,7 +120,7 @@ const generateCompleteGrid = (): Grid => {
  */
 const generateRandomPositions = (): Position[] =>
   randomSubarray(Array.from({ length: 81 }, (_, i) => i)).map((index) =>
-    Position({
+    makePosition({
       row: Math.floor(index / 9),
       col: index % 9,
     })

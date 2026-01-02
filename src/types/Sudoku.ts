@@ -21,8 +21,8 @@ export type Cell = {
 /**
  * Position in the grid
  */
-export const Position = Record({ row: 0, col: 0 });
-export type Position = ReturnType<typeof Position>;
+export const makePosition = Record({ row: 0, col: 0 });
+export type Position = ReturnType<typeof makePosition>;
 
 /**
  * 9x9 Sudoku grid

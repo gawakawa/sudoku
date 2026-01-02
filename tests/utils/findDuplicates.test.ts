@@ -6,7 +6,7 @@ import {
   findRowDuplicates,
   transpose,
 } from "../../src/utils/findDuplicates.ts";
-import { Position } from "../../src/types/Sudoku.ts";
+import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Grid } from "../../src/types/Sudoku.ts";
 import {
   createEmptyGrid,
@@ -147,8 +147,8 @@ describe("findRowDuplicates", () => {
 
     const result = findRowDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 2 }))).toBe(true);
   });
 
   it("should find duplicates in multiple rows", () => {
@@ -169,10 +169,10 @@ describe("findRowDuplicates", () => {
 
     const result = findRowDuplicates(grid);
     expect(result.size).toBe(4);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 2 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 
   it("should find all duplicates when value appears three times", () => {
@@ -188,9 +188,9 @@ describe("findRowDuplicates", () => {
 
     const result = findRowDuplicates(grid);
     expect(result.size).toBe(3);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 2 }))).toBe(true);
   });
 
   it("should ignore undefined values", () => {
@@ -248,8 +248,8 @@ describe("findColumnDuplicates", () => {
 
     const result = findColumnDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 2, col: 0 }))).toBe(true);
   });
 
   it("should find duplicates in multiple columns", () => {
@@ -269,10 +269,10 @@ describe("findColumnDuplicates", () => {
 
     const result = findColumnDuplicates(grid);
     expect(result.size).toBe(4);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 
   it("should find all duplicates when value appears three times in a column", () => {
@@ -294,9 +294,9 @@ describe("findColumnDuplicates", () => {
 
     const result = findColumnDuplicates(grid);
     expect(result.size).toBe(3);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 2, col: 0 }))).toBe(true);
   });
 
   it("should ignore undefined values", () => {
@@ -360,8 +360,8 @@ describe("findBlockDuplicates", () => {
 
     const result = findBlockDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 
   it("should find duplicates in different blocks", () => {
@@ -379,10 +379,10 @@ describe("findBlockDuplicates", () => {
 
     const result = findBlockDuplicates(grid);
     expect(result.size).toBe(4);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 3 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 4 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 3 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 4 }))).toBe(true);
   });
 
   it("should find all duplicates when value appears three times in a block", () => {
@@ -404,9 +404,9 @@ describe("findBlockDuplicates", () => {
 
     const result = findBlockDuplicates(grid);
     expect(result.size).toBe(3);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
   });
 
   it("should find duplicates in bottom-right block", () => {
@@ -434,8 +434,8 @@ describe("findBlockDuplicates", () => {
 
     const result = findBlockDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 6, col: 6 }))).toBe(true);
-    expect(result.has(Position({ row: 7, col: 7 }))).toBe(true);
+    expect(result.has(makePosition({ row: 6, col: 6 }))).toBe(true);
+    expect(result.has(makePosition({ row: 7, col: 7 }))).toBe(true);
   });
 
   it("should ignore undefined values", () => {
@@ -503,8 +503,8 @@ describe("findDuplicates", () => {
 
     const result = findDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 2 }))).toBe(true);
   });
 
   it("should find column duplicates only", () => {
@@ -526,8 +526,8 @@ describe("findDuplicates", () => {
 
     const result = findDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 2, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 2, col: 0 }))).toBe(true);
   });
 
   it("should find block duplicates only", () => {
@@ -555,8 +555,8 @@ describe("findDuplicates", () => {
 
     const result = findDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 
   it("should find duplicates in both row and column", () => {
@@ -577,10 +577,10 @@ describe("findDuplicates", () => {
 
     const result = findDuplicates(grid);
     expect(result.size).toBe(4);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 2 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 2 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 
   it("should find duplicates in row and block", () => {
@@ -596,8 +596,8 @@ describe("findDuplicates", () => {
 
     const result = findDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
   });
 
   it("should find duplicates in column and block", () => {
@@ -619,8 +619,8 @@ describe("findDuplicates", () => {
 
     const result = findDuplicates(grid);
     expect(result.size).toBe(2);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
   });
 
   it("should find duplicates in row, column, and block", () => {
@@ -645,13 +645,13 @@ describe("findDuplicates", () => {
     const result = findDuplicates(grid);
     expect(result.size).toBe(6);
     // Column duplicates
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
     // Row duplicates
-    expect(result.has(Position({ row: 0, col: 3 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 3 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 3 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 3 }))).toBe(true);
   });
 
   it("should handle same cell being duplicate in multiple ways", () => {
@@ -678,10 +678,10 @@ describe("findDuplicates", () => {
     const result = findDuplicates(grid);
     // All four cells with value 1 should be marked as duplicates
     expect(result.size).toBe(4);
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 
   it("should ignore undefined values", () => {
@@ -712,13 +712,13 @@ describe("findDuplicates", () => {
     const result = findDuplicates(grid);
     expect(result.size).toBe(6);
     // Group 1
-    expect(result.has(Position({ row: 0, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 1 }))).toBe(true);
     // Group 2
-    expect(result.has(Position({ row: 0, col: 3 }))).toBe(true);
-    expect(result.has(Position({ row: 0, col: 4 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 3 }))).toBe(true);
+    expect(result.has(makePosition({ row: 0, col: 4 }))).toBe(true);
     // Group 3
-    expect(result.has(Position({ row: 1, col: 0 }))).toBe(true);
-    expect(result.has(Position({ row: 1, col: 1 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 0 }))).toBe(true);
+    expect(result.has(makePosition({ row: 1, col: 1 }))).toBe(true);
   });
 });
