@@ -50,29 +50,29 @@ CI and git commits.
 
 ### State Management
 
-- Uses SolidJS's `createStore` for reactive grid state management
-- Grid state is maintained in `App.tsx` and passed down to components
-- Cell updates flow through the `handleChange` callback
+Two separate stores for fine-grained reactivity:
 
-### Component Structure
+1. **Grid Store** (`App.tsx`) - Main puzzle state using `createStore<Grid>`
+2. **Error Store** (`lib/useErrorStore.ts`) - Separate 81-cell boolean store for
+   duplicate errors
+
+This separation ensures cell error highlighting only re-renders affected cells,
+not the entire grid.
+
+### Data Flow
 
 ```
-src/
-├── App.tsx                    # Root component with grid state
-├── components/
-│   ├── SudokuGrid.tsx        # 9×9 grid container with 3×3 block styling
-│   └── SudokuCell.tsx        # Individual cell with input handling
-└── types/
-    └── Sudoku.ts             # Type definitions (Digit, CellValue, Cell, Grid)
+User Input → handleChange → setGrid (update value)
+                         → updateErrors (recalculate affected 21 cells)
+                         → SudokuCell re-renders only if its error state changed
 ```
 
 ### Grid Data Model
 
-- `Grid` is a 9×9 2D array: `Cell[][]` where `grid[row][col]`
-- Each `Cell` has:
-  - `value: CellValue` (1-9 or undefined)
-  - `isInitial: boolean` (true for puzzle clues, false for user input)
-- Initial cells are styled differently and non-editable
+- `Grid`: 9×9 2D array `Cell[][]` accessed as `grid[row][col]`
+- `Cell`: `{ value: CellValue, isInitial: boolean }`
+- `Position`: Immutable Record from `immutable` library for set operations
+- `CellValue`: `Digit | undefined` where `Digit` is `1-9`
 
 ### Testing
 
@@ -94,10 +94,12 @@ Uses Nix flake's `ci` package which bundles Deno and Node.js 24.
 ## Key Implementation Notes
 
 - Uses Tailwind CSS v4 via `@tailwindcss/vite` plugin
-- Cell input is keyboard-driven (1-9 keys, Backspace/Delete)
-- Current implementation has a hardcoded puzzle in `App.tsx`
-- Specification (`spec.md`) includes planned features: puzzle generation,
-  validation, error highlighting, and game controls
+- Cell input is keyboard-driven (1-9 keys, Backspace/Delete, arrow keys for
+  navigation)
+- Uses `immutable` library's `Set` and `Record` for efficient position
+  comparisons
+- Error detection recalculates only affected cells (row + column + block = max
+  21 cells)
 
 ## Code Editing Guidelines
 
