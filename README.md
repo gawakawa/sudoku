@@ -21,10 +21,13 @@ Nix with flakes enabled
 │   ├── components
 │   ├── index.css
 │   ├── index.tsx
+│   ├── lib
 │   ├── types
+│   ├── utils
 │   └── vite-env.d.ts
 ├── tests
-│   └── components
+│   ├── components
+│   └── utils
 ├── tsconfig.json
 └── vite.config.ts
 ```
