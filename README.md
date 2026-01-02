@@ -1,8 +1,8 @@
 # Sudoku
 
-## Requirements
+## Usage
 
-Nix with flakes enabled
+Play online: https://sudoku.gawakawa.deno.net/
 
 ## Features
 
@@ -15,33 +15,36 @@ Nix with flakes enabled
 
 ```
 .
-├── deno.json
-├── deno.lock
-├── flake.lock
-├── flake.nix
-├── index.html
-├── package-lock.json
-├── package.json
-├── spec.md
 ├── src
-│   ├── App.tsx
-│   ├── components
-│   ├── index.css
-│   ├── index.tsx
-│   ├── lib
-│   ├── types
-│   ├── utils
-│   └── vite-env.d.ts
-├── tests
-│   ├── components
-│   └── utils
-├── tsconfig.json
-└── vite.config.ts
+│   ├── components                    # UI components
+│   │   ├── MetricsPanel.tsx          # Render count display
+│   │   ├── SudokuCell.tsx            # Individual cell input
+│   │   └── SudokuGrid.tsx            # 9x9 grid layout
+│   ├── generator                     # Puzzle generation
+│   │   ├── createEmptyGrid.ts        # Empty grid factory
+│   │   ├── generateCompleteGrid.ts   # Full solution generator
+│   │   ├── generateInitialGrid.ts    # Puzzle with blanks
+│   │   └── solve.ts                  # Constraint propagation solver
+│   ├── lib                           # Hooks and utilities
+│   │   ├── metrics.ts                # Render tracking
+│   │   └── useErrorStore.ts          # Duplicate error state
+│   ├── types                         # Type definitions
+│   │   └── Sudoku.ts                 # Grid, Cell, Digit types
+│   ├── utils                         # Helper functions
+│   │   ├── findDuplicates.ts         # Duplicate detection
+│   │   └── position.ts               # Position helpers
+│   ├── App.tsx                       # Main app with grid state
+│   ├── index.css                     # Tailwind CSS entry
+│   └── index.tsx                     # App entry point
+├── tests                             # Vitest component tests
+├── deno.json                         # Deno config and dependencies
+├── flake.nix                         # Nix development environment
+└── vite.config.ts                    # Vite build config
 ```
 
-## Usage
+## Requirements
 
-Play online: https://sudoku.gawakawa.deno.net/
+Nix with flakes enabled
 
 ## Development
 
