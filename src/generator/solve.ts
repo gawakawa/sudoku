@@ -1,10 +1,23 @@
 import { Map, Set } from "immutable";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 
-/** Set of possible digits for a single cell */
+/**
+ * Possible digits for a cell: undetermined (size > 1), determined (singleton), or impossible (empty).
+ * @example Set([1, 3, 7]) // undetermined
+ * @example Set([5])       // determined
+ * @example Set()          // impossible
+ */
 type Candidates = Set<Digit>;
 
-/** Map from cell positions to their candidates, representing the search space */
+/**
+ * All 81 cells mapped to their candidates. Solved when all singletons; unsolvable if any empty.
+ * @example
+ * Map({
+ *   Position({row: 0, col: 0}): Set([5]),       // determined
+ *   Position({row: 0, col: 1}): Set([1, 3, 7]), // undetermined
+ *   // ... all 81 cells
+ * })
+ */
 type Domain = Map<Position, Candidates>;
 
 const calcDomain = (_grid: Grid): Domain => Map();
