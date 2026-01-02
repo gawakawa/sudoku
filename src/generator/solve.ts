@@ -10,12 +10,13 @@ import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 type Candidates = Set<Digit>;
 
 /**
- * All 81 cells mapped to their candidates. Solved when all singletons; unsolvable if any empty.
+ * Undetermined cells mapped to their candidates. Solved when empty; unsolvable if any candidates empty.
+ * Determined cells are removed from Domain (their values exist in Grid).
  * @example
  * Map({
- *   Position({row: 0, col: 0}): Set([5]),       // determined
- *   Position({row: 0, col: 1}): Set([1, 3, 7]), // undetermined
- *   // ... all 81 cells
+ *   Position({row: 0, col: 0}): Set([1, 3, 7]), // undetermined
+ *   Position({row: 0, col: 2}): Set([2, 9]),    // undetermined
+ *   // ... only undetermined cells
  * })
  */
 type Domain = Map<Position, Candidates>;
@@ -25,22 +26,22 @@ type MRVResult =
   | { tag: "solved" }
   | { tag: "found"; position: Position; candidates: Candidates };
 
+/** Initializes Domain with undetermined cells only (where grid value is undefined). */
 const calcDomain = (_grid: Grid): Domain => Map();
 
 /**
  * Selects the next cell to fill using the MRV (Minimum Remaining Values) heuristic.
  * Choosing the cell with the fewest candidates reduces the search branching factor.
- * Only considers undetermined cells (size > 1); singletons are already determined.
  */
 const findMRVCell = (domain: Domain): MRVResult => {
-  const entry = domain
-    .filter((candidates) => candidates.size > 1)
-    .entrySeq()
-    .minBy(([_, candidates]) => candidates.size);
+  if (domain.size === 0) {
+    return { tag: "solved" };
+  }
 
-  return entry === undefined
-    ? { tag: "solved" }
-    : { tag: "found", position: entry[0], candidates: entry[1] };
+  const entry = domain.entrySeq().minBy(([_, candidates]) => candidates.size);
+
+  // entry is guaranteed to exist since domain.size > 0
+  return { tag: "found", position: entry![0], candidates: entry![1] };
 };
 
 const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
@@ -49,16 +50,17 @@ type UpdateDomainResult =
   | { tag: "ok"; domain: Domain }
   | { tag: "contradiction" };
 
-/** Returns contradiction if any cell has no candidates after propagation. */
+/**
+ * Removes the assigned cell from Domain and propagates constraints to peers.
+ * Returns contradiction if any cell has no candidates after propagation.
+ */
 const updateDomain = (
   _domain: Domain,
   _pos: Position,
   _digit: Digit,
 ): UpdateDomainResult => ({ tag: "ok", domain: _domain });
 
-export type SolveResult =
-  | { tag: "solved"; grid: Grid }
-  | { tag: "unsolvable" };
+export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
 
 const backtrack = (grid: Grid, domain: Domain): SolveResult => {
   const mrvResult = findMRVCell(domain);
