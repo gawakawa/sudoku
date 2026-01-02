@@ -9,7 +9,11 @@ describe("<SudokuCell />", () => {
   test("it renders an empty cell when value is undefined", () => {
     const cell: Cell = { value: undefined, isInitial: false };
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={() => {}} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
     expect(input).toBeInTheDocument();
@@ -19,7 +23,11 @@ describe("<SudokuCell />", () => {
   test("it renders a cell with a digit value", () => {
     const cell: Cell = { value: 5, isInitial: false };
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={() => {}} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
     expect(input.value).toBe("5");
@@ -28,7 +36,11 @@ describe("<SudokuCell />", () => {
   test("it renders an initial cell as read-only", () => {
     const cell: Cell = { value: 7, isInitial: true };
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={() => {}} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
     expect(input).toHaveAttribute("readonly");
@@ -38,7 +50,11 @@ describe("<SudokuCell />", () => {
   test("it renders an editable cell without read-only attribute", () => {
     const cell: Cell = { value: 3, isInitial: false };
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={() => {}} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
     expect(input).not.toHaveAttribute("readonly");
@@ -48,7 +64,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: undefined, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -60,7 +80,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -72,7 +96,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: undefined, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -92,10 +120,18 @@ describe("<SudokuCell />", () => {
     const editableCell: Cell = { value: 3, isInitial: false };
 
     const { container: container1 } = render(() => (
-      <SudokuCell cell={initialCell} onChange={() => {}} />
+      <SudokuCell
+        cell={initialCell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
     const { container: container2 } = render(() => (
-      <SudokuCell cell={editableCell} onChange={() => {}} />
+      <SudokuCell
+        cell={editableCell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
 
     const initialInput = container1.querySelector("input") as HTMLInputElement;
@@ -109,7 +145,11 @@ describe("<SudokuCell />", () => {
   test("it hides the text cursor (caret) in the input", () => {
     const cell: Cell = { value: undefined, isInitial: false };
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={() => {}} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={() => {}}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -121,7 +161,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -138,7 +182,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -155,7 +203,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: false };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -172,7 +224,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: true };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -185,7 +241,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: true };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 
@@ -198,7 +258,11 @@ describe("<SudokuCell />", () => {
     const cell: Cell = { value: 5, isInitial: true };
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuCell cell={cell} onChange={onChange} />
+      <SudokuCell
+        cell={cell}
+        hasError={() => false}
+        onChange={onChange}
+      />
     ));
     const input = container.querySelector("input") as HTMLInputElement;
 

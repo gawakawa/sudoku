@@ -18,7 +18,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -36,7 +40,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -56,7 +64,11 @@ describe("<SudokuGrid />", () => {
 
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={onChange} />
+      <SudokuGrid
+        grid={grid}
+        onChange={onChange}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -86,7 +98,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -106,7 +122,11 @@ describe("<SudokuGrid />", () => {
 
     const onChange = vi.fn();
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={onChange} />
+      <SudokuGrid
+        grid={grid}
+        onChange={onChange}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -131,7 +151,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -156,7 +180,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -181,7 +209,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -206,7 +238,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");
@@ -231,7 +267,11 @@ describe("<SudokuGrid />", () => {
     );
 
     const { container } = render(() => (
-      <SudokuGrid grid={grid} onChange={() => {}} />
+      <SudokuGrid
+        grid={grid}
+        onChange={() => {}}
+        hasError={() => false}
+      />
     ));
 
     const inputs = container.querySelectorAll("input");

@@ -10,6 +10,7 @@ export type NavigationDirection = "up" | "down" | "left" | "right";
 type SudokuGridProps = {
   grid: Grid;
   onChange: (pos: Position, value: CellValue) => void;
+  hasError: (row: number, col: number) => boolean;
 };
 
 export const SudokuGrid: Component<SudokuGridProps> = (props) => {
@@ -60,6 +61,7 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
                   <SudokuCell
                     cell={cell}
                     cellId={rowIndex() * 9 + colIndex()}
+                    hasError={() => props.hasError(rowIndex(), colIndex())}
                     ref={(el) => {
                       if (!cellRefs[rowIndex()]) {
                         cellRefs[rowIndex()] = [];

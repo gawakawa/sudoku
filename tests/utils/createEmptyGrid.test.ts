@@ -13,10 +13,6 @@ describe("emptyCell", () => {
   it("should not be initial", () => {
     expect(emptyCell.isInitial).toBe(false);
   });
-
-  it("should not have error", () => {
-    expect(emptyCell.hasError).toBe(false);
-  });
 });
 
 describe("createEmptyRow", () => {
@@ -30,7 +26,6 @@ describe("createEmptyRow", () => {
     row.forEach((cell) => {
       expect(cell.value).toBeUndefined();
       expect(cell.isInitial).toBe(false);
-      expect(cell.hasError).toBe(false);
     });
   });
 
@@ -56,7 +51,6 @@ describe("createEmptyGrid", () => {
       row.forEach((cell) => {
         expect(cell.value).toBeUndefined();
         expect(cell.isInitial).toBe(false);
-        expect(cell.hasError).toBe(false);
       });
     });
   });
@@ -71,7 +65,7 @@ describe("createEmptyGrid", () => {
   it("should create independent row arrays", () => {
     const board = createEmptyGrid();
     const originalLength = board[0].length;
-    board[0].push({ value: 5, isInitial: true, hasError: false });
+    board[0].push({ value: 5, isInitial: true });
     expect(board[1]).toHaveLength(originalLength);
   });
 });

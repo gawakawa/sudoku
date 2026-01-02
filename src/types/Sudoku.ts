@@ -16,7 +16,6 @@ export type CellValue = Digit | undefined;
 export type Cell = {
   value: CellValue;
   isInitial: boolean;
-  hasError: boolean;
 };
 
 /**

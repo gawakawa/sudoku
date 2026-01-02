@@ -6,6 +6,7 @@ import { incrementCellUpdate } from "../lib/metrics.ts";
 type SudokuCellProps = {
   cell: Cell;
   cellId: number;
+  hasError: () => boolean;
   onChange: (value: CellValue) => void;
   onNavigate?: (direction: NavigationDirection) => void;
   ref?: (el: HTMLInputElement) => void;
@@ -16,7 +17,7 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
   createEffect(() => {
     // Access reactive properties to subscribe to changes
     props.cell.value;
-    props.cell.hasError;
+    props.hasError();
     props.cell.isInitial;
     incrementCellUpdate(props.cellId);
   });
@@ -99,7 +100,7 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
         caret-transparent
         focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
         ${
-        props.cell.hasError
+        props.hasError()
           ? "error bg-red-100 text-red-700 border-red-500"
           : props.cell.isInitial
           ? "initial font-bold text-gray-900 bg-gray-50 cursor-not-allowed"

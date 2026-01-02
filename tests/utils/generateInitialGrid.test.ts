@@ -22,7 +22,6 @@ describe("removeCells", () => {
             | 8
             | 9,
           isInitial: true,
-          hasError: false,
         })),
     );
   };
@@ -39,15 +38,12 @@ describe("removeCells", () => {
 
     expect(result[0][0].value).toBeUndefined();
     expect(result[0][0].isInitial).toBe(false);
-    expect(result[0][0].hasError).toBe(false);
 
     expect(result[4][4].value).toBeUndefined();
     expect(result[4][4].isInitial).toBe(false);
-    expect(result[4][4].hasError).toBe(false);
 
     expect(result[8][8].value).toBeUndefined();
     expect(result[8][8].isInitial).toBe(false);
-    expect(result[8][8].hasError).toBe(false);
   });
 
   it("should preserve values at positions not specified for removal", () => {
@@ -104,7 +100,6 @@ describe("removeCells", () => {
     positions.forEach((pos) => {
       expect(result[pos.row][pos.col].value).toBeUndefined();
       expect(result[pos.row][pos.col].isInitial).toBe(false);
-      expect(result[pos.row][pos.col].hasError).toBe(false);
     });
 
     // Other positions should retain their values

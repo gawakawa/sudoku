@@ -36,7 +36,6 @@ const generateCompleteGrid = (): Grid => {
     row.map((value) => ({
       value,
       isInitial: true,
-      hasError: false,
     }))
   );
 };

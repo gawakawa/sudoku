@@ -28,7 +28,6 @@ describe("<App />", () => {
         Array.from({ length: 9 }, (_, col) => ({
           value: row === 0 && col === 0 ? 5 : undefined,
           isInitial: row === 0 && col === 0,
-          hasError: false,
         })),
     );
 
@@ -248,13 +247,17 @@ describe("<App />", () => {
   });
 
   test("it preserves initial cell values and marks them with initial class", () => {
+    // Use unique values to avoid duplicate detection
     const mockGrid: Grid = Array.from(
       { length: 9 },
       (_, row) =>
         Array.from({ length: 9 }, (_, col) => ({
-          value: row === 0 && col < 2 ? 5 : undefined,
+          value: row === 0 && col === 0
+            ? 5
+            : row === 0 && col === 1
+            ? 6
+            : undefined,
           isInitial: row === 0 && col < 2,
-          hasError: false,
         })),
     );
 
@@ -266,17 +269,17 @@ describe("<App />", () => {
 
     const inputs = container.querySelectorAll("input");
     const firstInput = inputs[0] as HTMLInputElement; // Initial cell with value 5
-    const secondInput = inputs[1] as HTMLInputElement; // Initial cell with value 5
+    const secondInput = inputs[1] as HTMLInputElement; // Initial cell with value 6
 
-    // Both initial cells should have value 5
+    // Initial cells should have their values
     expect(firstInput.value).toBe("5");
-    expect(secondInput.value).toBe("5");
+    expect(secondInput.value).toBe("6");
 
     // Both should be readonly
     expect(firstInput.readOnly).toBe(true);
     expect(secondInput.readOnly).toBe(true);
 
-    // Initial cells should have the "initial" class for styling
+    // Initial cells should have the "initial" class for styling (not error since no duplicates)
     expect(firstInput.className).toContain("initial");
     expect(secondInput.className).toContain("initial");
   });

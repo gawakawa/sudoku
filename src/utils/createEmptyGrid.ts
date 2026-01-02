@@ -1,12 +1,11 @@
 import type { Cell, Grid } from "../types/Sudoku.ts";
 
 /**
- * Empty cell with no value, not initial, and no error
+ * Empty cell with no value and not initial
  */
 export const emptyCell: Cell = {
   value: undefined,
   isInitial: false,
-  hasError: false,
 };
 
 /**
