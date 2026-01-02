@@ -21,27 +21,15 @@ type Candidates = Set<Digit>;
  */
 type Domain = Map<Position, Candidates>;
 
-/** Result of finding the next cell to fill using MRV heuristic. */
-type MRVResult =
-  | { tag: "solved" }
-  | { tag: "found"; position: Position; candidates: Candidates };
-
 /** Initializes Domain with undetermined cells only (where grid value is undefined). */
 const calcDomain = (_grid: Grid): Domain => Map();
 
-/**
- * Selects the next cell to fill using the MRV (Minimum Remaining Values) heuristic.
- * Choosing the cell with the fewest candidates reduces the search branching factor.
- */
-const findMRVCell = (domain: Domain): MRVResult => {
-  if (domain.size === 0) {
-    return { tag: "solved" };
-  }
-
+/** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
+const findMRVCell = (
+  domain: Domain,
+): { position: Position; candidates: Candidates } => {
   const entry = domain.entrySeq().minBy(([_, candidates]) => candidates.size);
-
-  // entry is guaranteed to exist since domain.size > 0
-  return { tag: "found", position: entry![0], candidates: entry![1] };
+  return { position: entry![0], candidates: entry![1] };
 };
 
 const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
@@ -63,15 +51,15 @@ const updateDomain = (
 export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
 
 const backtrack = (grid: Grid, domain: Domain): SolveResult => {
-  const mrvResult = findMRVCell(domain);
-
-  if (mrvResult.tag === "solved") {
+  if (domain.size === 0) {
     return { tag: "solved", grid };
   }
 
-  for (const digit of mrvResult.candidates) {
-    const newGrid = setCell(grid, mrvResult.position, digit);
-    const updateDomainResult = updateDomain(domain, mrvResult.position, digit);
+  const mrvCell = findMRVCell(domain);
+
+  for (const digit of mrvCell.candidates) {
+    const newGrid = setCell(grid, mrvCell.position, digit);
+    const updateDomainResult = updateDomain(domain, mrvCell.position, digit);
 
     // Pruning: skip if contradiction detected
     if (updateDomainResult.tag === "contradiction") {
