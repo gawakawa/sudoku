@@ -85,8 +85,6 @@ const findMRVCell = (
   return { position: entry![0], candidates: entry![1] };
 };
 
-const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
-
 export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
 
 const backtrack = (grid: Grid, domain: Domain): SolveResult => {
@@ -97,7 +95,6 @@ const backtrack = (grid: Grid, domain: Domain): SolveResult => {
   const mrvCell = findMRVCell(domain);
 
   for (const digit of mrvCell.candidates) {
-    const newGrid = setCell(grid, mrvCell.position, digit);
     const updateDomainResult = updateDomain(domain, mrvCell.position, digit);
 
     // Pruning: skip if contradiction detected
@@ -105,7 +102,7 @@ const backtrack = (grid: Grid, domain: Domain): SolveResult => {
       continue;
     }
 
-    const solveResult = backtrack(newGrid, updateDomainResult.domain);
+    const solveResult = backtrack(grid, updateDomainResult.domain);
     if (solveResult.tag === "solved") {
       return solveResult;
     }
