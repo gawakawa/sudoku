@@ -1,5 +1,5 @@
 import { Set } from "immutable";
-import type { Digit, Grid } from "../types/Sudoku.ts";
+import type { Cell, Digit, Grid } from "../types/Sudoku.ts";
 import { Position } from "../types/Sudoku.ts";
 import { createEmptyGrid, emptyCell } from "./createEmptyGrid.ts";
 
@@ -33,16 +33,14 @@ const shuffleDigits = (): Digit[] => {
 
 /**
  * Generate a 3x3 block with a random permutation of digits 1-9
- * @param grid Current grid state
- * @param blockRow Block row index (0, 1, or 2)
- * @param blockCol Block column index (0, 1, or 2)
- * @returns New grid with the block filled
+ * @returns 3x3 block filled with shuffled digits
  */
-const generateBlock = (
-  grid: Grid,
-  blockRow: number,
-  blockCol: number,
-): Grid => grid;
+const generateBlock = (): Cell[][] => {
+  const digits = shuffleDigits();
+  return [0, 1, 2].map((r) =>
+    [0, 1, 2].map((c) => ({ value: digits[r * 3 + c], isInitial: true }))
+  );
+};
 
 /**
  * Generate the three diagonal blocks (0,0), (1,1), (2,2) with random permutations
