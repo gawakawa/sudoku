@@ -3,7 +3,7 @@ import type { Component } from "solid-js";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./utils/generateInitialGrid.ts";
-import { useDuplicateMemos } from "./lib/useDuplicateMemos.ts";
+import { useErrorStore } from "./lib/useErrorStore.ts";
 import { incrementAppRender, incrementStoreUpdate } from "./lib/metrics.ts";
 
 export const App: Component = () => {
@@ -11,7 +11,7 @@ export const App: Component = () => {
   incrementAppRender();
 
   const [grid, setGrid] = createStore<Grid>(generateInitialGrid());
-  const { hasError } = useDuplicateMemos(grid);
+  const { hasError, updateErrors } = useErrorStore();
 
   /**
    * Handle cell value change
@@ -21,6 +21,7 @@ export const App: Component = () => {
   const handleChange = (pos: Position, value: CellValue): void => {
     incrementStoreUpdate();
     setGrid(pos.row, pos.col, "value", value);
+    updateErrors(pos, grid);
   };
 
   return (
