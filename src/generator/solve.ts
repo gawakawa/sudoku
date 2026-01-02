@@ -5,8 +5,14 @@ type Candidates = Map<Position, Set<Digit>>;
 
 const calcCandidates = (_grid: Grid): Candidates => Map();
 
-const findMRVCell = (_candidates: Candidates): Position | undefined =>
-  undefined;
+/**
+ * Selects the next cell to fill using the MRV (Minimum Remaining Values) heuristic.
+ * Choosing the cell with the fewest candidates reduces the search branching factor.
+ * @param candidates Map of cell positions to their candidate digit sets
+ * @returns Position of the cell with fewest candidates, or undefined if map is empty
+ */
+const findMRVCell = (candidates: Candidates): Position | undefined =>
+  candidates.entrySeq().minBy(([_, set]) => set.size)?.[0];
 
 const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
 
