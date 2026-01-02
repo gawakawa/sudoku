@@ -23,7 +23,7 @@ type Domain = Map<Position, Candidates>;
 /** Result of finding the next cell to fill using MRV heuristic. */
 type MRVResult =
   | { tag: "solved" }
-  | { tag: "found"; position: Position };
+  | { tag: "found"; position: Position; candidates: Candidates };
 
 const calcDomain = (_grid: Grid): Domain => Map();
 
@@ -33,54 +33,59 @@ const calcDomain = (_grid: Grid): Domain => Map();
  * Only considers undetermined cells (size > 1); singletons are already determined.
  */
 const findMRVCell = (domain: Domain): MRVResult => {
-  const pos = domain
+  const entry = domain
     .filter((candidates) => candidates.size > 1)
     .entrySeq()
-    .minBy(([_, candidates]) => candidates.size)?.[0];
+    .minBy(([_, candidates]) => candidates.size);
 
-  return pos === undefined
+  return entry === undefined
     ? { tag: "solved" }
-    : { tag: "found", position: pos };
+    : { tag: "found", position: entry[0], candidates: entry[1] };
 };
 
 const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
 
-/** Returns undefined if a contradiction is detected (any cell has no candidates). */
+type UpdateDomainResult =
+  | { tag: "ok"; domain: Domain }
+  | { tag: "contradiction" };
+
+/** Returns contradiction if any cell has no candidates after propagation. */
 const updateDomain = (
-  domain: Domain,
+  _domain: Domain,
   _pos: Position,
   _digit: Digit,
-): Domain | undefined => domain;
+): UpdateDomainResult => ({ tag: "ok", domain: _domain });
 
-const backtrack = (grid: Grid, domain: Domain): Grid | undefined => {
+export type SolveResult =
+  | { tag: "solved"; grid: Grid }
+  | { tag: "unsolvable" };
+
+const backtrack = (grid: Grid, domain: Domain): SolveResult => {
   const mrvResult = findMRVCell(domain);
 
   if (mrvResult.tag === "solved") {
-    return grid;
+    return { tag: "solved", grid };
   }
 
-  // Safe: Domain contains all 81 positions
-  const candidates = domain.get(mrvResult.position)!;
-
-  for (const digit of candidates) {
+  for (const digit of mrvResult.candidates) {
     const newGrid = setCell(grid, mrvResult.position, digit);
-    const newDomain = updateDomain(domain, mrvResult.position, digit);
+    const updateDomainResult = updateDomain(domain, mrvResult.position, digit);
 
     // Pruning: skip if contradiction detected
-    if (newDomain === undefined) {
+    if (updateDomainResult.tag === "contradiction") {
       continue;
     }
 
-    const result = backtrack(newGrid, newDomain);
-    if (result !== undefined) {
-      return result;
+    const solveResult = backtrack(newGrid, updateDomainResult.domain);
+    if (solveResult.tag === "solved") {
+      return solveResult;
     }
   }
 
-  return undefined;
+  return { tag: "unsolvable" };
 };
 
-export const solve = (grid: Grid): Grid | undefined => {
+export const solve = (grid: Grid): SolveResult => {
   const domain = calcDomain(grid);
   return backtrack(grid, domain);
 };

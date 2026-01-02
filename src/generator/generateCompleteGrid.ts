@@ -87,6 +87,6 @@ const fallbackGrid: Grid = fallbackPattern.map((row) =>
  */
 export const generateCompleteGrid = (): Grid => {
   const withDiagonals = generateDiagonalBlocks();
-  const solved = solve(withDiagonals);
-  return solved ?? fallbackGrid;
+  const solveResult = solve(withDiagonals);
+  return solveResult.tag === "solved" ? solveResult.grid : fallbackGrid;
 };
