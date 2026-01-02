@@ -24,16 +24,6 @@ type Domain = Map<Position, Candidates>;
 /** Initializes Domain with undetermined cells only (where grid value is undefined). */
 const calcDomain = (_grid: Grid): Domain => Map();
 
-/** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
-const findMRVCell = (
-  domain: Domain,
-): { position: Position; candidates: Candidates } => {
-  const entry = domain.entrySeq().minBy(([_, candidates]) => candidates.size);
-  return { position: entry![0], candidates: entry![1] };
-};
-
-const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
-
 type UpdateDomainResult =
   | { tag: "ok"; domain: Domain }
   | { tag: "contradiction" };
@@ -47,6 +37,16 @@ const updateDomain = (
   _pos: Position,
   _digit: Digit,
 ): UpdateDomainResult => ({ tag: "ok", domain: _domain });
+
+/** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
+const findMRVCell = (
+  domain: Domain,
+): { position: Position; candidates: Candidates } => {
+  const entry = domain.entrySeq().minBy(([_, candidates]) => candidates.size);
+  return { position: entry![0], candidates: entry![1] };
+};
+
+const setCell = (_grid: Grid, _pos: Position, _value: Digit): Grid => _grid;
 
 export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
 
