@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { removeCells } from "../../src/utils/generateInitialGrid.ts";
+import { removeCells } from "../../src/generator/generateInitialGrid.ts";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Grid, Position } from "../../src/types/Sudoku.ts";
-import { emptyCell } from "../../src/utils/createEmptyGrid.ts";
+import { emptyCell } from "../../src/generator/createEmptyGrid.ts";
 
 describe("removeCells", () => {
   // Helper to create a simple test grid

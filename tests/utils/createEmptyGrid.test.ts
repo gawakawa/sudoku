@@ -3,7 +3,7 @@ import {
   createEmptyGrid,
   createEmptyRow,
   emptyCell,
-} from "../../src/utils/createEmptyGrid.ts";
+} from "../../src/generator/createEmptyGrid.ts";
 
 describe("emptyCell", () => {
   it("should have undefined value", () => {

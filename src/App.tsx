@@ -2,7 +2,7 @@ import { createStore } from "solid-js/store";
 import type { Component } from "solid-js";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
-import { generateInitialGrid } from "./utils/generateInitialGrid.ts";
+import { generateInitialGrid } from "./generator/generateInitialGrid.ts";
 import { useErrorStore } from "./lib/useErrorStore.ts";
 import { incrementAppRender, incrementStoreUpdate } from "./lib/metrics.ts";
 

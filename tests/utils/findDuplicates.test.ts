@@ -11,7 +11,7 @@ import type { Grid } from "../../src/types/Sudoku.ts";
 import {
   createEmptyGrid,
   createEmptyRow,
-} from "../../src/utils/createEmptyGrid.ts";
+} from "../../src/generator/createEmptyGrid.ts";
 
 describe("transpose", () => {
   it("should transpose a 9x9 grid correctly", () => {

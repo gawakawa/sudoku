@@ -2,8 +2,8 @@ import { render, screen } from "@solidjs/testing-library";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { App } from "../src/App.tsx";
-import * as generateInitialGridModule from "../src/utils/generateInitialGrid.ts";
-import { createEmptyGrid } from "../src/utils/createEmptyGrid.ts";
+import * as generateInitialGridModule from "../src/generator/generateInitialGrid.ts";
+import { createEmptyGrid } from "../src/generator/createEmptyGrid.ts";
 import type { Grid } from "../src/types/Sudoku.ts";
 
 describe("<App />", () => {
