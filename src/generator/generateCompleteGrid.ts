@@ -33,8 +33,9 @@ const fillBlock = (grid: Grid, pos: Position, values: Digit[]): Grid => grid;
  * Applies fillBlock three times at positions (0,0), (3,3), (6,6)
  * @returns Grid with diagonal blocks filled with random permutations
  */
-const generateDiagonalBlocks = (): Grid =>
-  [0, 3, 6].reduce(
+const generateDiagonalBlocks = (): Grid => {
+  const blockStarts = [0, 3, 6];
+  return blockStarts.reduce(
     (grid, start) =>
       fillBlock(
         grid,
@@ -43,6 +44,7 @@ const generateDiagonalBlocks = (): Grid =>
       ),
     createEmptyGrid(),
   );
+};
 
 /**
  * Calculate the candidate set for a cell
