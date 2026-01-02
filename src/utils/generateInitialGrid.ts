@@ -22,19 +22,23 @@ const randomSubarray = <T>(arr: T[]): T[] => {
 const shuffledDigits = (): Digit[] => [];
 
 /**
- * Fill a 3x3 block with a random permutation of digits 1-9
+ * Generate a 3x3 block with a random permutation of digits 1-9
  * @param grid Grid to modify (mutated in place)
  * @param blockRow Block row index (0, 1, or 2)
  * @param blockCol Block column index (0, 1, or 2)
  */
-const fillBlock = (grid: Grid, blockRow: number, blockCol: number): void => {};
+const generateBlock = (
+  grid: Grid,
+  blockRow: number,
+  blockCol: number,
+): void => {};
 
 /**
- * Fill the three diagonal blocks (0,0), (1,1), (2,2) with random permutations
+ * Generate the three diagonal blocks (0,0), (1,1), (2,2) with random permutations
  * These blocks don't affect each other, so they can be filled independently
  * @param grid Grid to modify (mutated in place)
  */
-const fillDiagonalBlocks = (grid: Grid): void => {};
+const generateDiagonalBlocks = (grid: Grid): void => {};
 
 /**
  * Calculate the candidate set for a cell at (row, col)
@@ -62,7 +66,7 @@ const findMRVCell = (
  * @param grid Grid to solve (mutated in place)
  * @returns true if solved successfully, false if no solution exists
  */
-const solveBacktrack = (grid: Grid): boolean => false;
+const solve = (grid: Grid): boolean => false;
 
 /**
  * Generate a complete valid Sudoku grid using diagonal block initialization
@@ -71,8 +75,8 @@ const solveBacktrack = (grid: Grid): boolean => false;
  */
 const generateCompleteGrid = (): Grid => {
   const grid = createEmptyGrid();
-  fillDiagonalBlocks(grid);
-  solveBacktrack(grid);
+  generateDiagonalBlocks(grid);
+  solve(grid);
   return grid;
 };
 
