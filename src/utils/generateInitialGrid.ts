@@ -19,7 +19,17 @@ const randomSubarray = <T>(arr: T[]): T[] => {
  * Generate a shuffled array of digits 1-9 using Fisher-Yates algorithm
  * @returns Randomly shuffled array of digits 1-9
  */
-const shuffledDigits = (): Digit[] => [];
+const shuffleDigits = (): Digit[] => {
+  const digits: Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const factorial = digits.reduce((a, b) => a * b, 1);
+  const r = Math.floor(Math.random() * factorial);
+  for (let i = 8, q = r; i > 0; i--) {
+    const j = q % (i + 1);
+    q = (q / (i + 1)) | 0;
+    [digits[i], digits[j]] = [digits[j], digits[i]];
+  }
+  return digits;
+};
 
 /**
  * Generate a 3x3 block with a random permutation of digits 1-9
