@@ -1,5 +1,5 @@
 import { Set } from "immutable";
-import type { Cell, Digit, Grid } from "../types/Sudoku.ts";
+import type { Digit, Grid } from "../types/Sudoku.ts";
 import { Position } from "../types/Sudoku.ts";
 import { createEmptyGrid, emptyCell } from "./createEmptyGrid.ts";
 
@@ -32,23 +32,30 @@ const shuffleDigits = (): Digit[] => {
 };
 
 /**
- * Generate a 3x3 block with a random permutation of digits 1-9
- * @returns 3x3 block filled with shuffled digits
+ * Fill a 3x3 block in the grid with given values
+ * @param grid Current grid state
+ * @param row Top-left row of the block
+ * @param col Top-left column of the block
+ * @param values Array of 9 digits to fill the block
+ * @returns New grid with the block filled
  */
-const generateBlock = (): Cell[][] => {
-  const digits = shuffleDigits();
-  return [0, 1, 2].map((r) =>
-    [0, 1, 2].map((c) => ({ value: digits[r * 3 + c], isInitial: true }))
-  );
-};
+const fillBlock = (
+  grid: Grid,
+  row: number,
+  col: number,
+  values: Digit[],
+): Grid => grid;
 
 /**
- * Generate the three diagonal blocks (0,0), (1,1), (2,2) with random permutations
- * These blocks don't affect each other, so they can be filled independently
- * @param grid Current grid state
- * @returns New grid with diagonal blocks filled
+ * Generate a grid with three diagonal blocks filled
+ * Applies fillBlock three times at positions (0,0), (3,3), (6,6)
+ * @returns Grid with diagonal blocks filled with random permutations
  */
-const generateDiagonalBlocks = (grid: Grid): Grid => grid;
+const generateDiagonalBlocks = (): Grid =>
+  [0, 3, 6].reduce(
+    (grid, start) => fillBlock(grid, start, start, shuffleDigits()),
+    createEmptyGrid(),
+  );
 
 /**
  * Calculate the candidate set for a cell at (row, col)
@@ -106,8 +113,7 @@ const fallbackGrid: Grid = fallbackPattern.map((row) =>
  * @returns Complete Sudoku grid with all 81 cells filled
  */
 const generateCompleteGrid = (): Grid => {
-  const emptyGrid = createEmptyGrid();
-  const withDiagonals = generateDiagonalBlocks(emptyGrid);
+  const withDiagonals = generateDiagonalBlocks();
   const solved = solve(withDiagonals);
   return solved ?? fallbackGrid;
 };
