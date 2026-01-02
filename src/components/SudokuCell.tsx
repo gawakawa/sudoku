@@ -1,15 +1,26 @@
-import type { Component } from "solid-js";
+import { type Component, createEffect } from "solid-js";
 import type { Cell, CellValue, Digit } from "../types/Sudoku.ts";
 import type { NavigationDirection } from "./SudokuGrid.tsx";
+import { incrementCellUpdate } from "../lib/metrics.ts";
 
 type SudokuCellProps = {
   cell: Cell;
+  cellId: number;
   onChange: (value: CellValue) => void;
   onNavigate?: (direction: NavigationDirection) => void;
   ref?: (el: HTMLInputElement) => void;
 };
 
 export const SudokuCell: Component<SudokuCellProps> = (props) => {
+  // Track reactive updates for performance metrics
+  createEffect(() => {
+    // Access reactive properties to subscribe to changes
+    props.cell.value;
+    props.cell.hasError;
+    props.cell.isInitial;
+    incrementCellUpdate(props.cellId);
+  });
+
   const handleKeyDown = (e: KeyboardEvent) => {
     // Handle Backspace and Delete - clear the cell regardless of cursor position
     if (e.key === "Backspace" || e.key === "Delete") {

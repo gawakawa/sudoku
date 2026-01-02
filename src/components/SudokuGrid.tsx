@@ -3,6 +3,7 @@ import { For } from "solid-js";
 import { Position } from "../types/Sudoku.ts";
 import type { CellValue, Grid } from "../types/Sudoku.ts";
 import { SudokuCell } from "./SudokuCell.tsx";
+import { incrementGridRender } from "../lib/metrics.ts";
 
 export type NavigationDirection = "up" | "down" | "left" | "right";
 
@@ -12,6 +13,9 @@ type SudokuGridProps = {
 };
 
 export const SudokuGrid: Component<SudokuGridProps> = (props) => {
+  // Track component initialization for performance metrics
+  incrementGridRender();
+
   const cellRefs: (HTMLInputElement | undefined)[][] = Array.from(
     { length: 9 },
     () => Array(9).fill(undefined),
@@ -55,6 +59,7 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
                 >
                   <SudokuCell
                     cell={cell}
+                    cellId={rowIndex() * 9 + colIndex()}
                     ref={(el) => {
                       if (!cellRefs[rowIndex()]) {
                         cellRefs[rowIndex()] = [];

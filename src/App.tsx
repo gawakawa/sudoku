@@ -5,8 +5,16 @@ import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./utils/generateInitialGrid.ts";
 import { findDuplicates } from "./utils/findDuplicates.ts";
+import {
+  incrementAppRender,
+  incrementStoreUpdate,
+  incrementValidationRun,
+} from "./lib/metrics.ts";
 
 export const App: Component = () => {
+  // Track component initialization for performance metrics
+  incrementAppRender();
+
   const [grid, setGrid] = createStore<Grid>(generateInitialGrid());
 
   /**
@@ -17,12 +25,14 @@ export const App: Component = () => {
     // First, reset all hasError flags to false
     grid.forEach((row, rowIndex) =>
       row.forEach((_, colIndex) => {
+        incrementStoreUpdate();
         setGrid(rowIndex, colIndex, "hasError", false);
       })
     );
 
     // Then, set hasError to true for cells with duplicates
     duplicates.forEach((pos) => {
+      incrementStoreUpdate();
       setGrid(pos.row, pos.col, "hasError", true);
     });
   };
@@ -33,7 +43,9 @@ export const App: Component = () => {
    * @param value - New cell value
    */
   const handleChange = (pos: Position, value: CellValue): void => {
+    incrementStoreUpdate();
     setGrid(pos.row, pos.col, "value", value);
+    incrementValidationRun();
     const duplicates = findDuplicates(grid);
     updateDuplicateErrors(duplicates);
   };

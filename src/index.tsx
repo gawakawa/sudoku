@@ -3,6 +3,7 @@ import "solid-devtools";
 import "./index.css";
 
 import { App } from "./App.tsx";
+import { MetricsPanel } from "./components/MetricsPanel.tsx";
 
 const root = document.getElementById("root");
 
@@ -12,4 +13,12 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <App />, root!);
+render(
+  () => (
+    <>
+      <App />
+      <MetricsPanel />
+    </>
+  ),
+  root!,
+);
