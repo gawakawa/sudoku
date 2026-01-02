@@ -5,11 +5,7 @@ import {
   onCleanup,
   onMount,
 } from "solid-js";
-import {
-  getMetricsSnapshot,
-  type MetricsData,
-  resetMetrics,
-} from "../lib/metrics.ts";
+import { getMetricsSnapshot, type MetricsData } from "../lib/metrics.ts";
 
 export const MetricsPanel: Component = () => {
   const [metrics, setMetrics] = createSignal<MetricsData>(getMetricsSnapshot());
@@ -30,11 +26,6 @@ export const MetricsPanel: Component = () => {
   onCleanup(() => {
     cancelAnimationFrame(rafId);
   });
-
-  const handleReset = () => {
-    resetMetrics();
-    setMetrics(getMetricsSnapshot());
-  };
 
   // Calculate max cell update count for heatmap coloring
   const maxCellUpdates = () => {
@@ -78,10 +69,6 @@ export const MetricsPanel: Component = () => {
           <span class="text-gray-600">Store Updates:</span>
           <span class="font-semibold">{metrics().storeUpdates}</span>
         </div>
-        <div class="flex justify-between">
-          <span class="text-gray-600">Validations:</span>
-          <span class="font-semibold">{metrics().validationRuns}</span>
-        </div>
       </div>
 
       <div class="mb-3">
@@ -106,13 +93,6 @@ export const MetricsPanel: Component = () => {
           </For>
         </div>
       </div>
-
-      <button
-        onClick={handleReset}
-        class="w-full px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded border border-gray-300 text-xs font-medium transition-colors"
-      >
-        Reset
-      </button>
     </div>
   );
 };
