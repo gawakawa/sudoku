@@ -39,12 +39,19 @@ deno task check        # Type check src/ directory only
 ### Testing
 
 ```bash
-npm test               # Run component tests with Vitest
-deno task test         # Alternative test command via Deno
+npm test               # Run all component tests with Vitest
+npm test -- tests/App  # Run specific test file
 ```
 
-Note: The project uses `npm test` for testing (not `deno task test`) as seen in
-CI and git commits.
+### Dependency Management
+
+```bash
+deno add <package>     # Add dependency to deno.json
+deno remove <package>  # Remove dependency
+deno outdated          # Check for outdated dependencies
+```
+
+Use `deno.json` for dependencies, not `package.json`.
 
 ## Architecture
 
@@ -74,11 +81,20 @@ User Input → handleChange → setGrid (update value)
 - `Position`: Immutable Record from `immutable` library for set operations
 - `CellValue`: `Digit | undefined` where `Digit` is `1-9`
 
+### Puzzle Generator (`src/generator/`)
+
+1. **generateCompleteGrid**: Fills three diagonal 3×3 blocks with shuffled
+   digits (these blocks don't constrain each other), then solves remaining cells
+2. **solve**: Constraint propagation + backtracking with MRV (Minimum Remaining
+   Values) heuristic - selects the cell with fewest candidates to minimize
+   branching
+3. **Domain**: `Map<Position, Set<Digit>>` tracks candidate digits for
+   undetermined cells; empty domain = solved, empty candidates = contradiction
+
 ### Testing
 
 Component tests use `@solidjs/testing-library` and Vitest with jsdom
-environment. Tests are located in `tests/components/` mirroring the source
-structure.
+environment. Tests are located in `tests/` mirroring the source structure.
 
 ## CI Pipeline
 
@@ -100,9 +116,3 @@ Uses Nix flake's `ci` package which bundles Deno and Node.js 24.
   comparisons
 - Error detection recalculates only affected cells (row + column + block = max
   21 cells)
-
-## Code Editing Guidelines
-
-- DO NOT use `mcp__serena__replace_regex` for code edits
-- Use standard editing tools (Edit, Write, etc.) instead of regex-based
-  replacements
