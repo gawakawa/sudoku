@@ -12,23 +12,23 @@ export type MetricsData = {
   storeUpdates: number;
 };
 
-export function incrementCellUpdate(cellId: number): void {
+export const incrementCellUpdate = (cellId: number): void => {
   cellUpdates[cellId]++;
-}
+};
 
-export function incrementAppRender(): void {
+export const incrementAppRender = (): void => {
   appRenders++;
-}
+};
 
-export function incrementGridRender(): void {
+export const incrementGridRender = (): void => {
   gridRenders++;
-}
+};
 
-export function incrementStoreUpdate(): void {
+export const incrementStoreUpdate = (): void => {
   storeUpdates++;
-}
+};
 
-export function getMetricsSnapshot(): MetricsData {
+export const getMetricsSnapshot = (): MetricsData => {
   return {
     cellUpdates: new Uint32Array(cellUpdates), // Copy to avoid mutation
     appRenders,
@@ -36,11 +36,11 @@ export function getMetricsSnapshot(): MetricsData {
     totalCellUpdates: cellUpdates.reduce((sum, count) => sum + count, 0),
     storeUpdates,
   };
-}
+};
 
-export function resetMetrics(): void {
+export const resetMetrics = (): void => {
   cellUpdates.fill(0);
   appRenders = 0;
   gridRenders = 0;
   storeUpdates = 0;
-}
+};
