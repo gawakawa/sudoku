@@ -1,36 +1,12 @@
 import { createStore } from "solid-js/store";
-import { Set } from "immutable";
-import { makePosition } from "../types/Sudoku.ts";
 import type { Grid, Position } from "../types/Sudoku.ts";
-
-const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8] as const;
-const offsets = [0, 1, 2] as const;
+import { getAffectedPositions, indices, offsets } from "../utils/position.ts";
 
 type ErrorStore = boolean[][];
 
 type UseErrorStoreResult = {
   hasError: (pos: Position) => boolean;
   updateErrors: (pos: Position, grid: Grid) => void;
-};
-
-/**
- * Get affected cell positions for error recalculation
- * @param pos - Position of the changed cell
- * @returns Set of positions (row + column + block = max 21 unique cells)
- */
-const getAffectedPositions = (pos: Position): Set<Position> => {
-  const blockRowStart = Math.floor(pos.row / 3) * 3;
-  const blockColStart = Math.floor(pos.col / 3) * 3;
-
-  return Set([
-    ...indices.map((col) => makePosition({ row: pos.row, col })),
-    ...indices.map((row) => makePosition({ row, col: pos.col })),
-    ...offsets.flatMap((dr) =>
-      offsets.map((dc) =>
-        makePosition({ row: blockRowStart + dr, col: blockColStart + dc })
-      )
-    ),
-  ]);
 };
 
 /**
