@@ -23,22 +23,24 @@ const shuffledDigits = (): Digit[] => [];
 
 /**
  * Generate a 3x3 block with a random permutation of digits 1-9
- * @param grid Grid to modify (mutated in place)
+ * @param grid Current grid state
  * @param blockRow Block row index (0, 1, or 2)
  * @param blockCol Block column index (0, 1, or 2)
+ * @returns New grid with the block filled
  */
 const generateBlock = (
   grid: Grid,
   blockRow: number,
   blockCol: number,
-): void => {};
+): Grid => grid;
 
 /**
  * Generate the three diagonal blocks (0,0), (1,1), (2,2) with random permutations
  * These blocks don't affect each other, so they can be filled independently
- * @param grid Grid to modify (mutated in place)
+ * @param grid Current grid state
+ * @returns New grid with diagonal blocks filled
  */
-const generateDiagonalBlocks = (grid: Grid): void => {};
+const generateDiagonalBlocks = (grid: Grid): Grid => grid;
 
 /**
  * Calculate the candidate set for a cell at (row, col)
@@ -63,10 +65,10 @@ const findMRVCell = (
 
 /**
  * Solve the remaining cells using backtracking with MRV heuristic
- * @param grid Grid to solve (mutated in place)
- * @returns true if solved successfully, false if no solution exists
+ * @param grid Current grid state
+ * @returns Solved grid, or undefined if no solution exists
  */
-const solve = (grid: Grid): boolean => false;
+const solve = (grid: Grid): Grid | undefined => undefined;
 
 /**
  * Generate a complete valid Sudoku grid using diagonal block initialization
@@ -74,10 +76,10 @@ const solve = (grid: Grid): boolean => false;
  * @returns Complete Sudoku grid with all 81 cells filled
  */
 const generateCompleteGrid = (): Grid => {
-  const grid = createEmptyGrid();
-  generateDiagonalBlocks(grid);
-  solve(grid);
-  return grid;
+  const emptyGrid = createEmptyGrid();
+  const withDiagonals = generateDiagonalBlocks(emptyGrid);
+  const solved = solve(withDiagonals);
+  return solved ?? emptyGrid;
 };
 
 /**
