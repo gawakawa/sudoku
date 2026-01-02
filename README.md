@@ -31,7 +31,7 @@ Nix with flakes enabled
 
 ## Usage
 
-Play online: https://sudoku-cgaexek40jyd.gawakawa.deno.net/
+Play online: https://sudoku.gawakawa.deno.net/
 
 ## Development
 
