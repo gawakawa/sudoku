@@ -28,14 +28,7 @@ export const MetricsPanel: Component = () => {
   });
 
   // Calculate max cell update count for heatmap coloring
-  const maxCellUpdates = () => {
-    const updates = metrics().cellUpdates;
-    let max = 0;
-    for (let i = 0; i < updates.length; i++) {
-      if (updates[i] > max) max = updates[i];
-    }
-    return max;
-  };
+  const maxCellUpdates = (): number => Math.max(0, ...metrics().cellUpdates);
 
   // Get cell color based on update count (white to red gradient)
   const getCellColor = (cellId: number) => {

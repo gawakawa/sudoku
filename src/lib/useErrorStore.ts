@@ -37,25 +37,23 @@ const calculateCellError = (grid: Grid, row: number, col: number): boolean => {
   const value = grid[row][col].value;
   if (value === undefined) return false;
 
-  // Check row
-  for (const c of indices) {
-    if (c !== col && grid[row][c].value === value) return true;
-  }
-  // Check column
-  for (const r of indices) {
-    if (r !== row && grid[r][col].value === value) return true;
-  }
-  // Check block
   const blockRowStart = Math.floor(row / 3) * 3;
   const blockColStart = Math.floor(col / 3) * 3;
-  for (const dr of offsets) {
-    for (const dc of offsets) {
-      const r = blockRowStart + dr;
-      const c = blockColStart + dc;
-      if ((r !== row || c !== col) && grid[r][c].value === value) return true;
-    }
-  }
-  return false;
+
+  return (
+    // Row check
+    indices.some((c) => c !== col && grid[row][c].value === value) ||
+    // Column check
+    indices.some((r) => r !== row && grid[r][col].value === value) ||
+    // Block check
+    offsets.some((dr) =>
+      offsets.some((dc) => {
+        const r = blockRowStart + dr;
+        const c = blockColStart + dc;
+        return (r !== row || c !== col) && grid[r][c].value === value;
+      })
+    )
+  );
 };
 
 export const useErrorStore = (): UseErrorStoreResult => {
@@ -66,11 +64,9 @@ export const useErrorStore = (): UseErrorStoreResult => {
   const hasError = (row: number, col: number): boolean => errorStore[row][col];
 
   const updateErrors = (pos: PositionType, grid: Grid): void => {
-    const affected = getAffectedPositions(pos);
-    for (const p of affected) {
-      const error = calculateCellError(grid, p.row, p.col);
-      setErrorStore(p.row, p.col, error);
-    }
+    getAffectedPositions(pos).forEach((p) => {
+      setErrorStore(p.row, p.col, calculateCellError(grid, p.row, p.col));
+    });
   };
 
   return { hasError, updateErrors };
