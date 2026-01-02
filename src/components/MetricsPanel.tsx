@@ -47,7 +47,7 @@ export const MetricsPanel: Component = () => {
   };
 
   return (
-    <div class="fixed bottom-4 right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-4 text-sm font-mono z-50 min-w-64">
+    <div class="md:fixed md:bottom-4 md:right-4 bg-white border border-gray-300 rounded-lg shadow-lg p-3 md:p-4 m-4 md:m-0 text-xs md:text-sm font-mono z-50 w-auto max-w-sm mx-auto md:max-w-none md:min-w-64">
       <h2 class="text-base font-bold mb-3 text-gray-800">
         Performance Metrics
       </h2>
@@ -79,7 +79,7 @@ export const MetricsPanel: Component = () => {
           <For each={Array.from({ length: 81 }, (_, i) => i)}>
             {(cellId) => (
               <div
-                class="w-4 h-4 flex items-center justify-center text-[8px]"
+                class="w-3 h-3 md:w-4 md:h-4 flex items-center justify-center text-[6px] md:text-[8px]"
                 style={{ "background-color": getCellColor(cellId) }}
                 title={`Cell ${Math.floor(cellId / 9)},${cellId % 9}: ${
                   metrics().cellUpdates[cellId]

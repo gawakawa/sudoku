@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+:root {
+  /* モバイル: 画面幅に合わせてセルサイズを計算 */
+  /* min 44px (タッチターゲット), max 48px (デスクトップサイズ) */
+  --cell-size: clamp(2.75rem, calc((100vw - 2rem) / 9), 3rem);
+  --cell-font-size: clamp(1rem, calc(var(--cell-size) * 0.42), 1.25rem);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --cell-size: 3rem;
+    --cell-font-size: 1.25rem;
+  }
+}

@@ -15,10 +15,10 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 
 render(
   () => (
-    <>
+    <div class="min-h-screen flex flex-col">
       <App />
       <MetricsPanel />
-    </>
+    </div>
   ),
   root!,
 );

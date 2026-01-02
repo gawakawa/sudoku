@@ -94,9 +94,9 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
       onInput={handleInput}
       readonly={props.cell.isInitial}
       class={`
-        w-12 h-12
+        w-[var(--cell-size)] h-[var(--cell-size)]
         border border-gray-300
-        text-center text-xl
+        text-center text-[length:var(--cell-font-size)]
         caret-transparent
         focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
         ${

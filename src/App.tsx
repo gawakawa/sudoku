@@ -25,8 +25,10 @@ export const App: Component = () => {
   };
 
   return (
-    <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-8 pr-72">
-      <h1 class="text-4xl font-bold text-gray-800 mb-8">数独</h1>
+    <div class="flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4 md:p-8 md:pr-72">
+      <h1 class="text-2xl md:text-4xl font-bold text-gray-800 mb-4 md:mb-8">
+        数独
+      </h1>
       <SudokuGrid grid={grid} onChange={handleChange} hasError={hasError} />
     </div>
   );
