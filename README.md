@@ -4,6 +4,13 @@
 
 Nix with flakes enabled
 
+## Features
+
+- **Fine-grained reactivity** - Optimized rendering with minimal re-renders,
+  verifiable via the on-screen performance metrics panel
+- **Random puzzle generation** - Fast, performance-optimized generation of
+  unique puzzles
+
 ## Directory Structure
 
 ```
