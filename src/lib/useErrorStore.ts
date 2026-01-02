@@ -13,17 +13,18 @@ type UseErrorStoreResult = {
   updateErrors: (pos: PositionType, grid: Grid) => void;
 };
 
-/** Get affected cell positions (row + col + block = max 21 unique cells) */
+/**
+ * Get affected cell positions for error recalculation
+ * @param pos - Position of the changed cell
+ * @returns Set of positions (row + column + block = max 21 unique cells)
+ */
 const getAffectedPositions = (pos: PositionType): Set<PositionType> => {
   const blockRowStart = Math.floor(pos.row / 3) * 3;
   const blockColStart = Math.floor(pos.col / 3) * 3;
 
   return Set([
-    // Row
     ...indices.map((col) => Position({ row: pos.row, col })),
-    // Column
     ...indices.map((row) => Position({ row, col: pos.col })),
-    // Block
     ...offsets.flatMap((dr) =>
       offsets.map((dc) =>
         Position({ row: blockRowStart + dr, col: blockColStart + dc })
@@ -32,7 +33,13 @@ const getAffectedPositions = (pos: PositionType): Set<PositionType> => {
   ]);
 };
 
-/** Calculate if a cell has duplicate error */
+/**
+ * Calculate if a cell has a duplicate value in its row, column, or block
+ * @param grid - Sudoku grid
+ * @param row - Row index of the cell
+ * @param col - Column index of the cell
+ * @returns True if the cell has a duplicate value
+ */
 const calculateCellError = (grid: Grid, row: number, col: number): boolean => {
   const value = grid[row][col].value;
   if (value === undefined) return false;
@@ -41,11 +48,8 @@ const calculateCellError = (grid: Grid, row: number, col: number): boolean => {
   const blockColStart = Math.floor(col / 3) * 3;
 
   return (
-    // Row check
     indices.some((c) => c !== col && grid[row][c].value === value) ||
-    // Column check
     indices.some((r) => r !== row && grid[r][col].value === value) ||
-    // Block check
     offsets.some((dr) =>
       offsets.some((dc) => {
         const r = blockRowStart + dr;
@@ -56,6 +60,10 @@ const calculateCellError = (grid: Grid, row: number, col: number): boolean => {
   );
 };
 
+/**
+ * Create a store for tracking cell error states
+ * @returns Object with hasError and updateErrors functions
+ */
 export const useErrorStore = (): UseErrorStoreResult => {
   const [errorStore, setErrorStore] = createStore<ErrorStore>(
     indices.map(() => indices.map(() => false)),
