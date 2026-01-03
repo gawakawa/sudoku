@@ -110,53 +110,10 @@ const STEP_LIMIT = 1000;
  * Result of backtracking search in a subtree.
  * - `found`: A solution was found in this subtree
  * - `notFound`: No solution exists in this subtree, try other branches
- * Both variants include remainingSteps to track step consumption across branches.
  */
 type BacktrackResult =
   | { tag: "found"; grid: Grid; remainingSteps: number }
   | { tag: "notFound"; remainingSteps: number };
-
-/**
- * Recursively tries each candidate, threading remainingSteps through branches.
- *
- * @param candidates - Remaining digits to try for the current cell
- * @param grid - Current grid state
- * @param domain - Map of undetermined cells to their candidate digits
- * @param pos - Position of the cell being filled
- * @param remainingSteps - Steps remaining before timeout
- * @returns Found grid if solution exists, otherwise notFound with remaining steps
- */
-const tryCandidates = (
-  candidates: readonly Digit[],
-  grid: Grid,
-  domain: Domain,
-  pos: Position,
-  remainingSteps: number,
-): BacktrackResult => {
-  if (candidates.length === 0 || remainingSteps <= 0) {
-    return { tag: "notFound", remainingSteps };
-  }
-
-  const [digit, ...rest] = candidates;
-  const updateResult = updateDomain(domain, pos, digit);
-
-  if (updateResult.tag === "contradiction") {
-    return tryCandidates(rest, grid, domain, pos, remainingSteps);
-  }
-
-  const newGrid = setCell(grid, pos, digit);
-  const childResult = backtrack(
-    newGrid,
-    updateResult.domain,
-    remainingSteps - 1,
-  );
-
-  if (childResult.tag === "found") {
-    return childResult;
-  }
-
-  return tryCandidates(rest, grid, domain, pos, childResult.remainingSteps);
-};
 
 /**
  * Recursive backtracking search with constraint propagation.
@@ -183,13 +140,26 @@ const backtrack = (
   }
 
   const mrvCell = findMRVCell(domain);
-  return tryCandidates(
-    mrvCell.candidates.toArray(),
-    grid,
-    domain,
-    mrvCell.position,
-    remainingSteps,
-  );
+  const candidates = mrvCell.candidates.toArray();
+  let steps = remainingSteps;
+
+  for (const digit of candidates) {
+    if (steps <= 0) break;
+
+    const updateResult = updateDomain(domain, mrvCell.position, digit);
+    if (updateResult.tag === "contradiction") continue;
+
+    const newGrid = setCell(grid, mrvCell.position, digit);
+    const childResult = backtrack(newGrid, updateResult.domain, steps - 1);
+
+    if (childResult.tag === "found") {
+      return childResult;
+    }
+
+    steps = childResult.remainingSteps;
+  }
+
+  return { tag: "notFound", remainingSteps: steps };
 };
 
 /**
