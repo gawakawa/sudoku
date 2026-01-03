@@ -104,11 +104,11 @@ const findMRVCell = (
 };
 
 /**
- * Result of solving a Sudoku puzzle.
- * - `solved`: A valid solution was found
- * - `unsolvable`: No valid solution exists for the given puzzle
+ * Result of backtracking search in a subtree.
+ * - `found`: A solution was found in this subtree
+ * - `notFound`: No solution exists in this subtree, try other branches
  */
-export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
+type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" };
 
 /**
  * Recursive backtracking search with constraint propagation.
@@ -118,11 +118,11 @@ export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
  *
  * @param grid - Current grid state (immutable during recursion)
  * @param domain - Map of undetermined cells to their candidate digits
- * @returns Solved grid if solution exists, otherwise unsolvable
+ * @returns Found grid if solution exists in subtree, otherwise notFound
  */
-const backtrack = (grid: Grid, domain: Domain): SolveResult => {
+const backtrack = (grid: Grid, domain: Domain): BacktrackResult => {
   if (domain.size === 0) {
-    return { tag: "solved", grid };
+    return { tag: "found", grid };
   }
 
   const mrvCell = findMRVCell(domain);
@@ -136,14 +136,21 @@ const backtrack = (grid: Grid, domain: Domain): SolveResult => {
     }
 
     const newGrid = setCell(grid, mrvCell.position, digit);
-    const solveResult = backtrack(newGrid, updateDomainResult.domain);
-    if (solveResult.tag === "solved") {
-      return solveResult;
+    const childResult = backtrack(newGrid, updateDomainResult.domain);
+    if (childResult.tag === "found") {
+      return childResult;
     }
   }
 
-  return { tag: "unsolvable" };
+  return { tag: "notFound" };
 };
+
+/**
+ * Result of solving a Sudoku puzzle.
+ * - `solved`: A valid solution was found
+ * - `unsolvable`: No valid solution exists for the given puzzle
+ */
+export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
 
 /**
  * Solves a Sudoku puzzle using constraint propagation and backtracking.
@@ -164,5 +171,8 @@ const backtrack = (grid: Grid, domain: Domain): SolveResult => {
  */
 export const solve = (grid: Grid): SolveResult => {
   const domain = calcDomain(grid);
-  return backtrack(grid, domain);
+  const result = backtrack(grid, domain);
+  return result.tag === "found"
+    ? { tag: "solved", grid: result.grid }
+    : { tag: "unsolvable" };
 };
