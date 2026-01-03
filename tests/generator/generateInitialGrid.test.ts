@@ -4,7 +4,7 @@ import {
   removeCells,
 } from "../../src/generator/generateInitialGrid.ts";
 import { makePosition } from "../../src/types/Sudoku.ts";
-import type { Digit, Grid, Position } from "../../src/types/Sudoku.ts";
+import type { Grid, Position } from "../../src/types/Sudoku.ts";
 import { emptyCell } from "../../src/generator/createEmptyGrid.ts";
 import { findDuplicates } from "../../src/utils/findDuplicates.ts";
 
