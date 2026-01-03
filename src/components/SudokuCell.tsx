@@ -111,7 +111,7 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
         border border-gray-300
         text-center text-[length:var(--cell-font-size)]
         caret-transparent
-        focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
+        focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-inset focus:ring-blue-500
         ${
         props.pos.col === 2 || props.pos.col === 5
           ? "border-r-2 border-r-gray-900"
