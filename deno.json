@@ -14,7 +14,8 @@
     "test": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vitest@^4.0.0",
     "lint": "deno lint",
     "check": "deno check src/",
-    "bench": "deno bench bench/"
+    "bench": "deno bench bench/",
+    "worst-case": "deno run --allow-read --allow-write bench/worstCase/main.ts"
   },
   "imports": {
     "solid-js": "npm:solid-js@^1.9.5",
