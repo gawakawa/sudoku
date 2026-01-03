@@ -50,7 +50,7 @@ const calcDomain = (grid: Grid): Domain => {
         allDigits.subtract(peerValues),
       ];
       return [entry];
-    }),
+    })
   );
   return Map(entries);
 };
@@ -77,7 +77,7 @@ const updateDomain = (
   const updated = domain
     .remove(pos)
     .map((candidates, p) =>
-      peers.has(p) ? candidates.remove(digit) : candidates,
+      peers.has(p) ? candidates.remove(digit) : candidates
     );
 
   if (updated.some((candidates) => candidates.isEmpty())) {
@@ -91,8 +91,8 @@ const updateDomain = (
 const setCell = (grid: Grid, pos: Position, digit: Digit): Grid =>
   grid.map((row, r) =>
     row.map((cell, c) =>
-      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell,
-    ),
+      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell
+    )
   );
 
 /** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
