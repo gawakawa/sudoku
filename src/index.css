@@ -2,8 +2,8 @@
 
 :root {
   /* モバイル: 画面幅に合わせてセルサイズを計算 */
-  /* min 44px (タッチターゲット), max 48px (デスクトップサイズ) */
-  --cell-size: clamp(2.75rem, calc((100vw - 2rem) / 9), 3rem);
+  /* 2rem = 左右パディング, 4px = 外枠ボーダー */
+  --cell-size: min(calc((100vw - 2rem - 4px) / 9), 3rem);
   --cell-font-size: clamp(1rem, calc(var(--cell-size) * 0.42), 1.25rem);
 }
 

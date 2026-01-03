@@ -53,7 +53,10 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
 
   return (
     <div class="inline-block border-2 border-gray-900">
-      <div class="grid grid-cols-9">
+      <div
+        class="grid"
+        style={{ "grid-template-columns": "repeat(9, var(--cell-size))" }}
+      >
         <For each={props.grid}>
           {(row, rowIndex) => (
             <For each={row}>
