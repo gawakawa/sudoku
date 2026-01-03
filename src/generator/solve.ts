@@ -74,9 +74,11 @@ const updateDomain = (
   digit: Digit,
 ): UpdateDomainResult => {
   const peers = getAffectedPositions(pos);
-  const updated = domain.remove(pos).map((candidates, p) =>
-    peers.has(p) ? candidates.remove(digit) : candidates
-  );
+  const updated = domain
+    .remove(pos)
+    .map((candidates, p) =>
+      peers.has(p) ? candidates.remove(digit) : candidates
+    );
 
   if (updated.some((candidates) => candidates.isEmpty())) {
     return { tag: "contradiction" };
@@ -84,6 +86,14 @@ const updateDomain = (
 
   return { tag: "ok", domain: updated };
 };
+
+/** Creates a new grid with the specified cell updated. */
+const setCell = (grid: Grid, pos: Position, digit: Digit): Grid =>
+  grid.map((row, r) =>
+    row.map((cell, c) =>
+      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell
+    )
+  );
 
 /** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
 const findMRVCell = (
@@ -125,7 +135,8 @@ const backtrack = (grid: Grid, domain: Domain): SolveResult => {
       continue;
     }
 
-    const solveResult = backtrack(grid, updateDomainResult.domain);
+    const newGrid = setCell(grid, mrvCell.position, digit);
+    const solveResult = backtrack(newGrid, updateDomainResult.domain);
     if (solveResult.tag === "solved") {
       return solveResult;
     }
