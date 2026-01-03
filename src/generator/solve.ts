@@ -50,7 +50,7 @@ const calcDomain = (grid: Grid): Domain => {
         allDigits.subtract(peerValues),
       ];
       return [entry];
-    })
+    }),
   );
   return Map(entries);
 };
@@ -77,7 +77,7 @@ const updateDomain = (
   const updated = domain
     .remove(pos)
     .map((candidates, p) =>
-      peers.has(p) ? candidates.remove(digit) : candidates
+      peers.has(p) ? candidates.remove(digit) : candidates,
     );
 
   if (updated.some((candidates) => candidates.isEmpty())) {
@@ -91,8 +91,8 @@ const updateDomain = (
 const setCell = (grid: Grid, pos: Position, digit: Digit): Grid =>
   grid.map((row, r) =>
     row.map((cell, c) =>
-      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell
-    )
+      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell,
+    ),
   );
 
 /** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
@@ -166,25 +166,13 @@ const backtrack = (
  * - `solved`: A valid solution was found
  * - `timeout`: Step limit exceeded before finding a solution
  */
-export type SolveResult =
-  | { tag: "solved"; grid: Grid }
-  | { tag: "timeout" };
+export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "timeout" };
 
 /**
  * Solves a Sudoku puzzle using constraint propagation and backtracking.
  *
- * Algorithm:
- * 1. Calculate initial domain (possible candidates for each empty cell)
- * 2. Use backtracking with MRV heuristic to find a solution
- * 3. Propagate constraints after each assignment to prune search space
- *
  * @param grid - The Sudoku puzzle to solve (empty cells have undefined value)
  * @returns Solved grid if solution exists, otherwise unsolvable
- *
- * @example
- * const result = solve(puzzle);
- * if (result.tag === "solved") {
- *   console.log(result.grid);
  * }
  */
 export const solve = (grid: Grid): SolveResult => {
