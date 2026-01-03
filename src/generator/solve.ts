@@ -111,9 +111,7 @@ const STEP_LIMIT = 1000;
  * - `found`: A solution was found in this subtree
  * - `notFound`: No solution exists in this subtree, try other branches
  */
-type BacktrackResult =
-  | { tag: "found"; grid: Grid; remainingSteps: number }
-  | { tag: "notFound"; remainingSteps: number };
+type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" };
 
 /**
  * Recursive backtracking search with constraint propagation.
@@ -121,10 +119,10 @@ type BacktrackResult =
  * Uses MRV (Minimum Remaining Values) heuristic to select the next cell,
  * which minimizes branching factor by choosing the most constrained cell first.
  *
- * @param grid - Current grid state
+ * @param grid - Current grid state (immutable during recursion)
  * @param domain - Map of undetermined cells to their candidate digits
  * @param remainingSteps - Steps remaining before timeout
- * @returns Found grid if solution exists, otherwise notFound with remaining steps
+ * @returns Found grid if solution exists in subtree, otherwise notFound
  */
 const backtrack = (
   grid: Grid,
@@ -132,34 +130,35 @@ const backtrack = (
   remainingSteps: number,
 ): BacktrackResult => {
   if (remainingSteps <= 0) {
-    return { tag: "notFound", remainingSteps: 0 };
+    return { tag: "notFound" };
   }
 
   if (domain.size === 0) {
-    return { tag: "found", grid, remainingSteps };
+    return { tag: "found", grid };
   }
 
   const mrvCell = findMRVCell(domain);
-  const candidates = mrvCell.candidates.toArray();
-  let steps = remainingSteps;
 
-  for (const digit of candidates) {
-    if (steps <= 0) break;
+  for (const digit of mrvCell.candidates) {
+    const updateDomainResult = updateDomain(domain, mrvCell.position, digit);
 
-    const updateResult = updateDomain(domain, mrvCell.position, digit);
-    if (updateResult.tag === "contradiction") continue;
+    // Pruning: skip if contradiction detected
+    if (updateDomainResult.tag === "contradiction") {
+      continue;
+    }
 
     const newGrid = setCell(grid, mrvCell.position, digit);
-    const childResult = backtrack(newGrid, updateResult.domain, steps - 1);
-
+    const childResult = backtrack(
+      newGrid,
+      updateDomainResult.domain,
+      remainingSteps - 1,
+    );
     if (childResult.tag === "found") {
       return childResult;
     }
-
-    steps = childResult.remainingSteps;
   }
 
-  return { tag: "notFound", remainingSteps: steps };
+  return { tag: "notFound" };
 };
 
 /**
@@ -172,8 +171,18 @@ export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "timeout" };
 /**
  * Solves a Sudoku puzzle using constraint propagation and backtracking.
  *
+ * Algorithm:
+ * 1. Calculate initial domain (possible candidates for each empty cell)
+ * 2. Use backtracking with MRV heuristic to find a solution
+ * 3. Propagate constraints after each assignment to prune search space
+ *
  * @param grid - The Sudoku puzzle to solve (empty cells have undefined value)
  * @returns Solved grid if solution exists, otherwise unsolvable
+ *
+ * @example
+ * const result = solve(puzzle);
+ * if (result.tag === "solved") {
+ *   console.log(result.grid);
  * }
  */
 export const solve = (grid: Grid): SolveResult => {
