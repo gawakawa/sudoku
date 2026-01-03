@@ -4,7 +4,7 @@ import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./generator/generateInitialGrid.ts";
 import { useErrorStore } from "./lib/useErrorStore.ts";
-import { incrementAppRender, incrementStoreUpdate } from "./lib/metrics.ts";
+import { incrementAppRender, incrementGridUpdate } from "./lib/metrics.ts";
 
 /**
  * Main application component that manages the Sudoku game state
@@ -22,7 +22,7 @@ export const App: Component = () => {
    * @param value - New cell value
    */
   const handleChange = (pos: Position, value: CellValue): void => {
-    incrementStoreUpdate();
+    incrementGridUpdate();
     setGrid(pos.row, pos.col, "value", value);
     updateErrors(pos, grid);
   };

@@ -2,14 +2,16 @@
 const cellUpdates = new Uint32Array(81); // row * 9 + col indexing
 let appRenders = 0;
 let gridRenders = 0;
-let storeUpdates = 0;
+let gridUpdates = 0;
+let errorUpdates = 0;
 
 export type MetricsData = {
   cellUpdates: Uint32Array;
   appRenders: number;
   gridRenders: number;
   totalCellUpdates: number;
-  storeUpdates: number;
+  gridUpdates: number;
+  errorUpdates: number;
 };
 
 /**
@@ -35,10 +37,17 @@ export const incrementGridRender = (): void => {
 };
 
 /**
- * Increment the store update counter
+ * Increment the grid store update counter
  */
-export const incrementStoreUpdate = (): void => {
-  storeUpdates++;
+export const incrementGridUpdate = (): void => {
+  gridUpdates++;
+};
+
+/**
+ * Increment the error store update counter
+ */
+export const incrementErrorUpdate = (): void => {
+  errorUpdates++;
 };
 
 /**
@@ -50,8 +59,12 @@ export const getMetricsSnapshot = (): MetricsData => {
     cellUpdates: new Uint32Array(cellUpdates), // Copy to avoid mutation
     appRenders,
     gridRenders,
-    totalCellUpdates: cellUpdates.reduce((sum, count) => sum + count, 0),
-    storeUpdates,
+    totalCellUpdates: cellUpdates.reduce<number>(
+      (sum, count) => sum + count,
+      0,
+    ),
+    gridUpdates,
+    errorUpdates,
   };
 };
 
@@ -62,5 +75,6 @@ export const resetMetrics = (): void => {
   cellUpdates.fill(0);
   appRenders = 0;
   gridRenders = 0;
-  storeUpdates = 0;
+  gridUpdates = 0;
+  errorUpdates = 0;
 };

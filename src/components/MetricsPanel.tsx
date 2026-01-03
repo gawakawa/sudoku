@@ -72,8 +72,12 @@ export const MetricsPanel: Component = () => {
           <span class="font-semibold">{metrics().totalCellUpdates}</span>
         </div>
         <div class="flex justify-between">
-          <span class="text-gray-600">Store Updates:</span>
-          <span class="font-semibold">{metrics().storeUpdates}</span>
+          <span class="text-gray-600">Grid Updates:</span>
+          <span class="font-semibold">{metrics().gridUpdates}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Error Updates:</span>
+          <span class="font-semibold">{metrics().errorUpdates}</span>
         </div>
       </div>
 
