@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { removeCells } from "../../src/generator/generateInitialGrid.ts";
+import {
+  generateInitialGrid,
+  removeCells,
+} from "../../src/generator/generateInitialGrid.ts";
 import { makePosition } from "../../src/types/Sudoku.ts";
-import type { Grid, Position } from "../../src/types/Sudoku.ts";
+import type { Digit, Grid, Position } from "../../src/types/Sudoku.ts";
 import { emptyCell } from "../../src/generator/createEmptyGrid.ts";
+import { findDuplicates } from "../../src/utils/findDuplicates.ts";
 
 describe("removeCells", () => {
   // Helper to create a simple test grid
@@ -120,5 +124,44 @@ describe("removeCells", () => {
     result[0][0].value = 5;
     expect(result[0][1].value).toBeUndefined();
     expect(emptyCell.value).toBeUndefined();
+  });
+});
+
+describe("generateInitialGrid", () => {
+  it("should return a valid puzzle with no duplicates", () => {
+    const grid = generateInitialGrid();
+
+    const duplicates = findDuplicates(grid);
+    expect(duplicates.size).toBe(0);
+  });
+
+  it("should have some cells with undefined value", () => {
+    const grid = generateInitialGrid();
+
+    const emptyCells = grid.flat().filter((cell) => cell.value === undefined);
+    expect(emptyCells.length).toBeGreaterThan(0);
+  });
+
+  it("should have some cells with defined value", () => {
+    const grid = generateInitialGrid();
+
+    const filledCells = grid.flat().filter((cell) => cell.value !== undefined);
+    expect(filledCells.length).toBeGreaterThan(0);
+  });
+
+  it("should have filled cells marked as isInitial: true", () => {
+    const grid = generateInitialGrid();
+
+    const filledCells = grid.flat().filter((cell) => cell.value !== undefined);
+    const allInitial = filledCells.every((cell) => cell.isInitial === true);
+    expect(allInitial).toBe(true);
+  });
+
+  it("should have empty cells marked as isInitial: false", () => {
+    const grid = generateInitialGrid();
+
+    const emptyCells = grid.flat().filter((cell) => cell.value === undefined);
+    const allNotInitial = emptyCells.every((cell) => cell.isInitial === false);
+    expect(allNotInitial).toBe(true);
   });
 });
