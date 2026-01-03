@@ -110,8 +110,53 @@ const STEP_LIMIT = 1000;
  * Result of backtracking search in a subtree.
  * - `found`: A solution was found in this subtree
  * - `notFound`: No solution exists in this subtree, try other branches
+ * Both variants include remainingSteps to track step consumption across branches.
  */
-type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" };
+type BacktrackResult =
+  | { tag: "found"; grid: Grid; remainingSteps: number }
+  | { tag: "notFound"; remainingSteps: number };
+
+/**
+ * Recursively tries each candidate, threading remainingSteps through branches.
+ *
+ * @param candidates - Remaining digits to try for the current cell
+ * @param grid - Current grid state
+ * @param domain - Map of undetermined cells to their candidate digits
+ * @param pos - Position of the cell being filled
+ * @param remainingSteps - Steps remaining before timeout
+ * @returns Found grid if solution exists, otherwise notFound with remaining steps
+ */
+const tryCandidates = (
+  candidates: readonly Digit[],
+  grid: Grid,
+  domain: Domain,
+  pos: Position,
+  remainingSteps: number,
+): BacktrackResult => {
+  if (candidates.length === 0 || remainingSteps <= 0) {
+    return { tag: "notFound", remainingSteps };
+  }
+
+  const [digit, ...rest] = candidates;
+  const updateResult = updateDomain(domain, pos, digit);
+
+  if (updateResult.tag === "contradiction") {
+    return tryCandidates(rest, grid, domain, pos, remainingSteps);
+  }
+
+  const newGrid = setCell(grid, pos, digit);
+  const childResult = backtrack(
+    newGrid,
+    updateResult.domain,
+    remainingSteps - 1,
+  );
+
+  if (childResult.tag === "found") {
+    return childResult;
+  }
+
+  return tryCandidates(rest, grid, domain, pos, childResult.remainingSteps);
+};
 
 /**
  * Recursive backtracking search with constraint propagation.
@@ -119,10 +164,10 @@ type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" };
  * Uses MRV (Minimum Remaining Values) heuristic to select the next cell,
  * which minimizes branching factor by choosing the most constrained cell first.
  *
- * @param grid - Current grid state (immutable during recursion)
+ * @param grid - Current grid state
  * @param domain - Map of undetermined cells to their candidate digits
  * @param remainingSteps - Steps remaining before timeout
- * @returns Found grid if solution exists in subtree, otherwise notFound
+ * @returns Found grid if solution exists, otherwise notFound with remaining steps
  */
 const backtrack = (
   grid: Grid,
@@ -130,35 +175,21 @@ const backtrack = (
   remainingSteps: number,
 ): BacktrackResult => {
   if (remainingSteps <= 0) {
-    return { tag: "notFound" };
+    return { tag: "notFound", remainingSteps: 0 };
   }
 
   if (domain.size === 0) {
-    return { tag: "found", grid };
+    return { tag: "found", grid, remainingSteps };
   }
 
   const mrvCell = findMRVCell(domain);
-
-  for (const digit of mrvCell.candidates) {
-    const updateDomainResult = updateDomain(domain, mrvCell.position, digit);
-
-    // Pruning: skip if contradiction detected
-    if (updateDomainResult.tag === "contradiction") {
-      continue;
-    }
-
-    const newGrid = setCell(grid, mrvCell.position, digit);
-    const childResult = backtrack(
-      newGrid,
-      updateDomainResult.domain,
-      remainingSteps - 1,
-    );
-    if (childResult.tag === "found") {
-      return childResult;
-    }
-  }
-
-  return { tag: "notFound" };
+  return tryCandidates(
+    mrvCell.candidates.toArray(),
+    grid,
+    domain,
+    mrvCell.position,
+    remainingSteps,
+  );
 };
 
 /**
