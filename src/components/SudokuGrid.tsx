@@ -61,39 +61,31 @@ export const SudokuGrid: Component<SudokuGridProps> = (props) => {
           {(row, rowIndex) => (
             <For each={row}>
               {(cell, colIndex) => (
-                <div
-                  classList={{
-                    "border-r-2 border-r-gray-900": colIndex() === 2 ||
-                      colIndex() === 5,
-                    "border-b-2 border-b-gray-900": rowIndex() === 2 ||
-                      rowIndex() === 5,
+                <SudokuCell
+                  cell={cell}
+                  cellId={rowIndex() * 9 + colIndex()}
+                  pos={makePosition({ row: rowIndex(), col: colIndex() })}
+                  hasError={() =>
+                    props.hasError(
+                      makePosition({ row: rowIndex(), col: colIndex() }),
+                    )}
+                  ref={(el) => {
+                    if (!cellRefs[rowIndex()]) {
+                      cellRefs[rowIndex()] = [];
+                    }
+                    cellRefs[rowIndex()][colIndex()] = el;
                   }}
-                >
-                  <SudokuCell
-                    cell={cell}
-                    cellId={rowIndex() * 9 + colIndex()}
-                    hasError={() =>
-                      props.hasError(
-                        makePosition({ row: rowIndex(), col: colIndex() }),
-                      )}
-                    ref={(el) => {
-                      if (!cellRefs[rowIndex()]) {
-                        cellRefs[rowIndex()] = [];
-                      }
-                      cellRefs[rowIndex()][colIndex()] = el;
-                    }}
-                    onChange={(value: CellValue) =>
-                      props.onChange(
-                        makePosition({ row: rowIndex(), col: colIndex() }),
-                        value,
-                      )}
-                    onNavigate={(direction) =>
-                      handleNavigate(
-                        makePosition({ row: rowIndex(), col: colIndex() }),
-                        direction,
-                      )}
-                  />
-                </div>
+                  onChange={(value: CellValue) =>
+                    props.onChange(
+                      makePosition({ row: rowIndex(), col: colIndex() }),
+                      value,
+                    )}
+                  onNavigate={(direction) =>
+                    handleNavigate(
+                      makePosition({ row: rowIndex(), col: colIndex() }),
+                      direction,
+                    )}
+                />
               )}
             </For>
           )}

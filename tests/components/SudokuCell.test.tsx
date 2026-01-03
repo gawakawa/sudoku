@@ -3,7 +3,9 @@ import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import userEvent from "@testing-library/user-event";
 import { SudokuCell } from "../../src/components/SudokuCell.tsx";
-import type { Cell } from "../../src/types/Sudoku.ts";
+import { type Cell, makePosition } from "../../src/types/Sudoku.ts";
+
+const defaultPos = makePosition({ row: 0, col: 0 });
 
 describe("<SudokuCell />", () => {
   test("it renders an empty cell when value is undefined", () => {
@@ -11,6 +13,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -25,6 +28,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -38,6 +42,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -52,6 +57,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -66,6 +72,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -82,6 +89,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -98,6 +106,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -122,6 +131,7 @@ describe("<SudokuCell />", () => {
     const { container: container1 } = render(() => (
       <SudokuCell
         cell={initialCell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -129,6 +139,7 @@ describe("<SudokuCell />", () => {
     const { container: container2 } = render(() => (
       <SudokuCell
         cell={editableCell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -147,6 +158,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={() => {}}
       />
@@ -163,6 +175,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -184,6 +197,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -205,6 +219,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -226,6 +241,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -243,6 +259,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />
@@ -260,6 +277,7 @@ describe("<SudokuCell />", () => {
     const { container } = render(() => (
       <SudokuCell
         cell={cell}
+        pos={defaultPos}
         hasError={() => false}
         onChange={onChange}
       />

@@ -1,11 +1,12 @@
 import { type Component, createEffect } from "solid-js";
-import type { Cell, CellValue, Digit } from "../types/Sudoku.ts";
+import type { Cell, CellValue, Digit, Position } from "../types/Sudoku.ts";
 import type { NavigationDirection } from "./SudokuGrid.tsx";
 import { incrementCellUpdate } from "../lib/metrics.ts";
 
 type SudokuCellProps = {
   cell: Cell;
   cellId: number;
+  pos: Position;
   hasError: () => boolean;
   onChange: (value: CellValue) => void;
   onNavigate?: (direction: NavigationDirection) => void;
@@ -111,6 +112,16 @@ export const SudokuCell: Component<SudokuCellProps> = (props) => {
         text-center text-[length:var(--cell-font-size)]
         caret-transparent
         focus:outline-none focus:bg-blue-50 focus:ring-2 focus:ring-blue-500
+        ${
+        props.pos.col === 2 || props.pos.col === 5
+          ? "border-r-2 border-r-gray-900"
+          : ""
+      }
+        ${
+        props.pos.row === 2 || props.pos.row === 5
+          ? "border-b-2 border-b-gray-900"
+          : ""
+      }
         ${
         props.hasError()
           ? "error bg-red-100 text-red-700 border-red-500"
