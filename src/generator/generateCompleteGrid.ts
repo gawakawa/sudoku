@@ -59,7 +59,7 @@ const generateDiagonalBlocks = (): Grid => {
 };
 
 /**
- * Fallback pattern used when solve fails
+ * Fallback pattern used when solve times out
  */
 const fallbackPattern = [
   [1, 2, 3, 4, 5, 6, 7, 8, 9],
@@ -74,7 +74,7 @@ const fallbackPattern = [
 ] as const;
 
 /**
- * Fallback grid used when solve fails
+ * Fallback grid used when solve times out
  */
 const fallbackGrid: Grid = fallbackPattern.map((row) =>
   row.map((value) => ({ value: value as Digit, isInitial: true }))

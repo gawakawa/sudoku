@@ -85,7 +85,7 @@ describe("solve", () => {
     });
   });
 
-  it("should return unsolvable for grid where a cell has no candidates", () => {
+  it("should return timeout for grid where a cell has no candidates", () => {
     const grid = createEmptyGrid();
     // Fill row 4 with 8 digits (leaving cell (4,4) empty)
     grid[4][0] = { value: 1, isInitial: true };
@@ -102,7 +102,7 @@ describe("solve", () => {
     grid[0][4] = { value: 4, isInitial: true };
 
     const result = solve(grid);
-    expect(result.tag).toBe("unsolvable");
+    expect(result.tag).toBe("timeout");
   });
 
   it("should preserve already filled cells", () => {

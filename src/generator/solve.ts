@@ -103,6 +103,9 @@ const findMRVCell = (
   return { position: entry![0], candidates: entry![1] };
 };
 
+/** Maximum backtrack steps before timeout. */
+const STEP_LIMIT = 1000;
+
 /**
  * Result of backtracking search in a subtree.
  * - `found`: A solution was found in this subtree
@@ -118,9 +121,18 @@ type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" };
  *
  * @param grid - Current grid state (immutable during recursion)
  * @param domain - Map of undetermined cells to their candidate digits
+ * @param remainingSteps - Steps remaining before timeout
  * @returns Found grid if solution exists in subtree, otherwise notFound
  */
-const backtrack = (grid: Grid, domain: Domain): BacktrackResult => {
+const backtrack = (
+  grid: Grid,
+  domain: Domain,
+  remainingSteps: number,
+): BacktrackResult => {
+  if (remainingSteps <= 0) {
+    return { tag: "notFound" };
+  }
+
   if (domain.size === 0) {
     return { tag: "found", grid };
   }
@@ -136,7 +148,11 @@ const backtrack = (grid: Grid, domain: Domain): BacktrackResult => {
     }
 
     const newGrid = setCell(grid, mrvCell.position, digit);
-    const childResult = backtrack(newGrid, updateDomainResult.domain);
+    const childResult = backtrack(
+      newGrid,
+      updateDomainResult.domain,
+      remainingSteps - 1,
+    );
     if (childResult.tag === "found") {
       return childResult;
     }
@@ -148,9 +164,11 @@ const backtrack = (grid: Grid, domain: Domain): BacktrackResult => {
 /**
  * Result of solving a Sudoku puzzle.
  * - `solved`: A valid solution was found
- * - `unsolvable`: No valid solution exists for the given puzzle
+ * - `timeout`: Step limit exceeded before finding a solution
  */
-export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
+export type SolveResult =
+  | { tag: "solved"; grid: Grid }
+  | { tag: "timeout" };
 
 /**
  * Solves a Sudoku puzzle using constraint propagation and backtracking.
@@ -171,8 +189,8 @@ export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "unsolvable" };
  */
 export const solve = (grid: Grid): SolveResult => {
   const domain = calcDomain(grid);
-  const result = backtrack(grid, domain);
+  const result = backtrack(grid, domain, STEP_LIMIT);
   return result.tag === "found"
     ? { tag: "solved", grid: result.grid }
-    : { tag: "unsolvable" };
+    : { tag: "timeout" };
 };
