@@ -9,7 +9,7 @@
 import { Map, Set } from "immutable";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../../src/types/Sudoku.ts";
-import { getAffectedPositions, indices } from "../../src/utils/position.ts";
+import { getPeers, indices } from "../../src/lib/getPeers.ts";
 
 type Candidates = Set<Digit>;
 type Domain = Map<Position, Candidates>;
@@ -24,7 +24,7 @@ const calcDomain = (grid: Grid): Domain => {
 
       const pos = makePosition({ row, col });
       const peerValues: Candidates = Set(
-        getAffectedPositions(pos)
+        getPeers(pos)
           .toArray()
           .flatMap((p) => {
             const value = grid[p.row][p.col].value;
@@ -51,7 +51,7 @@ const updateDomain = (
   pos: Position,
   digit: Digit,
 ): UpdateDomainResult => {
-  const peers = getAffectedPositions(pos);
+  const peers = getPeers(pos);
   const updated = domain
     .remove(pos)
     .map((candidates, p) =>
