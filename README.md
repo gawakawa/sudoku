@@ -23,16 +23,15 @@ Play online: https://sudoku.gawakawa.deno.net/
 │   ├── generator                     # Puzzle generation
 │   │   ├── createEmptyGrid.ts        # Empty grid factory
 │   │   ├── generateCompleteGrid.ts   # Full solution generator
-│   │   ├── generateInitialGrid.ts    # Puzzle with blanks
-│   │   └── solve.ts                  # Constraint propagation solver
+│   │   └── generateInitialGrid.ts    # Puzzle with blanks
 │   ├── lib                           # Hooks and utilities
+│   │   ├── getPeers.ts               # Position peer calculation
 │   │   ├── metrics.ts                # Render tracking
 │   │   └── useErrorStore.ts          # Duplicate error state
+│   ├── solver                        # Constraint solver
+│   │   └── solve.ts                  # Constraint propagation solver
 │   ├── types                         # Type definitions
 │   │   └── Sudoku.ts                 # Grid, Cell, Digit types
-│   ├── utils                         # Helper functions
-│   │   ├── findDuplicates.ts         # Duplicate detection
-│   │   └── position.ts               # Position helpers
 │   ├── App.tsx                       # Main app with grid state
 │   ├── index.css                     # Tailwind CSS entry
 │   └── index.tsx                     # App entry point
