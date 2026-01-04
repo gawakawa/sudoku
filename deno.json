@@ -13,7 +13,7 @@
     "preview": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-env --allow-ffi --allow-sys --allow-run npm:vite@^7.1.4 preview",
     "test": "deno run --node-modules-dir=auto --allow-net --allow-read --allow-write --allow-env --allow-ffi --allow-sys --allow-run npm:vitest@^4.0.0",
     "lint": "deno lint",
-    "check": "deno check src/",
+    "check": "deno check src/ bench/",
     "bench": "deno bench bench/",
     "worst-case": "deno run --allow-read --allow-write bench/worstCase/main.ts"
   },
