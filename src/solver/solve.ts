@@ -1,7 +1,7 @@
 import { Map, Set } from "immutable";
 import { makePosition } from "../types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
-import { getAffectedPositions, indices } from "../utils/position.ts";
+import { getAffectedPositions, indices } from "../lib/position.ts";
 
 /**
  * Possible digits for a cell: undetermined (size > 1), determined (singleton), or impossible (empty).

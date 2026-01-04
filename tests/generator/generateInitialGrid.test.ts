@@ -6,7 +6,7 @@ import {
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Grid, Position } from "../../src/types/Sudoku.ts";
 import { emptyCell } from "../../src/generator/createEmptyGrid.ts";
-import { findDuplicates } from "../../src/utils/findDuplicates.ts";
+import { solve } from "../../src/solver/solve.ts";
 
 describe("removeCells", () => {
   // Helper to create a simple test grid
@@ -128,11 +128,11 @@ describe("removeCells", () => {
 });
 
 describe("generateInitialGrid", () => {
-  it("should return a valid puzzle with no duplicates", () => {
+  it("should return a valid puzzle that is solvable", () => {
     const grid = generateInitialGrid();
 
-    const duplicates = findDuplicates(grid);
-    expect(duplicates.size).toBe(0);
+    const result = solve(grid);
+    expect(result.tag).toBe("solved");
   });
 
   it("should have some cells with undefined value", () => {
