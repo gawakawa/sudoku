@@ -67,14 +67,3 @@ export const getMetricsSnapshot = (): MetricsData => {
     errorUpdates,
   };
 };
-
-/**
- * Reset all metrics to zero
- */
-export const resetMetrics = (): void => {
-  cellUpdates.fill(0);
-  appRenders = 0;
-  gridRenders = 0;
-  gridUpdates = 0;
-  errorUpdates = 0;
-};
