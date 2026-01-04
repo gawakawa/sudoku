@@ -1,17 +1,17 @@
 import { Set } from "immutable";
 import { makePosition } from "../types/Sudoku.ts";
 import type { Position } from "../types/Sudoku.ts";
+import { COL_INDICES, ROW_INDICES } from "../const.ts";
 
-export const indices = [0, 1, 2, 3, 4, 5, 6, 7, 8] as const;
 export const offsets = [0, 1, 2] as const;
 
 /** 同じ行のピアを取得 */
 export const getRowPeers = (pos: Position): Set<Position> =>
-  Set(indices.map((col) => makePosition({ row: pos.row, col })));
+  Set(COL_INDICES.map((col) => makePosition({ row: pos.row, col })));
 
 /** 同じ列のピアを取得 */
 export const getColPeers = (pos: Position): Set<Position> =>
-  Set(indices.map((row) => makePosition({ row, col: pos.col })));
+  Set(ROW_INDICES.map((row) => makePosition({ row, col: pos.col })));
 
 /** 同じブロックのピアを取得 */
 export const getBlockPeers = (pos: Position): Set<Position> => {

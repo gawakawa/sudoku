@@ -1,10 +1,11 @@
 import { createStore } from "solid-js/store";
 import type { Component } from "solid-js";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
-import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
+import type { CellValue, ErrorGrid, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./generator/generateInitialGrid.ts";
 import { calculateCellError } from "./grid/calculateCellError.ts";
-import { getPeers, indices } from "./grid/getPeers.ts";
+import { getPeers } from "./grid/getPeers.ts";
+import { ROW_INDICES } from "./const.ts";
 import {
   incrementAppRender,
   incrementErrorUpdate,
@@ -19,8 +20,8 @@ export const App: Component = () => {
   incrementAppRender();
 
   const [grid, setGrid] = createStore<Grid>(generateInitialGrid());
-  const [errors, setErrors] = createStore<boolean[][]>(
-    indices.map(() => indices.map(() => false)),
+  const [errors, setErrors] = createStore<ErrorGrid>(
+    ROW_INDICES.map(() => ROW_INDICES.map(() => false)),
   );
 
   const hasError = (pos: Position): boolean => errors[pos.row][pos.col];

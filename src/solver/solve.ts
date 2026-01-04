@@ -1,8 +1,8 @@
 import { Map, Set } from "immutable";
 import { makePosition } from "../types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
-import { getPeers, indices } from "../grid/getPeers.ts";
-import { DIGITS } from "../const.ts";
+import { getPeers } from "../grid/getPeers.ts";
+import { COL_INDICES, DIGITS, ROW_INDICES } from "../const.ts";
 
 /**
  * Possible digits for a cell: undetermined (size > 1), determined (singleton), or impossible (empty).
@@ -29,8 +29,8 @@ const allDigits: CandidateSet = Set(DIGITS);
 
 /** Initializes RemainingCandidateSets with undetermined cells only (where grid value is undefined). */
 const getRemainingCandidateSets = (grid: Grid): RemainingCandidateSets => {
-  const entries: [Position, CandidateSet][] = indices.flatMap((row) =>
-    indices.flatMap((col) => {
+  const entries: [Position, CandidateSet][] = ROW_INDICES.flatMap((row) =>
+    COL_INDICES.flatMap((col) => {
       if (grid[row][col].value !== undefined) return [];
 
       const pos = makePosition({ row, col });

@@ -1,5 +1,6 @@
 import type { Grid, Position } from "../types/Sudoku.ts";
-import { indices, offsets } from "./getPeers.ts";
+import { COL_INDICES, ROW_INDICES } from "../const.ts";
+import { offsets } from "./getPeers.ts";
 
 /**
  * Calculate if a cell has a duplicate value in its row, column, or block
@@ -15,8 +16,12 @@ export const calculateCellError = (grid: Grid, pos: Position): boolean => {
   const blockColStart = Math.floor(pos.col / 3) * 3;
 
   return (
-    indices.some((c) => c !== pos.col && grid[pos.row][c].value === value) ||
-    indices.some((r) => r !== pos.row && grid[r][pos.col].value === value) ||
+    COL_INDICES.some((c) =>
+      c !== pos.col && grid[pos.row][c].value === value
+    ) ||
+    ROW_INDICES.some((r) =>
+      r !== pos.row && grid[r][pos.col].value === value
+    ) ||
     offsets.some((dr) =>
       offsets.some((dc) => {
         const r = blockRowStart + dr;

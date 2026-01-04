@@ -31,3 +31,9 @@ export type Position = ReturnType<typeof makePosition>;
  * Access pattern: grid[row][col]
  */
 export type Grid = Cell[][];
+
+/**
+ * 9x9 error grid tracking duplicate errors
+ * First index is row (0-8), second index is column (0-8)
+ */
+export type ErrorGrid = boolean[][];
