@@ -1,6 +1,6 @@
 import { createStore } from "solid-js/store";
 import type { Grid, Position } from "../types/Sudoku.ts";
-import { getAffectedPositions, indices, offsets } from "./position.ts";
+import { getPeers, indices, offsets } from "./getPeers.ts";
 import { incrementErrorUpdate } from "./metrics.ts";
 
 type ErrorStore = boolean[][];
@@ -58,7 +58,7 @@ export const useErrorStore = (): UseErrorStoreResult => {
    * @param grid - Current grid state
    */
   const updateErrors = (pos: Position, grid: Grid): void => {
-    getAffectedPositions(pos).forEach((p) => {
+    getPeers(pos).forEach((p) => {
       setErrorStore(p.row, p.col, calculateCellError(grid, p));
       incrementErrorUpdate();
     });
