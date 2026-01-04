@@ -19,11 +19,11 @@ export const App: Component = () => {
   incrementAppRender();
 
   const [grid, setGrid] = createStore<Grid>(generateInitialGrid());
-  const [errorStore, setErrorStore] = createStore<boolean[][]>(
+  const [errors, setErrors] = createStore<boolean[][]>(
     indices.map(() => indices.map(() => false)),
   );
 
-  const hasError = (pos: Position): boolean => errorStore[pos.row][pos.col];
+  const hasError = (pos: Position): boolean => errors[pos.row][pos.col];
 
   /**
    * Handle cell value change
@@ -34,7 +34,7 @@ export const App: Component = () => {
     incrementGridUpdate();
     setGrid(pos.row, pos.col, "value", value);
     getPeers(pos).forEach((p) => {
-      setErrorStore(p.row, p.col, calculateCellError(grid, p));
+      setErrors(p.row, p.col, calculateCellError(grid, p));
       incrementErrorUpdate();
     });
   };
