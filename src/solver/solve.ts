@@ -9,11 +9,11 @@ import { getPeers, indices } from "../lib/getPeers.ts";
  * @example Set([5])       // determined
  * @example Set()          // impossible
  */
-type Candidates = Set<Digit>;
+type CandidateSet = Set<Digit>;
 
 /**
  * Undetermined cells mapped to their candidates. Solved when empty; unsolvable if any candidates empty.
- * Determined cells are removed from Domain (their values exist in Grid).
+ * Determined cells are removed from RemainingCandidateSets (their values exist in Grid).
  * @example
  * Map({
  *   Position({row: 0, col: 0}): Set([1, 3, 7]), // undetermined
@@ -21,22 +21,22 @@ type Candidates = Set<Digit>;
  *   // ... only undetermined cells
  * })
  */
-type Domain = Map<Position, Candidates>;
+type RemainingCandidateSets = Map<Position, CandidateSet>;
 
 /** All valid Sudoku digits (1-9). */
 const digits: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 /** Set containing all digits, used as initial candidates for empty cells. */
-const allDigits: Candidates = Set(digits);
+const allDigits: CandidateSet = Set(digits);
 
-/** Initializes Domain with undetermined cells only (where grid value is undefined). */
-const calcDomain = (grid: Grid): Domain => {
-  const entries: [Position, Candidates][] = indices.flatMap((row) =>
+/** Initializes RemainingCandidateSets with undetermined cells only (where grid value is undefined). */
+const getRemainingCandidateSets = (grid: Grid): RemainingCandidateSets => {
+  const entries: [Position, CandidateSet][] = indices.flatMap((row) =>
     indices.flatMap((col) => {
       if (grid[row][col].value !== undefined) return [];
 
       const pos = makePosition({ row, col });
-      const peerValues: Candidates = Set(
+      const peerValues: CandidateSet = Set(
         getPeers(pos)
           .toArray()
           .flatMap((p) => {
@@ -45,7 +45,7 @@ const calcDomain = (grid: Grid): Domain => {
           }),
       );
 
-      const entry: [Position, Candidates] = [
+      const entry: [Position, CandidateSet] = [
         pos,
         allDigits.subtract(peerValues),
       ];
@@ -56,25 +56,25 @@ const calcDomain = (grid: Grid): Domain => {
 };
 
 /**
- * Result of updating domain after assigning a digit to a cell.
- * - `ok`: Propagation succeeded, returns updated domain
+ * Result of updating remainingCandidateSets after assigning a digit to a cell.
+ * - `ok`: Propagation succeeded, returns updated remainingCandidateSets
  * - `contradiction`: A cell has no remaining candidates (invalid assignment)
  */
-type UpdateDomainResult =
-  | { tag: "ok"; domain: Domain }
+type UpdateRemainingCandidateSetsResult =
+  | { tag: "ok"; remainingCandidateSets: RemainingCandidateSets }
   | { tag: "contradiction" };
 
 /**
- * Removes the assigned cell from Domain and propagates constraints to peers.
+ * Removes the assigned cell from RemainingCandidateSets and propagates constraints to peers.
  * Returns contradiction if any cell has no candidates after propagation.
  */
-const updateDomain = (
-  domain: Domain,
+const updateRemainingCandidateSets = (
+  remainingCandidateSets: RemainingCandidateSets,
   pos: Position,
   digit: Digit,
-): UpdateDomainResult => {
+): UpdateRemainingCandidateSetsResult => {
   const peers = getPeers(pos);
-  const updated = domain
+  const updated = remainingCandidateSets
     .remove(pos)
     .map((candidates, p) =>
       peers.has(p) ? candidates.remove(digit) : candidates
@@ -84,7 +84,7 @@ const updateDomain = (
     return { tag: "contradiction" };
   }
 
-  return { tag: "ok", domain: updated };
+  return { tag: "ok", remainingCandidateSets: updated };
 };
 
 /** Creates a new grid with the specified cell updated. */
@@ -95,11 +95,13 @@ const setCell = (grid: Grid, pos: Position, digit: Digit): Grid =>
     )
   );
 
-/** MRV heuristic: select the cell with fewest candidates. Requires non-empty domain. */
+/** MRV heuristic: select the cell with fewest candidates. Requires non-empty remainingCandidateSets. */
 const findMRVCell = (
-  domain: Domain,
-): { position: Position; candidates: Candidates } => {
-  const entry = domain.entrySeq().minBy(([_, candidates]) => candidates.size);
+  remainingCandidateSets: RemainingCandidateSets,
+): { position: Position; candidates: CandidateSet } => {
+  const entry = remainingCandidateSets.entrySeq().minBy(([_, candidates]) =>
+    candidates.size
+  );
   return { position: entry![0], candidates: entry![1] };
 };
 
@@ -121,37 +123,41 @@ type BacktrackResult =
  * which minimizes branching factor by choosing the most constrained cell first.
  *
  * @param grid - Current grid state (immutable during recursion)
- * @param domain - Map of undetermined cells to their candidate digits
+ * @param remainingCandidateSets - Map of undetermined cells to their candidate digits
  * @param remainingSteps - Steps remaining before timeout
  * @returns Found grid if solution exists in subtree, otherwise notFound
  */
 const backtrack = (
   grid: Grid,
-  domain: Domain,
+  remainingCandidateSets: RemainingCandidateSets,
   remainingSteps: number,
 ): BacktrackResult => {
   if (remainingSteps <= 0) {
     return { tag: "timeout" };
   }
 
-  if (domain.size === 0) {
+  if (remainingCandidateSets.size === 0) {
     return { tag: "found", grid };
   }
 
-  const mrvCell = findMRVCell(domain);
+  const mrvCell = findMRVCell(remainingCandidateSets);
 
   for (const digit of mrvCell.candidates) {
-    const updateDomainResult = updateDomain(domain, mrvCell.position, digit);
+    const updateRemainingCandidateSetsResult = updateRemainingCandidateSets(
+      remainingCandidateSets,
+      mrvCell.position,
+      digit,
+    );
 
     // Pruning: skip if contradiction detected
-    if (updateDomainResult.tag === "contradiction") {
+    if (updateRemainingCandidateSetsResult.tag === "contradiction") {
       continue;
     }
 
     const newGrid = setCell(grid, mrvCell.position, digit);
     const childResult = backtrack(
       newGrid,
-      updateDomainResult.domain,
+      updateRemainingCandidateSetsResult.remainingCandidateSets,
       remainingSteps - 1,
     );
     if (childResult.tag === "found" || childResult.tag === "timeout") {
@@ -177,7 +183,7 @@ export type SolveResult =
  * Solves a Sudoku puzzle using constraint propagation and backtracking.
  *
  * Algorithm:
- * 1. Calculate initial domain (possible candidates for each empty cell)
+ * 1. Calculate initial remainingCandidateSets (possible candidates for each empty cell)
  * 2. Use backtracking with MRV heuristic to find a solution
  * 3. Propagate constraints after each assignment to prune search space
  *
@@ -195,8 +201,8 @@ export const solve = (
   grid: Grid,
   stepLimit: number = Infinity,
 ): SolveResult => {
-  const domain = calcDomain(grid);
-  const result = backtrack(grid, domain, stepLimit);
+  const remainingCandidateSets = getRemainingCandidateSets(grid);
+  const result = backtrack(grid, remainingCandidateSets, stepLimit);
   switch (result.tag) {
     case "found":
       return { tag: "solved", grid: result.grid };
