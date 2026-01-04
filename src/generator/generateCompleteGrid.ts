@@ -1,7 +1,7 @@
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 import { makePosition } from "../types/Sudoku.ts";
 import { createEmptyGrid } from "./createEmptyGrid.ts";
-import { solve } from "./solve.ts";
+import { solve } from "../solver/solve.ts";
 
 /**
  * Generate a shuffled array of digits 1-9 using Fisher-Yates algorithm

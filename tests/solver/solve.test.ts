@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { solve } from "../../src/generator/solve.ts";
+import { solve } from "../../src/solver/solve.ts";
 import { createEmptyGrid } from "../../src/generator/createEmptyGrid.ts";
 import type { Digit, Grid } from "../../src/types/Sudoku.ts";
 
