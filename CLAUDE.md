@@ -43,6 +43,13 @@ npm test               # Run all component tests with Vitest
 npm test -- tests/App  # Run specific test file
 ```
 
+### Benchmarking
+
+```bash
+deno task bench        # Run micro-benchmarks (generateInitialGrid, etc.)
+deno task worst-case   # Run worst-case solver benchmarks
+```
+
 ### Dependency Management
 
 ```bash
