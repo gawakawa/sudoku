@@ -56,6 +56,7 @@ deno task worst-case   # Run worst-case solver benchmarks
 deno add <package>     # Add dependency to deno.json
 deno remove <package>  # Remove dependency
 deno outdated          # Check for outdated dependencies
+deno update            # Update dependencies
 ```
 
 Use `deno.json` for dependencies, not `package.json`.
@@ -92,11 +93,20 @@ User Input → handleChange → setGrid (update value)
 
 1. **generateCompleteGrid**: Fills three diagonal 3×3 blocks with shuffled
    digits (these blocks don't constrain each other), then solves remaining cells
-2. **solve**: Constraint propagation + backtracking with MRV (Minimum Remaining
-   Values) heuristic - selects the cell with fewest candidates to minimize
-   branching
-3. **Domain**: `Map<Position, Set<Digit>>` tracks candidate digits for
-   undetermined cells; empty domain = solved, empty candidates = contradiction
+2. **generateInitialGrid**: Creates puzzle by removing random cells from a
+   complete grid
+
+### Solver (`src/solver/solve.ts`)
+
+- **Algorithm**: Constraint propagation + backtracking with MRV (Minimum
+  Remaining Values) heuristic - selects the cell with fewest candidates to
+  minimize branching
+- **Domain**: `Map<Position, Set<Digit>>` tracks candidate digits for
+  undetermined cells; empty domain = solved, empty candidates = contradiction
+- **Results**: `SolveResult` is a tagged union with three cases:
+  - `solved`: Valid solution found
+  - `timeout`: Step limit exceeded (controlled via `stepLimit` parameter)
+  - `unsolvable`: No solution exists (all branches exhausted)
 
 ### Testing
 
