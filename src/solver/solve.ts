@@ -103,9 +103,6 @@ const findMRVCell = (
   return { position: entry![0], candidates: entry![1] };
 };
 
-/** Maximum backtrack steps before timeout. */
-const STEP_LIMIT = 1000;
-
 /**
  * Result of backtracking search in a subtree.
  * - `found`: A solution was found in this subtree
@@ -177,7 +174,8 @@ export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "timeout" };
  * 3. Propagate constraints after each assignment to prune search space
  *
  * @param grid - The Sudoku puzzle to solve (empty cells have undefined value)
- * @returns Solved grid if solution exists, otherwise unsolvable
+ * @param stepLimit - Maximum backtracking steps before timeout (default: Infinity)
+ * @returns Solved grid if solution exists, otherwise timeout
  *
  * @example
  * const result = solve(puzzle);
@@ -185,9 +183,12 @@ export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "timeout" };
  *   console.log(result.grid);
  * }
  */
-export const solve = (grid: Grid): SolveResult => {
+export const solve = (
+  grid: Grid,
+  stepLimit: number = Infinity,
+): SolveResult => {
   const domain = calcDomain(grid);
-  const result = backtrack(grid, domain, STEP_LIMIT);
+  const result = backtrack(grid, domain, stepLimit);
   return result.tag === "found"
     ? { tag: "solved", grid: result.grid }
     : { tag: "timeout" };
