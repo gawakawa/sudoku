@@ -3,8 +3,13 @@ import type { Component } from "solid-js";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./generator/generateInitialGrid.ts";
-import { useErrorStore } from "./stores/useErrorStore.ts";
-import { incrementAppRender, incrementGridUpdate } from "./lib/metrics.ts";
+import { calculateCellError } from "./grid/calculateCellError.ts";
+import { getPeers, indices } from "./grid/getPeers.ts";
+import {
+  incrementAppRender,
+  incrementErrorUpdate,
+  incrementGridUpdate,
+} from "./lib/metrics.ts";
 
 /**
  * Main application component that manages the Sudoku game state
@@ -14,7 +19,11 @@ export const App: Component = () => {
   incrementAppRender();
 
   const [grid, setGrid] = createStore<Grid>(generateInitialGrid());
-  const { hasError, updateErrors } = useErrorStore();
+  const [errorStore, setErrorStore] = createStore<boolean[][]>(
+    indices.map(() => indices.map(() => false)),
+  );
+
+  const hasError = (pos: Position): boolean => errorStore[pos.row][pos.col];
 
   /**
    * Handle cell value change
@@ -24,7 +33,10 @@ export const App: Component = () => {
   const handleChange = (pos: Position, value: CellValue): void => {
     incrementGridUpdate();
     setGrid(pos.row, pos.col, "value", value);
-    updateErrors(pos, grid);
+    getPeers(pos).forEach((p) => {
+      setErrorStore(p.row, p.col, calculateCellError(grid, p));
+      incrementErrorUpdate();
+    });
   };
 
   return (
