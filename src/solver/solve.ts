@@ -107,8 +107,12 @@ const findMRVCell = (
  * Result of backtracking search in a subtree.
  * - `found`: A solution was found in this subtree
  * - `notFound`: No solution exists in this subtree, try other branches
+ * - `timeout`: Step limit exceeded, search incomplete
  */
-type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" };
+type BacktrackResult =
+  | { tag: "found"; grid: Grid }
+  | { tag: "notFound" }
+  | { tag: "timeout" };
 
 /**
  * Recursive backtracking search with constraint propagation.
@@ -127,7 +131,7 @@ const backtrack = (
   remainingSteps: number,
 ): BacktrackResult => {
   if (remainingSteps <= 0) {
-    return { tag: "notFound" };
+    return { tag: "timeout" };
   }
 
   if (domain.size === 0) {
@@ -150,7 +154,7 @@ const backtrack = (
       updateDomainResult.domain,
       remainingSteps - 1,
     );
-    if (childResult.tag === "found") {
+    if (childResult.tag === "found" || childResult.tag === "timeout") {
       return childResult;
     }
   }
@@ -162,8 +166,12 @@ const backtrack = (
  * Result of solving a Sudoku puzzle.
  * - `solved`: A valid solution was found
  * - `timeout`: Step limit exceeded before finding a solution
+ * - `unsolvable`: No solution exists (all branches exhausted)
  */
-export type SolveResult = { tag: "solved"; grid: Grid } | { tag: "timeout" };
+export type SolveResult =
+  | { tag: "solved"; grid: Grid }
+  | { tag: "timeout" }
+  | { tag: "unsolvable" };
 
 /**
  * Solves a Sudoku puzzle using constraint propagation and backtracking.
@@ -189,7 +197,12 @@ export const solve = (
 ): SolveResult => {
   const domain = calcDomain(grid);
   const result = backtrack(grid, domain, stepLimit);
-  return result.tag === "found"
-    ? { tag: "solved", grid: result.grid }
-    : { tag: "timeout" };
+  switch (result.tag) {
+    case "found":
+      return { tag: "solved", grid: result.grid };
+    case "timeout":
+      return { tag: "timeout" };
+    case "notFound":
+      return { tag: "unsolvable" };
+  }
 };
