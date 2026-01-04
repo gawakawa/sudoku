@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { solve } from "../../src/solver/solve.ts";
-import { createEmptyGrid } from "../../src/generator/createEmptyGrid.ts";
+import { initGrid } from "../../src/lib/initGrid.ts";
 import type { Digit, Grid } from "../../src/types/Sudoku.ts";
 
 // Helper functions for validation
@@ -26,14 +26,14 @@ const hasAllDigits = (values: (Digit | undefined)[]): boolean => {
 
 describe("solve", () => {
   it("should return solved tag for empty grid", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     const result = solve(grid);
 
     expect(result.tag).toBe("solved");
   });
 
   it("should fill all 81 cells with values", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     const result = solve(grid);
 
     expect(result.tag).toBe("solved");
@@ -46,7 +46,7 @@ describe("solve", () => {
   });
 
   it("should have each digit 1-9 in every row", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     const result = solve(grid);
 
     expect(result.tag).toBe("solved");
@@ -58,7 +58,7 @@ describe("solve", () => {
   });
 
   it("should have each digit 1-9 in every column", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     const result = solve(grid);
 
     expect(result.tag).toBe("solved");
@@ -70,7 +70,7 @@ describe("solve", () => {
   });
 
   it("should have each digit 1-9 in every 3x3 block", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     const result = solve(grid);
 
     expect(result.tag).toBe("solved");
@@ -86,7 +86,7 @@ describe("solve", () => {
   });
 
   it("should return unsolvable for grid where a cell has no candidates", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     // Fill row 4 with 8 digits (leaving cell (4,4) empty)
     grid[4][0] = { value: 1, isInitial: true };
     grid[4][1] = { value: 2, isInitial: true };
@@ -106,13 +106,13 @@ describe("solve", () => {
   });
 
   it("should return timeout when step limit is exceeded", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     const result = solve(grid, 1);
     expect(result.tag).toBe("timeout");
   });
 
   it("should preserve already filled cells", () => {
-    const grid = createEmptyGrid();
+    const grid = initGrid();
     // Set some initial values
     grid[0][0] = { value: 5, isInitial: true };
     grid[4][4] = { value: 9, isInitial: true };

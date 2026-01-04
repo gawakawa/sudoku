@@ -1,12 +1,8 @@
 import type { Digit, Grid } from "../../src/types/Sudoku.ts";
-import { createEmptyGrid } from "../../src/generator/createEmptyGrid.ts";
+import { initGrid } from "../../src/lib/initGrid.ts";
 import { solveWithMetrics } from "./solve.ts";
 import type { BlockConfig } from "./types.ts";
-
-/**
- * All valid Sudoku digits.
- */
-const digits: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+import { DIGITS } from "../../src/const.ts";
 
 /**
  * Fill a 3x3 block in the grid with given values.
@@ -17,7 +13,7 @@ const fillBlock = (
   startCol: number,
   values: readonly Digit[],
 ): Grid => {
-  const offsets = [0, 1, 2];
+  const offsets = [0, 1, 2] as const;
   const newGrid = grid.map((row) => [...row]);
   offsets.forEach((dr) =>
     offsets.forEach((dc) => {
@@ -34,10 +30,10 @@ const fillBlock = (
  * Create a grid with three diagonal blocks filled from config.
  */
 export const createGridFromBlocks = (config: BlockConfig): Grid => {
-  const blockStarts = [0, 3, 6];
+  const blockStarts = [0, 3, 6] as const;
   return blockStarts.reduce(
     (grid, start, idx) => fillBlock(grid, start, start, config[idx]),
-    createEmptyGrid(),
+    initGrid(),
   );
 };
 
@@ -71,7 +67,7 @@ export const evaluateConfig = (
  * Generate a shuffled array of digits 1-9 using Fisher-Yates algorithm.
  */
 export const shuffleDigits = (): Digit[] => {
-  const arr = [...digits];
+  const arr = [...DIGITS];
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];

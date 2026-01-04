@@ -1,14 +1,15 @@
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 import { makePosition } from "../types/Sudoku.ts";
-import { createEmptyGrid } from "./createEmptyGrid.ts";
+import { initGrid } from "../lib/initGrid.ts";
 import { solve } from "../solver/solve.ts";
+import { DIGITS } from "../const.ts";
 
 /**
  * Generate a shuffled array of digits 1-9 using Fisher-Yates algorithm
  * @returns Randomly shuffled array of digits 1-9
  */
 const shuffleDigits = (): Digit[] => {
-  const digits: Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  const digits: Digit[] = [...DIGITS];
   const factorial = digits.reduce<number>((a, b) => a * b, 1);
   const r = Math.floor(Math.random() * factorial);
   for (let i = 8, q = r; i > 0; i--) {
@@ -27,7 +28,7 @@ const shuffleDigits = (): Digit[] => {
  * @returns New grid with the block filled
  */
 const fillBlock = (grid: Grid, startPos: Position, values: Digit[]): Grid => {
-  const offsets = [0, 1, 2];
+  const offsets = [0, 1, 2] as const;
   const newGrid = grid.map((row) => [...row]);
   offsets.forEach((dr) =>
     offsets.forEach((dc) => {
@@ -46,7 +47,7 @@ const fillBlock = (grid: Grid, startPos: Position, values: Digit[]): Grid => {
  * @returns Grid with diagonal blocks filled with random permutations
  */
 const generateDiagonalBlocks = (): Grid => {
-  const blockStarts = [0, 3, 6];
+  const blockStarts = [0, 3, 6] as const;
   return blockStarts.reduce(
     (grid, start) =>
       fillBlock(
@@ -54,7 +55,7 @@ const generateDiagonalBlocks = (): Grid => {
         makePosition({ row: start, col: start }),
         shuffleDigits(),
       ),
-    createEmptyGrid(),
+    initGrid(),
   );
 };
 

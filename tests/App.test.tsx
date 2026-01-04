@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { App } from "../src/App.tsx";
 import * as generateInitialGridModule from "../src/generator/generateInitialGrid.ts";
-import { createEmptyGrid } from "../src/generator/createEmptyGrid.ts";
+import { initGrid } from "../src/lib/initGrid.ts";
 import type { Grid } from "../src/types/Sudoku.ts";
 
 describe("<App />", () => {
@@ -65,7 +65,7 @@ describe("<App />", () => {
   });
 
   test("it marks cells with hasError when duplicates are detected in a row", () => {
-    const mockGrid: Grid = createEmptyGrid();
+    const mockGrid: Grid = initGrid();
 
     vi.spyOn(generateInitialGridModule, "generateInitialGrid").mockReturnValue(
       mockGrid,
@@ -91,7 +91,7 @@ describe("<App />", () => {
   });
 
   test("it marks cells with hasError when duplicates are detected in a column", () => {
-    const mockGrid: Grid = createEmptyGrid();
+    const mockGrid: Grid = initGrid();
 
     vi.spyOn(generateInitialGridModule, "generateInitialGrid").mockReturnValue(
       mockGrid,
@@ -116,7 +116,7 @@ describe("<App />", () => {
   });
 
   test("it marks cells with hasError when duplicates are detected in a 3x3 block", () => {
-    const mockGrid: Grid = createEmptyGrid();
+    const mockGrid: Grid = initGrid();
 
     vi.spyOn(generateInitialGridModule, "generateInitialGrid").mockReturnValue(
       mockGrid,
@@ -141,7 +141,7 @@ describe("<App />", () => {
   });
 
   test("it clears hasError flag when duplicate is resolved", () => {
-    const mockGrid: Grid = createEmptyGrid();
+    const mockGrid: Grid = initGrid();
 
     vi.spyOn(generateInitialGridModule, "generateInitialGrid").mockReturnValue(
       mockGrid,
@@ -174,7 +174,7 @@ describe("<App />", () => {
   });
 
   test("it clears hasError flag when duplicate is removed by clearing a cell", () => {
-    const mockGrid: Grid = createEmptyGrid();
+    const mockGrid: Grid = initGrid();
 
     vi.spyOn(generateInitialGridModule, "generateInitialGrid").mockReturnValue(
       mockGrid,
@@ -207,7 +207,7 @@ describe("<App />", () => {
   });
 
   test("it handles multiple simultaneous duplicates correctly", () => {
-    const mockGrid: Grid = createEmptyGrid();
+    const mockGrid: Grid = initGrid();
 
     vi.spyOn(generateInitialGridModule, "generateInitialGrid").mockReturnValue(
       mockGrid,

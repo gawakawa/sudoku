@@ -1,6 +1,6 @@
 import type { Grid, Position } from "../types/Sudoku.ts";
 import { makePosition } from "../types/Sudoku.ts";
-import { emptyCell } from "./createEmptyGrid.ts";
+import { initCell } from "../lib/initGrid.ts";
 import { generateCompleteGrid } from "./generateCompleteGrid.ts";
 
 /**
@@ -37,7 +37,7 @@ export const removeCells = (grid: Grid, positions: Position[]): Grid => {
   return grid.map((row, rowIndex) =>
     row.map((cell, colIndex) =>
       positions.some((pos) => pos.row === rowIndex && pos.col === colIndex)
-        ? { ...emptyCell }
+        ? initCell()
         : cell
     )
   );

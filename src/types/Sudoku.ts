@@ -1,9 +1,10 @@
 import { Record } from "immutable";
+import { DIGITS } from "../const.ts";
 
 /**
  * Digit value in a cell (1-9)
  */
-export type Digit = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type Digit = (typeof DIGITS)[number];
 
 /**
  * Value that can be assigned to a cell (Digit or empty)

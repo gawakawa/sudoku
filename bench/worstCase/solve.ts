@@ -10,12 +10,12 @@ import { Map, Set } from "immutable";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../../src/types/Sudoku.ts";
 import { getPeers, indices } from "../../src/lib/getPeers.ts";
+import { DIGITS } from "../../src/const.ts";
 
 type Candidates = Set<Digit>;
 type Domain = Map<Position, Candidates>;
 
-const digits: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const allDigits: Candidates = Set(digits);
+const allDigits: Candidates = Set(DIGITS);
 
 const calcDomain = (grid: Grid): Domain => {
   const entries: [Position, Candidates][] = indices.flatMap((row) =>

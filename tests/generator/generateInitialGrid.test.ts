@@ -5,7 +5,7 @@ import {
 } from "../../src/generator/generateInitialGrid.ts";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Grid, Position } from "../../src/types/Sudoku.ts";
-import { emptyCell } from "../../src/generator/createEmptyGrid.ts";
+import { initCell } from "../../src/lib/initGrid.ts";
 import { solve } from "../../src/solver/solve.ts";
 
 describe("removeCells", () => {
@@ -111,7 +111,7 @@ describe("removeCells", () => {
     expect(result[1][1].value).toBe(2);
   });
 
-  it("should create new cell objects, not reference emptyCell directly", () => {
+  it("should create new cell objects, not shared references", () => {
     const grid = createTestGrid();
     const positions = [
       makePosition({ row: 0, col: 0 }),
@@ -123,7 +123,8 @@ describe("removeCells", () => {
     // Modifying one cell should not affect another
     result[0][0].value = 5;
     expect(result[0][1].value).toBeUndefined();
-    expect(emptyCell.value).toBeUndefined();
+    // initCell() returns a new cell each time, so no shared reference issue
+    expect(initCell().value).toBeUndefined();
   });
 });
 

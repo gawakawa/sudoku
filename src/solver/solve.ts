@@ -2,6 +2,7 @@ import { Map, Set } from "immutable";
 import { makePosition } from "../types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 import { getPeers, indices } from "../lib/getPeers.ts";
+import { DIGITS } from "../const.ts";
 
 /**
  * Possible digits for a cell: undetermined (size > 1), determined (singleton), or impossible (empty).
@@ -23,11 +24,8 @@ type CandidateSet = Set<Digit>;
  */
 type RemainingCandidateSets = Map<Position, CandidateSet>;
 
-/** All valid Sudoku digits (1-9). */
-const digits: readonly Digit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
 /** Set containing all digits, used as initial candidates for empty cells. */
-const allDigits: CandidateSet = Set(digits);
+const allDigits: CandidateSet = Set(DIGITS);
 
 /** Initializes RemainingCandidateSets with undetermined cells only (where grid value is undefined). */
 const getRemainingCandidateSets = (grid: Grid): RemainingCandidateSets => {
