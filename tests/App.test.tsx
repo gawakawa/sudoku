@@ -3,7 +3,7 @@ import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 import { App } from "../src/App.tsx";
 import * as generateInitialGridModule from "../src/generator/generateInitialGrid.ts";
-import { initGrid } from "../src/lib/initGrid.ts";
+import { initGrid } from "../src/grid/initGrid.ts";
 import type { Grid } from "../src/types/Sudoku.ts";
 
 describe("<App />", () => {

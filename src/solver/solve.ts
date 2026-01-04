@@ -1,7 +1,7 @@
 import { Map, Set } from "immutable";
 import { makePosition } from "../types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
-import { getPeers, indices } from "../lib/getPeers.ts";
+import { getPeers, indices } from "../grid/getPeers.ts";
 import { DIGITS } from "../const.ts";
 
 /**

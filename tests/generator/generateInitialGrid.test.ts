@@ -5,7 +5,7 @@ import {
 } from "../../src/generator/generateInitialGrid.ts";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Grid, Position } from "../../src/types/Sudoku.ts";
-import { initCell } from "../../src/lib/initGrid.ts";
+import { initCell } from "../../src/grid/initGrid.ts";
 import { solve } from "../../src/solver/solve.ts";
 
 describe("removeCells", () => {

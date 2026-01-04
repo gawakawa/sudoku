@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { solve } from "../../src/solver/solve.ts";
-import { initGrid } from "../../src/lib/initGrid.ts";
+import { initGrid } from "../../src/grid/initGrid.ts";
 import type { Digit, Grid } from "../../src/types/Sudoku.ts";
 
 // Helper functions for validation

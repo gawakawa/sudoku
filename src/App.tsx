@@ -3,7 +3,7 @@ import type { Component } from "solid-js";
 import { SudokuGrid } from "./components/SudokuGrid.tsx";
 import type { CellValue, Grid, Position } from "./types/Sudoku.ts";
 import { generateInitialGrid } from "./generator/generateInitialGrid.ts";
-import { useErrorStore } from "./lib/useErrorStore.ts";
+import { useErrorStore } from "./stores/useErrorStore.ts";
 import { incrementAppRender, incrementGridUpdate } from "./lib/metrics.ts";
 
 /**

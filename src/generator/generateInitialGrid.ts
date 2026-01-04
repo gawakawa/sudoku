@@ -1,6 +1,6 @@
 import type { Grid, Position } from "../types/Sudoku.ts";
 import { makePosition } from "../types/Sudoku.ts";
-import { initCell } from "../lib/initGrid.ts";
+import { initCell } from "../grid/initGrid.ts";
 import { generateCompleteGrid } from "./generateCompleteGrid.ts";
 
 /**

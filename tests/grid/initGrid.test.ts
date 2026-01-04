@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { initCell, initGrid } from "../../src/lib/initGrid.ts";
+import { initCell, initGrid } from "../../src/grid/initGrid.ts";
 
 describe("initCell", () => {
   it("should have undefined value", () => {

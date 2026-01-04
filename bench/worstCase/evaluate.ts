@@ -1,5 +1,5 @@
 import type { Digit, Grid } from "../../src/types/Sudoku.ts";
-import { initGrid } from "../../src/lib/initGrid.ts";
+import { initGrid } from "../../src/grid/initGrid.ts";
 import { solveWithMetrics } from "./solve.ts";
 import type { BlockConfig } from "./types.ts";
 import { DIGITS } from "../../src/const.ts";

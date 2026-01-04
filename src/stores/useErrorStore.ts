@@ -1,7 +1,7 @@
 import { createStore } from "solid-js/store";
 import type { Grid, Position } from "../types/Sudoku.ts";
-import { getPeers, indices, offsets } from "./getPeers.ts";
-import { incrementErrorUpdate } from "./metrics.ts";
+import { getPeers, indices, offsets } from "../grid/getPeers.ts";
+import { incrementErrorUpdate } from "../lib/metrics.ts";
 
 type ErrorStore = boolean[][];
 

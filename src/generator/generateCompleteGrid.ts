@@ -1,6 +1,6 @@
 import type { Digit, Grid, Position } from "../types/Sudoku.ts";
 import { makePosition } from "../types/Sudoku.ts";
-import { initGrid } from "../lib/initGrid.ts";
+import { initGrid } from "../grid/initGrid.ts";
 import { solve } from "../solver/solve.ts";
 import { DIGITS } from "../const.ts";
 

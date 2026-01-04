@@ -9,7 +9,7 @@
 import { Map, Set } from "immutable";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Digit, Grid, Position } from "../../src/types/Sudoku.ts";
-import { getPeers, indices } from "../../src/lib/getPeers.ts";
+import { getPeers, indices } from "../../src/grid/getPeers.ts";
 import { DIGITS } from "../../src/const.ts";
 
 type Candidates = Set<Digit>;
