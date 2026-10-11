@@ -10,21 +10,19 @@ import Test.QuickCheck (Result(..), (===))
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (Gen, elements, oneOf)
 import Test.Spec (Spec, describe, it)
-import Test.Spec.QuickCheck (quickCheck, quickCheck')
+import Test.Spec.QuickCheck (quickCheck)
 import Test.Sudoku.Gen (genEnum)
 
 -- | Strings near the ones `encode` produces, which `decode` must not accept
 -- | unless they are exactly an encoding. Arbitrary strings alone would almost
--- | always decode to `Nothing` and check nothing.
+-- | always decode to `Nothing` and check nothing. Adding to only one side keeps
+-- | the near misses to 8 strings per value, so each comes up often.
 genText :: forall @a. Codec a => BoundedEnum a => Gen String
-genText = oneOf (cons' arbitrary [ affixed ])
+genText = oneOf (cons' arbitrary [ prefixed, suffixed ])
   where
-  affixed = do
-    x <- genEnum @a
-    before <- elements junk
-    after <- elements junk
-    pure (before <> encode x <> after)
-  junk = cons' "" [ "0", "+", " ", "1" ]
+  prefixed = (\j x -> j <> encode x) <$> elements junk <*> genEnum @a
+  suffixed = (\x j -> encode x <> j) <$> genEnum @a <*> elements junk
+  junk = cons' "0" [ "+", " ", "1" ]
 
 codecLaws :: forall @a. Codec a => BoundedEnum a => Show a => Spec Unit
 codecLaws = do
@@ -33,8 +31,7 @@ codecLaws = do
       x <- genEnum @a
       pure (decode (encode x) === Just x)
   it "encodes back what it decoded" do
-    -- Only about 1 in 50 samples is one particular affixed string
-    quickCheck' 1000 do
+    quickCheck do
       s <- genText @a
       pure case decode s :: Maybe a of
         Nothing -> Success
