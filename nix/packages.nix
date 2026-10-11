@@ -82,9 +82,11 @@
         "arrays"
         "effect"
         "enums"
+        "foldable-traversable"
         "maybe"
         "ordered-collections"
         "prelude"
+        "tuples"
 
         (with-solid purs-solid [
           "Solid.Action"

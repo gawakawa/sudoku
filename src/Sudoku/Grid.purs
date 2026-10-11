@@ -5,6 +5,7 @@ module Sudoku.Grid
   , valueAt
   , getPeers
   , calculateCellError
+  , modifyCell
   , setValue
   , peerErrors
   ) where
@@ -50,10 +51,13 @@ calculateCellError grid pos = case valueAt grid pos of
   value -> any (\p -> p /= pos && valueAt grid p == value)
     (Set.toUnfoldable (getPeers pos))
 
-setValue :: Position -> CellValue -> Grid -> Grid
-setValue p value = mapWithIndex \r -> mapWithIndex \c cell ->
-  if r == fromEnum p.row && c == fromEnum p.col then cell { value = value }
+modifyCell :: Position -> (Cell -> Cell) -> Grid -> Grid
+modifyCell p f = mapWithIndex \r -> mapWithIndex \c cell ->
+  if r == fromEnum p.row && c == fromEnum p.col then f cell
   else cell
+
+setValue :: Position -> CellValue -> Grid -> Grid
+setValue p value = modifyCell p _ { value = value }
 
 -- | Error state of every peer of `pos`, computed from `grid` alone. Solid 2.0
 -- | batches store writes, so callers pass the next grid instead of reading the

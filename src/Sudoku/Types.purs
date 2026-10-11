@@ -6,6 +6,7 @@ module Sudoku.Types
   , Cell
   , Grid
   , indices
+  , positions
   , blockOf
   , class Codec
   , encode
@@ -115,6 +116,13 @@ type Grid = Array (Array Cell)
 
 indices :: Array Index
 indices = enumFromTo bottom top
+
+-- | All 81 positions, row by row.
+positions :: Array Position
+positions = do
+  row <- indices
+  col <- indices
+  pure { row, col }
 
 -- | The three indices of the 3x3 block containing the given index.
 blockOf :: Index -> Array Index
