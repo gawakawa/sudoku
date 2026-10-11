@@ -81,6 +81,8 @@
       dependencies = [
         "arrays"
         "effect"
+        "enums"
+        "integers"
         "maybe"
         "ordered-collections"
         "prelude"
