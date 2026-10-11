@@ -1,7 +1,7 @@
 module Sudoku.Types
   ( Digit(..)
   , Index(..)
-  , Position(..)
+  , Position
   , CellValue
   , Cell
   , Grid
@@ -104,30 +104,7 @@ instance BoundedEnum Index where
     I7 -> 7
     I8 -> 8
 
-newtype Position = Position { row :: Index, col :: Index }
-
-derive newtype instance Eq Position
-derive newtype instance Ord Position
-derive newtype instance Show Position
-
-instance Bounded Position where
-  bottom = Position { row: bottom, col: bottom }
-  top = Position { row: top, col: top }
-
-instance Enum Position where
-  succ = defaultSucc toEnum fromEnum
-  pred = defaultPred toEnum fromEnum
-
--- | `fromEnum` is the cell id: `row * 9 + col`, in 0..80.
-instance BoundedEnum Position where
-  cardinality = Cardinality 81
-  toEnum n
-    | n >= 0 && n < 81 = do
-        row <- toEnum (n / 9)
-        col <- toEnum (n `mod` 9)
-        Just (Position { row, col })
-    | otherwise = Nothing
-  fromEnum (Position { row, col }) = fromEnum row * 9 + fromEnum col
+type Position = { row :: Index, col :: Index }
 
 type CellValue = Maybe Digit
 
@@ -157,18 +134,8 @@ class Codec a where
   encode :: a -> String
   decode :: String -> Maybe a
 
+-- | `decode` accepts exactly the strings `encode` produces, so `"05"` and
+-- | `"+5"` are rejected.
 instance Codec Digit where
-  encode = encodeEnum
-  decode = decodeEnum encodeEnum
-
-instance Codec Index where
-  encode = encodeEnum
-  decode = decodeEnum encodeEnum
-
-encodeEnum :: forall a. BoundedEnum a => a -> String
-encodeEnum = show <<< fromEnum
-
--- | Accepts exactly the strings `encode` produces, so `"05"` and `"+5"` are
--- | rejected.
-decodeEnum :: forall a. BoundedEnum a => (a -> String) -> String -> Maybe a
-decodeEnum encode' s = find (\x -> encode' x == s) (enumFromTo bottom top)
+  encode = show <<< fromEnum
+  decode s = find (\d -> encode d == s) (enumFromTo bottom top)

@@ -5,7 +5,7 @@ import Prelude
 import Data.Array.NonEmpty (cons')
 import Data.Enum (class BoundedEnum)
 import Data.Maybe (Maybe(..))
-import Sudoku.Types (class Codec, Digit, Index, decode, encode)
+import Sudoku.Types (class Codec, Digit, decode, encode)
 import Test.QuickCheck (Result(..), (===))
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (Gen, elements, oneOf)
@@ -40,4 +40,3 @@ codecLaws = do
 spec :: Spec Unit
 spec = do
   describe "Codec Digit" (codecLaws @Digit)
-  describe "Codec Index" (codecLaws @Index)

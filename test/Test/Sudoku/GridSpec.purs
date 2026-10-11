@@ -5,7 +5,7 @@ import Prelude
 import Data.Enum (fromEnum)
 import Data.Set as Set
 import Sudoku.Grid (getPeers, setValue, valueAt)
-import Sudoku.Types (Position(..))
+import Sudoku.Types (Position)
 import Test.QuickCheck ((===))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.QuickCheck (quickCheck)
@@ -13,7 +13,7 @@ import Test.Sudoku.Gen (genCellValue, genGrid, genPosition)
 
 -- | Written without `blockOf`, so it is independent of `getPeers`.
 sharesUnit :: Position -> Position -> Boolean
-sharesUnit (Position a) (Position b) =
+sharesUnit a b =
   a.row == b.row
     || a.col == b.col
     || (block a.row == block b.row && block a.col == block b.col)

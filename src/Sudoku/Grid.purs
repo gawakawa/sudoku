@@ -16,7 +16,7 @@ import Data.Enum (fromEnum)
 import Data.Maybe (Maybe(..))
 import Data.Set (Set)
 import Data.Set as Set
-import Sudoku.Types (Cell, CellValue, Grid, Position(..), blockOf, indices)
+import Sudoku.Types (Cell, CellValue, Grid, Position, blockOf, indices)
 
 initCell :: Cell
 initCell = { value: Nothing, isInitial: false }
@@ -25,7 +25,7 @@ initGrid :: Grid
 initGrid = indices <#> \_ -> indices <#> \_ -> initCell
 
 cellAt :: Grid -> Position -> Maybe Cell
-cellAt grid (Position { row, col }) =
+cellAt grid { row, col } =
   index grid (fromEnum row) >>= \cells -> index cells (fromEnum col)
 
 valueAt :: Grid -> Position -> CellValue
@@ -33,15 +33,15 @@ valueAt grid pos = cellAt grid pos >>= _.value
 
 -- | The 21 positions sharing a row, column or block with `pos`, `pos` included.
 getPeers :: Position -> Set Position
-getPeers (Position { row, col }) =
+getPeers { row, col } =
   Set.fromFoldable (rowPeers <> colPeers <> blockPeers)
   where
-  rowPeers = indices <#> \c -> Position { row, col: c }
-  colPeers = indices <#> \r -> Position { row: r, col }
+  rowPeers = indices <#> \c -> { row, col: c }
+  colPeers = indices <#> \r -> { row: r, col }
   blockPeers = do
     r <- blockOf row
     c <- blockOf col
-    pure (Position { row: r, col: c })
+    pure { row: r, col: c }
 
 -- | Whether another cell in the row, column or block holds the same value.
 calculateCellError :: Grid -> Position -> Boolean
@@ -51,7 +51,7 @@ calculateCellError grid pos = case valueAt grid pos of
     (Set.toUnfoldable (getPeers pos))
 
 setValue :: Position -> CellValue -> Grid -> Grid
-setValue (Position p) value = mapWithIndex \r -> mapWithIndex \c cell ->
+setValue p value = mapWithIndex \r -> mapWithIndex \c cell ->
   if r == fromEnum p.row && c == fromEnum p.col then cell { value = value }
   else cell
 

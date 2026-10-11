@@ -18,7 +18,7 @@ genEnum :: forall @a. BoundedEnum a => Gen a
 genEnum = elements (enumFromTo bottom top :: NonEmptyArray a)
 
 genPosition :: Gen Position
-genPosition = genEnum
+genPosition = { row: _, col: _ } <$> genEnum <*> genEnum
 
 genCellValue :: Gen CellValue
 genCellValue = oneOf (cons' (pure Nothing) [ Just <$> genEnum ])
