@@ -2,7 +2,7 @@
 
 ## Usage
 
-Play online: https://sudoku.gawakawa.deno.net/
+Play online: https://sudoku.i0ta.dev/
 
 ## Features
 
@@ -38,7 +38,8 @@ Play online: https://sudoku.gawakawa.deno.net/
 ├── tests                             # Vitest component tests
 ├── deno.json                         # Deno config and dependencies
 ├── flake.nix                         # Nix development environment
-└── vite.config.ts                    # Vite build config
+├── vite.config.ts                    # Vite build config
+└── wrangler.jsonc                    # Cloudflare Workers (static assets) config
 ```
 
 ## Requirements
@@ -70,4 +71,7 @@ deno task build
 
 # Preview production build
 deno task preview
+
+# Deploy to Cloudflare Workers (run `deno task build` first)
+npm run deploy
 ```
