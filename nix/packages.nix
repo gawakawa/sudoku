@@ -79,7 +79,10 @@
         };
 
       dependencies = [
+        "arrays"
         "effect"
+        "maybe"
+        "ordered-collections"
         "prelude"
 
         (with-solid purs-solid [
@@ -127,7 +130,7 @@
 
       packages = {
         default = ps.output { };
-        # `purs-nix compile` also compiles test/, which the DOM tests need
+        # `purs-nix test` compiles test/ too, which the DOM tests need
         purs-nix = ps.command { };
         ci = pkgs.buildEnv {
           name = "ci";
