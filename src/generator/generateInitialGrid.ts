@@ -24,7 +24,7 @@ const generateRandomPositions = (): Position[] =>
     makePosition({
       row: Math.floor(index / 9),
       col: index % 9,
-    })
+    }),
   );
 
 /**
@@ -36,10 +36,8 @@ const generateRandomPositions = (): Position[] =>
 export const removeCells = (grid: Grid, positions: Position[]): Grid => {
   return grid.map((row, rowIndex) =>
     row.map((cell, colIndex) =>
-      positions.some((pos) => pos.row === rowIndex && pos.col === colIndex)
-        ? initCell()
-        : cell
-    )
+      positions.some((pos) => pos.row === rowIndex && pos.col === colIndex) ? initCell() : cell,
+    ),
   );
 };
 

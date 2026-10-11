@@ -59,10 +59,7 @@ export const getMetricsSnapshot = (): MetricsData => {
     cellUpdates: new Uint32Array(cellUpdates), // Copy to avoid mutation
     appRenders,
     gridRenders,
-    totalCellUpdates: cellUpdates.reduce<number>(
-      (sum, count) => sum + count,
-      0,
-    ),
+    totalCellUpdates: cellUpdates.reduce<number>((sum, count) => sum + count, 0),
     gridUpdates,
     errorUpdates,
   };

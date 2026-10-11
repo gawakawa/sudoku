@@ -19,9 +19,7 @@ export const getBlockPeers = (pos: Position): Set<Position> => {
   const blockColStart = Math.floor(pos.col / 3) * 3;
   return Set(
     offsets.flatMap((dr) =>
-      offsets.map((dc) =>
-        makePosition({ row: blockRowStart + dr, col: blockColStart + dc })
-      )
+      offsets.map((dc) => makePosition({ row: blockRowStart + dr, col: blockColStart + dc })),
     ),
   );
 };

@@ -6,6 +6,6 @@
   // Static SPA only: no Worker script, Vite's dist/ is served as assets.
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  }
+    "not_found_handling": "single-page-application",
+  },
 }

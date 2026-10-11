@@ -1,8 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  generateInitialGrid,
-  removeCells,
-} from "../../src/generator/generateInitialGrid.ts";
+import { generateInitialGrid, removeCells } from "../../src/generator/generateInitialGrid.ts";
 import { makePosition } from "../../src/types/Sudoku.ts";
 import type { Grid, Position } from "../../src/types/Sudoku.ts";
 import { initCell } from "../../src/grid/initGrid.ts";
@@ -11,22 +8,11 @@ import { solve } from "../../src/solver/solve.ts";
 describe("removeCells", () => {
   // Helper to create a simple test grid
   const createTestGrid = (): Grid => {
-    return Array.from(
-      { length: 9 },
-      (_, row) =>
-        Array.from({ length: 9 }, (_, col) => ({
-          value: ((row * 9 + col + 1) % 9 || 9) as
-            | 1
-            | 2
-            | 3
-            | 4
-            | 5
-            | 6
-            | 7
-            | 8
-            | 9,
-          isInitial: true,
-        })),
+    return Array.from({ length: 9 }, (_, row) =>
+      Array.from({ length: 9 }, (_, col) => ({
+        value: ((row * 9 + col + 1) % 9 || 9) as 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9,
+        isInitial: true,
+      })),
     );
   };
 
@@ -113,10 +99,7 @@ describe("removeCells", () => {
 
   it("should create new cell objects, not shared references", () => {
     const grid = createTestGrid();
-    const positions = [
-      makePosition({ row: 0, col: 0 }),
-      makePosition({ row: 0, col: 1 }),
-    ];
+    const positions = [makePosition({ row: 0, col: 0 }), makePosition({ row: 0, col: 1 })];
 
     const result = removeCells(grid, positions);
 

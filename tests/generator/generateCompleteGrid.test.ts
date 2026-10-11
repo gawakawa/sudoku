@@ -9,13 +9,9 @@ const getRow = (grid: Grid, row: number): (Digit | undefined)[] =>
 const getCol = (grid: Grid, col: number): (Digit | undefined)[] =>
   grid.map((row) => row[col].value);
 
-const getBlock = (
-  grid: Grid,
-  blockRow: number,
-  blockCol: number,
-): (Digit | undefined)[] =>
+const getBlock = (grid: Grid, blockRow: number, blockCol: number): (Digit | undefined)[] =>
   [0, 1, 2].flatMap((dr) =>
-    [0, 1, 2].map((dc) => grid[blockRow * 3 + dr][blockCol * 3 + dc].value)
+    [0, 1, 2].map((dc) => grid[blockRow * 3 + dr][blockCol * 3 + dc].value),
   );
 
 const hasAllDigits = (values: (Digit | undefined)[]): boolean => {
@@ -27,9 +23,7 @@ describe("generateCompleteGrid", () => {
   it("should fill all 81 cells", () => {
     const grid = generateCompleteGrid();
 
-    const filledCount = grid
-      .flat()
-      .filter((cell) => cell.value !== undefined).length;
+    const filledCount = grid.flat().filter((cell) => cell.value !== undefined).length;
     expect(filledCount).toBe(81);
   });
 

@@ -10,13 +10,9 @@ const getRow = (grid: Grid, row: number): (Digit | undefined)[] =>
 const getCol = (grid: Grid, col: number): (Digit | undefined)[] =>
   grid.map((row) => row[col].value);
 
-const getBlock = (
-  grid: Grid,
-  blockRow: number,
-  blockCol: number,
-): (Digit | undefined)[] =>
+const getBlock = (grid: Grid, blockRow: number, blockCol: number): (Digit | undefined)[] =>
   [0, 1, 2].flatMap((dr) =>
-    [0, 1, 2].map((dc) => grid[blockRow * 3 + dr][blockCol * 3 + dc].value)
+    [0, 1, 2].map((dc) => grid[blockRow * 3 + dr][blockCol * 3 + dc].value),
   );
 
 const hasAllDigits = (values: (Digit | undefined)[]): boolean => {
@@ -39,9 +35,7 @@ describe("solve", () => {
     expect(result.tag).toBe("solved");
     if (result.tag !== "solved") return;
 
-    const filledCount = result.grid
-      .flat()
-      .filter((cell) => cell.value !== undefined).length;
+    const filledCount = result.grid.flat().filter((cell) => cell.value !== undefined).length;
     expect(filledCount).toBe(81);
   });
 
@@ -78,9 +72,7 @@ describe("solve", () => {
 
     [0, 1, 2].forEach((blockRow) => {
       [0, 1, 2].forEach((blockCol) => {
-        expect(hasAllDigits(getBlock(result.grid, blockRow, blockCol))).toBe(
-          true,
-        );
+        expect(hasAllDigits(getBlock(result.grid, blockRow, blockCol))).toBe(true);
       });
     });
   });

@@ -16,18 +16,14 @@ export const calculateCellError = (grid: Grid, pos: Position): boolean => {
   const blockColStart = Math.floor(pos.col / 3) * 3;
 
   return (
-    COL_INDICES.some((c) =>
-      c !== pos.col && grid[pos.row][c].value === value
-    ) ||
-    ROW_INDICES.some((r) =>
-      r !== pos.row && grid[r][pos.col].value === value
-    ) ||
+    COL_INDICES.some((c) => c !== pos.col && grid[pos.row][c].value === value) ||
+    ROW_INDICES.some((r) => r !== pos.row && grid[r][pos.col].value === value) ||
     offsets.some((dr) =>
       offsets.some((dc) => {
         const r = blockRowStart + dr;
         const c = blockColStart + dc;
         return (r !== pos.row || c !== pos.col) && grid[r][c].value === value;
-      })
+      }),
     )
   );
 };

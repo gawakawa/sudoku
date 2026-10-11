@@ -43,12 +43,9 @@ const getRemainingCandidateSets = (grid: Grid): RemainingCandidateSets => {
           }),
       );
 
-      const entry: [Position, CandidateSet] = [
-        pos,
-        allDigits.subtract(peerValues),
-      ];
+      const entry: [Position, CandidateSet] = [pos, allDigits.subtract(peerValues)];
       return [entry];
-    })
+    }),
   );
   return Map(entries);
 };
@@ -74,9 +71,7 @@ const updateRemainingCandidateSets = (
   const peers = getPeers(pos);
   const updated = remainingCandidateSets
     .remove(pos)
-    .map((candidates, p) =>
-      peers.has(p) ? candidates.remove(digit) : candidates
-    );
+    .map((candidates, p) => (peers.has(p) ? candidates.remove(digit) : candidates));
 
   if (updated.some((candidates) => candidates.isEmpty())) {
     return { tag: "contradiction" };
@@ -89,17 +84,15 @@ const updateRemainingCandidateSets = (
 const setCell = (grid: Grid, pos: Position, digit: Digit): Grid =>
   grid.map((row, r) =>
     row.map((cell, c) =>
-      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell
-    )
+      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell,
+    ),
   );
 
 /** MRV heuristic: select the cell with fewest candidates. Requires non-empty remainingCandidateSets. */
 const findMRVCell = (
   remainingCandidateSets: RemainingCandidateSets,
 ): { position: Position; candidates: CandidateSet } => {
-  const entry = remainingCandidateSets.entrySeq().minBy(([_, candidates]) =>
-    candidates.size
-  );
+  const entry = remainingCandidateSets.entrySeq().minBy(([_, candidates]) => candidates.size);
   return { position: entry![0], candidates: entry![1] };
 };
 
@@ -109,10 +102,7 @@ const findMRVCell = (
  * - `notFound`: No solution exists in this subtree, try other branches
  * - `timeout`: Step limit exceeded, search incomplete
  */
-type BacktrackResult =
-  | { tag: "found"; grid: Grid }
-  | { tag: "notFound" }
-  | { tag: "timeout" };
+type BacktrackResult = { tag: "found"; grid: Grid } | { tag: "notFound" } | { tag: "timeout" };
 
 /**
  * Recursive backtracking search with constraint propagation.
@@ -195,10 +185,7 @@ export type SolveResult =
  *   console.log(result.grid);
  * }
  */
-export const solve = (
-  grid: Grid,
-  stepLimit: number = Infinity,
-): SolveResult => {
+export const solve = (grid: Grid, stepLimit: number = Infinity): SolveResult => {
   const remainingCandidateSets = getRemainingCandidateSets(grid);
   const result = backtrack(grid, remainingCandidateSets, stepLimit);
   switch (result.tag) {

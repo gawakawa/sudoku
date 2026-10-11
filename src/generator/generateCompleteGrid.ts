@@ -36,7 +36,7 @@ const fillBlock = (grid: Grid, startPos: Position, values: Digit[]): Grid => {
         value: values[dr * 3 + dc],
         isInitial: true,
       };
-    })
+    }),
   );
   return newGrid;
 };
@@ -49,12 +49,7 @@ const fillBlock = (grid: Grid, startPos: Position, values: Digit[]): Grid => {
 const generateDiagonalBlocks = (): Grid => {
   const blockStarts = [0, 3, 6] as const;
   return blockStarts.reduce(
-    (grid, start) =>
-      fillBlock(
-        grid,
-        makePosition({ row: start, col: start }),
-        shuffleDigits(),
-      ),
+    (grid, start) => fillBlock(grid, makePosition({ row: start, col: start }), shuffleDigits()),
     initGrid(),
   );
 };
@@ -78,7 +73,7 @@ const fallbackPattern = [
  * Fallback grid used when solve times out
  */
 const fallbackGrid: Grid = fallbackPattern.map((row) =>
-  row.map((value) => ({ value: value as Digit, isInitial: true }))
+  row.map((value) => ({ value: value as Digit, isInitial: true })),
 );
 
 /**
