@@ -10,13 +10,10 @@ uses Deno for task execution and Nix for development environment management.
 
 ## Development Environment
 
-This project requires Nix with flakes enabled. Enter the development shell with:
-
-```bash
-nix develop
-```
-
-This auto-generates `.mcp.json` for MCP server configuration.
+This project requires Nix with flakes enabled. The development shell loads
+automatically via direnv (`use flake .`) and installs the git pre-commit hooks
+(treefmt, statix, deadnix, actionlint, zizmor, deno lint). Nix files live in
+`nix/`.
 
 ## Common Commands
 
@@ -117,10 +114,9 @@ environment. Tests are located in `tests/` mirroring the source structure.
 
 GitHub Actions CI runs:
 
-1. Format check (`nix fmt -- --ci`)
-2. Lint check (`deno lint`)
-3. Type check (`deno task check`)
-4. Component tests (`npm test`)
+1. `nix flake check` (treefmt and pre-commit hooks, including deno lint)
+2. Type check (`deno task check`)
+3. Component tests (`npm test`)
 
 Uses Nix flake's `ci` package which bundles Deno and Node.js 24.
 
