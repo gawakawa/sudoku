@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
@@ -19,6 +20,7 @@
     "solid-devtools": "^0.34.4",
     "vite": "^7.1.4",
     "vite-plugin-solid": "2.11.9",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.0",
+    "wrangler": "^4.149.0"
   }
 }

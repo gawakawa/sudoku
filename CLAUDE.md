@@ -25,6 +25,14 @@ deno task build        # Build for production
 deno task preview      # Preview production build
 ```
 
+### Deploy
+
+```bash
+npm run deploy         # Deploy dist/ to Cloudflare Workers (run deno task build first)
+```
+
+Config is `wrangler.jsonc` (static assets, custom domain `sudoku.i0ta.dev`).
+
 ### Code Quality
 
 ```bash
@@ -119,6 +127,9 @@ GitHub Actions CI runs:
 3. Component tests (`npm test`)
 
 Uses Nix flake's `ci` package which bundles Deno and Node.js 24.
+
+Pushes to `main` also run `.github/workflows/deploy.yml`, which builds and
+deploys to Cloudflare Workers via `wrangler-action`.
 
 ## Key Implementation Notes
 

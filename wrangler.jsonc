@@ -1,0 +1,11 @@
+{
+  "name": "sudoku",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "routes": [{ "pattern": "sudoku.i0ta.dev", "custom_domain": true }],
+  // Static SPA only: no Worker script, Vite's dist/ is served as assets.
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
