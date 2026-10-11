@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import type { BlockConfig } from "./types.ts";
 import type { MergedResult } from "./mergeResults.ts";
 import { evaluateConfig } from "./evaluate.ts";
@@ -14,11 +14,11 @@ const DEEP_EVAL_STEP_LIMIT = 100_000;
 const HILL_CLIMB_ITERATIONS = 500;
 
 const main = async (): Promise<void> => {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
   const inputPath = args[0] || "/tmp/merged_results.json";
 
   console.log(`Loading merged results from: ${inputPath}`);
-  const content = await Deno.readTextFile(inputPath);
+  const content = await readFile(inputPath, "utf8");
   const merged = JSON.parse(content) as MergedResult;
 
   console.log(`Found ${merged.hardCandidates.length} hard candidates\n`);
@@ -41,9 +41,7 @@ const main = async (): Promise<void> => {
   console.log(`\nTop candidate: ${evaluated[0].stepsUsed} steps\n`);
 
   // Phase C: Hill Climbing
-  console.log(
-    `[Phase C] Hill climbing (iterations=${HILL_CLIMB_ITERATIONS})...`,
-  );
+  console.log(`[Phase C] Hill climbing (iterations=${HILL_CLIMB_ITERATIONS})...`);
   const startTime = performance.now();
 
   const result = hillClimb(
@@ -66,25 +64,22 @@ const main = async (): Promise<void> => {
   console.log(`Block 0: [${result.best[0].join(", ")}]`);
   console.log(`Block 1: [${result.best[1].join(", ")}]`);
   console.log(`Block 2: [${result.best[2].join(", ")}]`);
-  console.log(
-    `Samples evaluated during hill climb: ${result.samplesEvaluated}`,
-  );
+  console.log(`Samples evaluated during hill climb: ${result.samplesEvaluated}`);
 
   // Save result
   const output = {
     timestamp: new Date().toISOString(),
     stepsUsed: result.stepsUsed,
     best: result.best,
-    samplesEvaluated: merged.totalSamples + merged.hardCandidates.length +
-      result.samplesEvaluated,
+    samplesEvaluated: merged.totalSamples + merged.hardCandidates.length + result.samplesEvaluated,
     distribution: merged.distribution,
   };
 
   const outputPath = new URL("./results/latest.json", import.meta.url).pathname;
-  await Deno.mkdir(new URL("./results", import.meta.url).pathname, {
+  await mkdir(new URL("./results", import.meta.url).pathname, {
     recursive: true,
   });
-  await Deno.writeTextFile(outputPath, JSON.stringify(output, null, 2));
+  await writeFile(outputPath, JSON.stringify(output, null, 2));
   console.log(`\nResults saved to: ${outputPath}`);
 };
 

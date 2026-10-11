@@ -27,11 +27,14 @@ jobs:
       - name: Install CI dependencies
         run: nix profile add .#ci
 
+      - name: Build PureScript output
+        run: nix build --out-link output
+
       - name: Install npm dependencies
         run: npm ci
 
       - name: Build
-        run: deno task build
+        run: npm run build
 
       - name: Deploy
         uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0

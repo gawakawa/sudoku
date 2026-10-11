@@ -1,8 +1,8 @@
-import type { Digit, Grid } from "../../src/types/Sudoku.ts";
-import { initGrid } from "../../src/grid/initGrid.ts";
+import type { Digit, Grid } from "./sudoku.ts";
+import { initGrid } from "./sudoku.ts";
 import { solveWithMetrics } from "./solve.ts";
 import type { BlockConfig } from "./types.ts";
-import { DIGITS } from "../../src/const.ts";
+import { DIGITS } from "./sudoku.ts";
 
 /**
  * Fill a 3x3 block in the grid with given values.
@@ -21,7 +21,7 @@ const fillBlock = (
         value: values[dr * 3 + dc],
         isInitial: true,
       };
-    })
+    }),
   );
   return newGrid;
 };
@@ -51,10 +51,7 @@ export type EvalResultWithLimit = {
  * @param stepLimit - Maximum steps before timeout
  * @returns Steps used and whether the limit was hit
  */
-export const evaluateConfig = (
-  config: BlockConfig,
-  stepLimit: number,
-): EvalResultWithLimit => {
+export const evaluateConfig = (config: BlockConfig, stepLimit: number): EvalResultWithLimit => {
   const grid = createGridFromBlocks(config);
   const result = solveWithMetrics(grid, stepLimit);
   return {

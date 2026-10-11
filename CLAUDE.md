@@ -5,138 +5,76 @@ code in this repository.
 
 ## Overview
 
-A Sudoku puzzle game built with SolidJS, Vite, and Tailwind CSS v4. The project
-uses Deno for task execution and Nix for development environment management.
+A Sudoku puzzle game written in PureScript on top of purs-solid (Solid 2.0
+bindings), built with purs-nix and Vite, styled with Tailwind CSS v4. It is a
+static SPA served by a single Cloudflare Worker (no backend).
+
+**Migration in progress:** the app used to be SolidJS + TypeScript. The
+TypeScript sources in `src/` (`App.tsx`, `components/`, `generator/`, `grid/`,
+`lib/`, `solver/`, `types/`) and `tests/` are the reference for the port. They
+are no longer built or tested, and are deleted as each piece is ported to
+PureScript.
 
 ## Development Environment
 
-This project requires Nix with flakes enabled. The development shell loads
-automatically via direnv (`use flake .`) and installs the git pre-commit hooks
-(treefmt, statix, deadnix, actionlint, zizmor, deno lint). Nix files live in
-`nix/`.
+Requires Nix with flakes enabled. The dev shell loads automatically via direnv
+(`use flake .`) and provides Node.js, the PureScript compiler, the `purs-nix`
+command and the git pre-commit hooks (treefmt, statix, deadnix, actionlint,
+zizmor). Nix files live in `nix/`.
+
+Dependencies are declared in `nix/packages.nix`, not in a spago file. purs-solid
+is not in the registry and is pulled in from git there; modules whose FFI
+imports npm packages (`solid-js`, `@solidjs/web`) are listed in `with-solid`
+so that `node_modules` is linked in for them.
 
 ## Common Commands
 
-### Development
-
 ```bash
-deno task dev          # Start dev server on port 3000
-deno task build        # Build for production
-deno task preview      # Preview production build
+nix fmt                # Format Nix, PureScript, JS/TS, CSS, JSON, Markdown
+purs-nix compile       # Compile src/ into output/
+purs-nix test          # Compile src/ + test/ into output/, run Test.Main on node
+npm run test:dom       # Run Test.Dom.Main under happy-dom (needs output/ with test/)
+npm run serve          # Vite dev server on port 3000 (needs output/)
+npm run build          # Production build into dist/ (needs output/)
+nix build --out-link output   # Build output/ from src/ only (used by deploy)
+nix flake check        # treefmt, hooks and the plain-node tests
+npm run worst-case     # Worst-case solver search (node, TS type stripping)
+npm run deploy         # wrangler deploy of dist/ (build first)
 ```
 
-### Deploy
+`wrangler.jsonc` serves `dist/` as static assets on `sudoku.i0ta.dev`.
 
-```bash
-npm run deploy         # Deploy dist/ to Cloudflare Workers (run deno task build first)
-```
+New files are invisible to flake eval until `git add`-ed.
 
-Config is `wrangler.jsonc` (static assets, custom domain `sudoku.i0ta.dev`).
+## Testing
 
-### Code Quality
+- `test/Test/Main.purs` (spec + spec-node): pure logic only. It must not import
+  any Solid module, directly or transitively, so it runs on plain node quickly.
+  `nix flake check` runs it through `ps.test.check`.
+- `test/Test/Dom/Main.purs`: component tests using `Solid.Testing`. These need a
+  DOM, so `npm run test:dom` starts node with happy-dom
+  (`test/setup-dom.mjs`) and `--conditions=browser --conditions=development`.
+  purs-nix's `ps.test` cannot pass node flags, which is why this is a separate
+  npm script that reads the `output/` made by `purs-nix test`.
 
-```bash
-nix fmt                # Format Nix and TypeScript files (nixfmt + deno fmt)
-deno task lint         # Lint TypeScript with Deno
-deno task check        # Type check src/ directory only
-```
+## Solid 2.0 Notes
 
-### Testing
-
-```bash
-npm test               # Run all component tests with Vitest
-npm test -- tests/App  # Run specific test file
-```
-
-### Benchmarking
-
-```bash
-deno task bench        # Run micro-benchmarks (generateInitialGrid, etc.)
-deno task worst-case   # Run worst-case solver benchmarks
-```
-
-### Dependency Management
-
-```bash
-deno add <package>     # Add dependency to deno.json
-deno remove <package>  # Remove dependency
-deno outdated          # Check for outdated dependencies
-deno update            # Update dependencies
-```
-
-Use `deno.json` for dependencies, not `package.json`.
-
-## Architecture
-
-### State Management
-
-Two separate stores for fine-grained reactivity:
-
-1. **Grid Store** (`App.tsx`) - Main puzzle state using `createStore<Grid>`
-2. **Error Store** (`lib/useErrorStore.ts`) - Separate 81-cell boolean store for
-   duplicate errors
-
-This separation ensures cell error highlighting only re-renders affected cells,
-not the entire grid.
-
-### Data Flow
-
-```
-User Input → handleChange → setGrid (update value)
-                         → updateErrors (recalculate affected 21 cells)
-                         → SudokuCell re-renders only if its error state changed
-```
-
-### Grid Data Model
-
-- `Grid`: 9×9 2D array `Cell[][]` accessed as `grid[row][col]`
-- `Cell`: `{ value: CellValue, isInitial: boolean }`
-- `Position`: Immutable Record from `immutable` library for set operations
-- `CellValue`: `Digit | undefined` where `Digit` is `1-9`
-
-### Puzzle Generator (`src/generator/`)
-
-1. **generateCompleteGrid**: Fills three diagonal 3×3 blocks with shuffled
-   digits (these blocks don't constrain each other), then solves remaining cells
-2. **generateInitialGrid**: Creates puzzle by removing random cells from a
-   complete grid
-
-### Solver (`src/solver/solve.ts`)
-
-- **Algorithm**: Constraint propagation + backtracking with MRV (Minimum
-  Remaining Values) heuristic - selects the cell with fewest candidates to
-  minimize branching
-- **Domain**: `Map<Position, Set<Digit>>` tracks candidate digits for
-  undetermined cells; empty domain = solved, empty candidates = contradiction
-- **Results**: `SolveResult` is a tagged union with three cases:
-  - `solved`: Valid solution found
-  - `timeout`: Step limit exceeded (controlled via `stepLimit` parameter)
-  - `unsolvable`: No solution exists (all branches exhausted)
-
-### Testing
-
-Component tests use `@solidjs/testing-library` and Vitest with jsdom
-environment. Tests are located in `tests/` mirroring the source structure.
+- Store writes are batched and become visible after the next flush. Compute the
+  next value purely, write it, and derive dependent state (such as errors) from
+  the computed value, not by reading the store back.
+- `Setup` has no `MonadEffect`; use `Solid.Setup.liftSetup` for effects there.
+- There are no `For`/`Show` components; see `Solid.Control` (`forEach`, `when`,
+  `showMaybe`, ...).
 
 ## CI Pipeline
 
-GitHub Actions CI runs:
+GitHub Actions CI runs `nix flake check`, `npm ci`, `purs-nix test`,
+`npm run test:dom` and `npm run build`. Pushes to `main` also run
+`.github/workflows/deploy.yml`, which builds and deploys to Cloudflare Workers
+via `wrangler-action`.
 
-1. `nix flake check` (treefmt and pre-commit hooks, including deno lint)
-2. Type check (`deno task check`)
-3. Component tests (`npm test`)
+## Skills
 
-Uses Nix flake's `ci` package which bundles Deno and Node.js 24.
-
-Pushes to `main` also run `.github/workflows/deploy.yml`, which builds and
-deploys to Cloudflare Workers via `wrangler-action`.
-
-## Key Implementation Notes
-
-- Uses Tailwind CSS v4 via `@tailwindcss/vite` plugin
-- Cell input is keyboard-driven (1-9 keys, Backspace/Delete, arrow keys for
-  navigation)
-- Uses `immutable` library's `Set` and `Record` for efficient position
-  comparisons
-- Error detection recalculates only affected cells (row + column + block = max
-  21 cells)
+- `pursuit` (`.agents/skills/pursuit`, linked from `.claude/skills`): find
+  PureScript functions and packages via Pursuit/Hoogle. Use it to look up
+  imports instead of guessing them.

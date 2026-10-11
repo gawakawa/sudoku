@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { writeFile } from "node:fs/promises";
 import type { BlockConfig, DistributionStats } from "./types.ts";
 import { evaluateConfig, generateRandomConfig } from "./evaluate.ts";
 
@@ -62,16 +62,12 @@ const runBatch = (sampleCount: number): BatchResult => {
 
 // CLI entry point
 if (import.meta.main) {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
 
   if (args.length < 2) {
-    console.error(
-      "Usage: deno run --allow-write sampleBatch.ts <count> <output>",
-    );
-    console.error(
-      "Example: deno run --allow-write sampleBatch.ts 10000 /tmp/batch1.json",
-    );
-    Deno.exit(1);
+    console.error("Usage: deno run --allow-write sampleBatch.ts <count> <output>");
+    console.error("Example: deno run --allow-write sampleBatch.ts 10000 /tmp/batch1.json");
+    process.exit(1);
   }
 
   const sampleCount = parseInt(args[0], 10);
@@ -79,7 +75,7 @@ if (import.meta.main) {
 
   if (isNaN(sampleCount) || sampleCount <= 0) {
     console.error("Error: sample count must be a positive integer");
-    Deno.exit(1);
+    process.exit(1);
   }
 
   console.log(`Starting batch sampling: ${sampleCount} samples...`);
@@ -91,6 +87,6 @@ if (import.meta.main) {
     `Distribution: min=${result.distribution.min}, max=${result.distribution.max}, mean=${result.distribution.mean}`,
   );
 
-  await Deno.writeTextFile(outputPath, JSON.stringify(result, null, 2));
+  await writeFile(outputPath, JSON.stringify(result, null, 2));
   console.log(`Results saved to: ${outputPath}`);
 }

@@ -1,10 +1,5 @@
-import type { Digit } from "../../src/types/Sudoku.ts";
-import type {
-  BlockConfig,
-  DistributionStats,
-  EvalResult,
-  SearchResult,
-} from "./types.ts";
+import type { Digit } from "./sudoku.ts";
+import type { BlockConfig, DistributionStats, EvalResult, SearchResult } from "./types.ts";
 import { evaluateConfig, generateRandomConfig } from "./evaluate.ts";
 
 /**
@@ -37,11 +32,7 @@ export const getNeighbors = (config: BlockConfig): BlockConfig[] => {
 export const fastScreening = (
   n: number,
   stepLimit: number,
-  progressCallback?: (
-    current: number,
-    total: number,
-    hardCount: number,
-  ) => void,
+  progressCallback?: (current: number, total: number, hardCount: number) => void,
 ): { hardCandidates: BlockConfig[]; distribution: DistributionStats } => {
   const hardCandidates: BlockConfig[] = [];
   const allSteps: number[] = [];
@@ -150,11 +141,7 @@ export const multiStartHillClimb = (
   initialConfigs: EvalResult[],
   stepLimit: number,
   maxIterationsPerClimb: number = 500,
-  progressCallback?: (
-    climbIdx: number,
-    total: number,
-    currentBest: number,
-  ) => void,
+  progressCallback?: (climbIdx: number, total: number, currentBest: number) => void,
 ): SearchResult => {
   let overallBest: SearchResult = {
     best: initialConfigs[0].config,
@@ -173,8 +160,7 @@ export const multiStartHillClimb = (
       overallBest = {
         best: result.best,
         stepsUsed: result.stepsUsed,
-        samplesEvaluated: overallBest.samplesEvaluated +
-          result.samplesEvaluated,
+        samplesEvaluated: overallBest.samplesEvaluated + result.samplesEvaluated,
       };
     } else {
       overallBest.samplesEvaluated += result.samplesEvaluated;

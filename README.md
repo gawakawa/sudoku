@@ -11,34 +11,35 @@ Play online: https://sudoku.i0ta.dev/
 - **Random puzzle generation** - Fast, performance-optimized generation of
   unique puzzles
 
+## Tech Stack
+
+PureScript with [purs-solid](https://github.com/aquarazorda/purs-solid) (Solid
+2.0 bindings), built with purs-nix and Vite, styled with Tailwind CSS v4 and
+deployed as static assets on Cloudflare Workers.
+
+> The app is being ported from TypeScript. The TypeScript sources under `src/`
+> and `tests/` are the reference for the port and are removed as each piece is
+> ported.
+
 ## Directory Structure
 
 ```
 .
 ├── src
-│   ├── components                    # UI components
-│   │   ├── MetricsPanel.tsx          # Render count display
-│   │   ├── SudokuCell.tsx            # Individual cell input
-│   │   └── SudokuGrid.tsx            # 9x9 grid layout
-│   ├── generator                     # Puzzle generation
-│   │   ├── createEmptyGrid.ts        # Empty grid factory
-│   │   ├── generateCompleteGrid.ts   # Full solution generator
-│   │   └── generateInitialGrid.ts    # Puzzle with blanks
-│   ├── lib                           # Hooks and utilities
-│   │   ├── getPeers.ts               # Position peer calculation
-│   │   ├── metrics.ts                # Render tracking
-│   │   └── useErrorStore.ts          # Duplicate error state
-│   ├── solver                        # Constraint solver
-│   │   └── solve.ts                  # Constraint propagation solver
-│   ├── types                         # Type definitions
-│   │   └── Sudoku.ts                 # Grid, Cell, Digit types
-│   ├── App.tsx                       # Main app with grid state
-│   ├── index.css                     # Tailwind CSS entry
-│   └── index.tsx                     # App entry point
-├── tests                             # Vitest component tests
-├── deno.json                         # Deno config and dependencies
-├── flake.nix                         # Nix development environment
-├── vite.config.ts                    # Vite build config
+│   ├── Main.purs                     # Entry point (mounts into #root)
+│   └── Sudoku
+│       └── App.purs                  # Root component
+├── test
+│   ├── Test
+│   │   ├── Main.purs                 # Tests that run on plain node
+│   │   └── Dom
+│   │       └── Main.purs             # Component tests (happy-dom)
+│   └── setup-dom.mjs                 # Registers happy-dom globals
+├── bench/worstCase                   # Worst-case search tools (node)
+├── nix                               # flake-parts modules (purs-nix, treefmt, hooks)
+├── index.html / index.js             # Vite entry
+├── style.css                         # Tailwind entry
+├── vite.config.js                    # Vite build config
 └── wrangler.jsonc                    # Cloudflare Workers (static assets) config
 ```
 
@@ -54,24 +55,22 @@ Nix with flakes enabled
 # Format code
 nix fmt
 
-# Lint code
-deno task lint
+# Compile src/ and test/ into output/, then run the plain-node tests
+purs-nix test
 
-# Type check
-deno task check
+# Run the component tests (needs output/ from `purs-nix test`)
+npm run test:dom
 
-# Run tests
-npm test
-
-# Start development server
-deno task dev
+# Start development server (needs output/ from `purs-nix compile` or `test`)
+npm run serve
 
 # Build for production
-deno task build
+nix build --out-link output
+npm run build
 
-# Preview production build
-deno task preview
-
-# Deploy to Cloudflare Workers (run `deno task build` first)
+# Deploy to Cloudflare Workers (build first)
 npm run deploy
+
+# Worst-case solver search (node)
+npm run worst-case
 ```

@@ -1,26 +1,26 @@
 {
   "name": "sudoku",
   "version": "0.1.0",
+  "private": true,
   "type": "module",
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
+    "serve": "vite",
+    "build": "vite build",
+    "test:dom": "node --conditions=browser --conditions=development --import ./test/setup-dom.mjs -e 'import(\"./output/Test.Dom.Main/index.js\").then((m) => m.main())'",
+    "worst-case": "node bench/worstCase/main.ts",
     "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.17",
-    "immutable": "^5.0.3",
-    "tailwindcss": "^4.1.17"
+    "@solidjs/web": "2.0.0-rc.13",
+    "solid-js": "2.0.0-rc.13"
   },
   "devDependencies": {
-    "@solidjs/testing-library": "^0.8.10",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/user-event": "^14.6.1",
-    "jsdom": "^25.0.1",
-    "solid-devtools": "^0.34.4",
-    "vite": "^7.1.4",
-    "vite-plugin-solid": "2.11.9",
-    "vitest": "^4.0.0",
+    "@happy-dom/global-registrator": "^20.0.0",
+    "@tailwindcss/vite": "^4.1.17",
+    "happy-dom": "^20.0.0",
+    "immutable": "^5.0.3",
+    "tailwindcss": "^4.1.17",
+    "vite": "^8",
     "wrangler": "^4.149.0"
   }
 }

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "./src/**/*.purs";
 
 :root {
   /* モバイル: 画面幅に合わせてセルサイズを計算 */

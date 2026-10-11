@@ -1,16 +1,16 @@
 /**
  * Instrumented Sudoku solver for benchmarking.
  *
- * This is a copy of src/generator/solve.ts with step tracking for
- * measuring solver effort. Keep this separate from the main solver
- * to avoid polluting production code with benchmarking logic.
+ * This is a port of the app's solver with step tracking for measuring
+ * solver effort. Keep this separate from the app solver to avoid
+ * polluting production code with benchmarking logic.
  */
 
 import { Map, Set } from "immutable";
-import { makePosition } from "../../src/types/Sudoku.ts";
-import type { Digit, Grid, Position } from "../../src/types/Sudoku.ts";
-import { getPeers } from "../../src/grid/getPeers.ts";
-import { COL_INDICES, DIGITS, ROW_INDICES } from "../../src/const.ts";
+import { makePosition } from "./sudoku.ts";
+import type { Digit, Grid, Position } from "./sudoku.ts";
+import { getPeers } from "./sudoku.ts";
+import { COL_INDICES, DIGITS, ROW_INDICES } from "./sudoku.ts";
 
 type Candidates = Set<Digit>;
 type Domain = Map<Position, Candidates>;
@@ -32,31 +32,20 @@ const calcDomain = (grid: Grid): Domain => {
           }),
       );
 
-      const entry: [Position, Candidates] = [
-        pos,
-        allDigits.subtract(peerValues),
-      ];
+      const entry: [Position, Candidates] = [pos, allDigits.subtract(peerValues)];
       return [entry];
-    })
+    }),
   );
   return Map(entries);
 };
 
-type UpdateDomainResult =
-  | { tag: "ok"; domain: Domain }
-  | { tag: "contradiction" };
+type UpdateDomainResult = { tag: "ok"; domain: Domain } | { tag: "contradiction" };
 
-const updateDomain = (
-  domain: Domain,
-  pos: Position,
-  digit: Digit,
-): UpdateDomainResult => {
+const updateDomain = (domain: Domain, pos: Position, digit: Digit): UpdateDomainResult => {
   const peers = getPeers(pos);
   const updated = domain
     .remove(pos)
-    .map((candidates, p) =>
-      peers.has(p) ? candidates.remove(digit) : candidates
-    );
+    .map((candidates, p) => (peers.has(p) ? candidates.remove(digit) : candidates));
 
   if (updated.some((candidates) => candidates.isEmpty())) {
     return { tag: "contradiction" };
@@ -68,13 +57,11 @@ const updateDomain = (
 const setCell = (grid: Grid, pos: Position, digit: Digit): Grid =>
   grid.map((row, r) =>
     row.map((cell, c) =>
-      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell
-    )
+      r === pos.row && c === pos.col ? { value: digit, isInitial: true } : cell,
+    ),
   );
 
-const findMRVCell = (
-  domain: Domain,
-): { position: Position; candidates: Candidates } => {
+const findMRVCell = (domain: Domain): { position: Position; candidates: Candidates } => {
   const entry = domain.entrySeq().minBy(([_, candidates]) => candidates.size);
   return { position: entry![0], candidates: entry![1] };
 };
@@ -83,11 +70,7 @@ type BacktrackResult =
   | { tag: "found"; grid: Grid; remainingSteps: number }
   | { tag: "notFound"; remainingSteps: number };
 
-const backtrack = (
-  grid: Grid,
-  domain: Domain,
-  remainingSteps: number,
-): BacktrackResult => {
+const backtrack = (grid: Grid, domain: Domain, remainingSteps: number): BacktrackResult => {
   if (remainingSteps <= 0) {
     return { tag: "notFound", remainingSteps: 0 };
   }
@@ -134,10 +117,7 @@ export type SolveResultWithMetrics =
  * @param stepLimit - Maximum backtracking steps before timeout
  * @returns Solved grid with metrics, or timeout with metrics
  */
-export const solveWithMetrics = (
-  grid: Grid,
-  stepLimit: number,
-): SolveResultWithMetrics => {
+export const solveWithMetrics = (grid: Grid, stepLimit: number): SolveResultWithMetrics => {
   const domain = calcDomain(grid);
   const result = backtrack(grid, domain, stepLimit);
   const stepsUsed = stepLimit - result.remainingSteps;

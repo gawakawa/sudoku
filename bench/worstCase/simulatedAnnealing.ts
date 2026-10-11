@@ -1,4 +1,4 @@
-import type { Digit } from "../../src/types/Sudoku.ts";
+import type { Digit } from "./sudoku.ts";
 import type { BlockConfig } from "./types.ts";
 import { evaluateConfig } from "./evaluate.ts";
 
