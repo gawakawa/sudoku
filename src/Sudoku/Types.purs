@@ -4,6 +4,7 @@ module Sudoku.Types
   , Position
   , CellValue
   , Cell
+  , Board
   , Grid
   , indices
   , positions
@@ -111,8 +112,11 @@ type CellValue = Maybe Digit
 
 type Cell = { value :: CellValue, isInitial :: Boolean }
 
--- | Indexed with `Array.index` by `fromEnum` of a row and a column.
-type Grid = Array (Array Cell)
+-- | Nine rows of nine cells, indexed with `Array.index` by `fromEnum` of a row
+-- | and a column.
+type Board a = Array (Array a)
+
+type Grid = Board Cell
 
 indices :: Array Index
 indices = enumFromTo bottom top

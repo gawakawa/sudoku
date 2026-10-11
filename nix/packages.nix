@@ -80,9 +80,13 @@
 
       dependencies = [
         "arrays"
+        "control"
         "effect"
+        "either"
         "enums"
         "foldable-traversable"
+        "lazy"
+        "lists"
         "maybe"
         "ordered-collections"
         "prelude"

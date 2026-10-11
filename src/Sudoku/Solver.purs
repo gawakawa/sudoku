@@ -1,90 +1,168 @@
+-- | A backtracking solver written as a state machine, as described in
+-- | docs/DESIGN.md. Each state is its own type, and its constructor is not
+-- | exported, so a state can only come from a transition.
 module Sudoku.Solver
-  ( SolveResult(..)
+  ( Failure(..)
   , solve
   ) where
 
 import Prelude
 
+import Control.Lazy as Control
+import Data.Array (zip)
+import Data.Array.NonEmpty (NonEmptyArray)
+import Data.Either (Either(..))
 import Data.Enum (enumFromTo)
-import Data.Foldable (any, foldl)
-import Data.FoldableWithIndex (foldlWithIndex)
-import Data.FunctorWithIndex (mapWithIndex)
+import Data.Foldable (foldMap, foldl)
 import Data.Generic.Rep (class Generic)
-import Data.Map (Map)
-import Data.Map as Map
-import Data.Maybe (Maybe(..), isNothing)
-import Data.Set (Set)
+import Data.Lazy (Lazy, defer, force)
+import Data.List.Lazy (List, concatMap, nil, uncons, (:))
+import Data.Maybe (Maybe(..), maybe)
 import Data.Set as Set
+import Data.Set.NonEmpty (NonEmptySet)
+import Data.Set.NonEmpty as NonEmptySet
 import Data.Show.Generic (genericShow)
+import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
-import Sudoku.Grid (getPeers, modifyCell, valueAt)
-import Sudoku.Types (Digit, Grid, Position, positions)
+import Sudoku.Grid (cellAt, getPeers)
+import Sudoku.Types (Board, Digit, Grid, Position, indices, positions)
 
--- | `Timeout` means the step budget ran out before the search finished, so
--- | nothing is known about solvability.
-data SolveResult = Solved Grid | Timeout | Unsolvable
+-- | A cell of a partial board: either settled, or still open with at least one
+-- | candidate.
+data Slot = Fixed Digit | Open (NonEmptySet Digit)
 
-derive instance Eq SolveResult
-derive instance Generic SolveResult _
+-- | What placing a digit leads to: no cell is left without a candidate, or one
+-- | is.
+data Outcome = Stuck | Placed (Board Slot)
 
-instance Show SolveResult where
+-- | Placing one digit in one cell. It runs when first forced, and only once.
+type Attempt = Lazy Outcome
+
+-- | The attempts not yet made, in depth-first order, and the transitions left.
+newtype Searching = Searching { pending :: List Attempt, budget :: Int }
+
+newtype Solved = Solved Grid
+
+data Timeout = Timeout
+
+data Unsolvable = Unsolvable
+
+-- | Where a transition from `Searching` leads.
+data Next
+  = Continue Searching
+  | Finish Solved
+  | Expire Timeout
+  | Exhaust Unsolvable
+
+-- | How a search ends without a solution. `TimedOut` says nothing about
+-- | whether one exists.
+data Failure = TimedOut | NoSolution
+
+derive instance Eq Failure
+derive instance Generic Failure _
+
+instance Show Failure where
   show = genericShow
 
--- | Possible digits of each empty cell. A cell leaves the map once it is
--- | filled, so an empty map means the grid is complete.
-type Candidates = Map Position (Set Digit)
+allDigits :: NonEmptySet Digit
+allDigits = NonEmptySet.fromFoldable1
+  (enumFromTo bottom top :: NonEmptyArray Digit)
 
-allDigits :: Set Digit
-allDigits = Set.fromFoldable (enumFromTo bottom top :: Array Digit)
+-- | Every cell is open: a given digit `d` leaves only `{d}`, an empty cell
+-- | keeps all nine.
+initial :: Grid -> Board Slot
+initial = map
+  (map \cell -> Open (maybe allDigits NonEmptySet.singleton cell.value))
 
-initialCandidates :: Grid -> Candidates
-initialCandidates grid = Map.fromFoldable do
-  pos <- positions
-  if isNothing (valueAt grid pos) then
-    [ Tuple pos (Set.difference allDigits (peerValues pos)) ]
-  else []
-  where
-  peerValues pos = Set.catMaybes (Set.map (valueAt grid) (getPeers pos))
-
--- | Fills `pos` with `digit` and removes `digit` from its peers' candidates.
--- | `Nothing` when that leaves some cell without a candidate.
-assign :: Position -> Digit -> Candidates -> Maybe Candidates
-assign pos digit candidates =
-  if any Set.isEmpty updated then Nothing else Just updated
+-- | Fixes `pos` to `digit` and removes `digit` from its open peers. `Nothing`
+-- | when a peer is left without a candidate.
+place :: Position -> Digit -> Board Slot -> Maybe (Board Slot)
+place pos digit board =
+  traverse
+    ( \(Tuple row slots) ->
+        traverse (\(Tuple col slot) -> update { row, col } slot)
+          (zip indices slots)
+    )
+    (zip indices board)
   where
   peers = getPeers pos
-  updated = Map.delete pos candidates # mapWithIndex \p ds ->
-    if Set.member p peers then Set.delete digit ds else ds
+  update p slot
+    | p == pos = Just (Fixed digit)
+    | Set.member p peers = case slot of
+        Open digits -> Open <$> NonEmptySet.delete digit digits
+        Fixed _ -> Just slot
+    | otherwise = Just slot
 
--- | The empty cell with the fewest candidates (MRV), if any cell is empty.
-mostConstrained :: Candidates -> Maybe { pos :: Position, digits :: Set Digit }
-mostConstrained = foldlWithIndex pick Nothing
+-- | The open cell with the fewest candidates, if any cell is open.
+mostConstrained
+  :: Board Slot -> Maybe { pos :: Position, digits :: NonEmptySet Digit }
+mostConstrained board = foldl pick Nothing positions
   where
-  pick pos best digits = case best of
-    Just b | Set.size b.digits <= Set.size digits -> best
-    _ -> Just { pos, digits }
+  pick best pos = case cellAt board pos of
+    Just (Open digits)
+      | maybe true (\b -> NonEmptySet.size digits < NonEmptySet.size b.digits)
+          best ->
+          Just { pos, digits }
+    _ -> best
 
--- | Depth-first search that fills the most constrained cell first. Every
--- | placement costs one step; a `Timeout` in any subtree ends the whole search.
-backtrack :: Int -> Grid -> Candidates -> SolveResult
-backtrack steps grid candidates
-  | steps <= 0 = Timeout
-  | otherwise =
-      case mostConstrained candidates of
-        Nothing -> Solved grid
-        Just { pos, digits } ->
-          foldl (tryDigit pos) Unsolvable
-            (Set.toUnfoldable digits :: Array Digit)
-      where
-      tryDigit pos result digit = case result of
-        Unsolvable -> case assign pos digit candidates of
-          Nothing -> Unsolvable
-          Just next ->
-            backtrack (steps - 1)
-              (modifyCell pos _ { value = Just digit, isInitial = true } grid)
-              next
-        _ -> result
+-- | One attempt per candidate of the most constrained open cell; none when no
+-- | cell is open.
+attemptsOn :: Board Slot -> List Attempt
+attemptsOn board = case mostConstrained board of
+  Nothing -> nil
+  Just { pos, digits } -> NonEmptySet.toUnfoldable digits <#> \digit ->
+    defer \_ -> maybe Stuck Placed (place pos digit board)
+
+-- | The board an attempt produced, if its digit could be placed.
+boardAfter :: Attempt -> Maybe (Board Slot)
+boardAfter attempt = case force attempt of
+  Stuck -> Nothing
+  Placed board -> Just board
+
+-- | The grid, if no cell is open.
+completed :: Board Slot -> Maybe Grid
+completed = traverse (traverse toCell)
+  where
+  toCell = case _ of
+    Fixed digit -> Just { value: Just digit, isInitial: true }
+    Open _ -> Nothing
+
+-- | Each node, followed by the nodes after it, depth first. Nothing is forced
+-- | until the result is consumed.
+dfs :: forall a. (a -> List a) -> List a -> List a
+dfs next = concatMap \x -> x : Control.defer \_ -> dfs next (next x)
+
+start :: Int -> Grid -> Searching
+start budget grid = Searching
+  { pending: dfs (foldMap attemptsOn <<< boardAfter) (attemptsOn (initial grid))
+  , budget
+  }
+
+-- | Every placement costs one unit of budget, including one that gets stuck.
+step :: Searching -> Next
+step (Searching s) = case uncons s.pending of
+  -- No attempt is left, so every digit was tried.
+  Nothing -> Exhaust Unsolvable
+  Just { head, tail }
+    | s.budget <= 0 -> Expire Timeout
+    | otherwise ->
+        let
+          -- The attempts after a placed one are already queued in `tail`.
+          continue = Continue
+            (Searching { pending: tail, budget: s.budget - 1 })
+        in
+          case boardAfter head of
+            Nothing -> continue
+            Just board -> case completed board of
+              Nothing -> continue
+              Just grid -> Finish (Solved grid)
 
 -- | Filled cells are kept as they are. Cells the search fills become initial.
-solve :: Int -> Grid -> SolveResult
-solve steps grid = backtrack steps grid (initialCandidates grid)
+solve :: Int -> Grid -> Either Failure Grid
+solve budget grid = go (start budget grid)
+  where
+  go s = case step s of
+    Continue s' -> go s'
+    Finish (Solved solution) -> Right solution
+    Expire _ -> Left TimedOut
+    Exhaust _ -> Left NoSolution

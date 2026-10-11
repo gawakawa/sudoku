@@ -17,7 +17,7 @@ import Data.Enum (fromEnum)
 import Data.Maybe (Maybe(..))
 import Data.Set (Set)
 import Data.Set as Set
-import Sudoku.Types (Cell, CellValue, Grid, Position, blockOf, indices)
+import Sudoku.Types (Board, Cell, CellValue, Grid, Position, blockOf, indices)
 
 initCell :: Cell
 initCell = { value: Nothing, isInitial: false }
@@ -25,9 +25,9 @@ initCell = { value: Nothing, isInitial: false }
 initGrid :: Grid
 initGrid = indices <#> \_ -> indices <#> \_ -> initCell
 
-cellAt :: Grid -> Position -> Maybe Cell
-cellAt grid { row, col } =
-  index grid (fromEnum row) >>= \cells -> index cells (fromEnum col)
+cellAt :: forall a. Board a -> Position -> Maybe a
+cellAt board { row, col } =
+  index board (fromEnum row) >>= \cells -> index cells (fromEnum col)
 
 valueAt :: Grid -> Position -> CellValue
 valueAt grid pos = cellAt grid pos >>= _.value
@@ -51,7 +51,7 @@ calculateCellError grid pos = case valueAt grid pos of
   value -> any (\p -> p /= pos && valueAt grid p == value)
     (Set.toUnfoldable (getPeers pos))
 
-modifyCell :: Position -> (Cell -> Cell) -> Grid -> Grid
+modifyCell :: forall a. Position -> (a -> a) -> Board a -> Board a
 modifyCell p f = mapWithIndex \r -> mapWithIndex \c cell ->
   if r == fromEnum p.row && c == fromEnum p.col then f cell
   else cell
