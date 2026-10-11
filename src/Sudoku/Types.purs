@@ -14,9 +14,9 @@ module Sudoku.Types
 
 import Prelude
 
+import Data.Array (find)
 import Data.Enum (class BoundedEnum, class Enum, Cardinality(..), defaultPred, defaultSucc, enumFromTo, fromEnum, toEnum)
 import Data.Generic.Rep (class Generic)
-import Data.Int as Int
 import Data.Maybe (Maybe(..))
 import Data.Show.Generic (genericShow)
 
@@ -158,9 +158,17 @@ class Codec a where
   decode :: String -> Maybe a
 
 instance Codec Digit where
-  encode = show <<< fromEnum
-  decode = toEnum <=< Int.fromString
+  encode = encodeEnum
+  decode = decodeEnum encodeEnum
 
 instance Codec Index where
-  encode = show <<< fromEnum
-  decode = toEnum <=< Int.fromString
+  encode = encodeEnum
+  decode = decodeEnum encodeEnum
+
+encodeEnum :: forall a. BoundedEnum a => a -> String
+encodeEnum = show <<< fromEnum
+
+-- | Accepts exactly the strings `encode` produces, so `"05"` and `"+5"` are
+-- | rejected.
+decodeEnum :: forall a. BoundedEnum a => (a -> String) -> String -> Maybe a
+decodeEnum encode' s = find (\x -> encode' x == s) (enumFromTo bottom top)

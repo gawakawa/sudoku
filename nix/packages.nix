@@ -82,7 +82,6 @@
         "arrays"
         "effect"
         "enums"
-        "integers"
         "maybe"
         "ordered-collections"
         "prelude"
@@ -109,8 +108,10 @@
 
       test-dependencies = [
         "aff"
+        "quickcheck"
         "spec"
         "spec-node"
+        "spec-quickcheck"
         "strings"
       ];
 
