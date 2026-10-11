@@ -34,3 +34,4 @@ result
 
 # Agent runtime data
 .serena
+.pre-commit-config.yaml

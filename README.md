@@ -48,7 +48,7 @@ Nix with flakes enabled
 ## Development
 
 ```bash
-nix develop
+# Dev shell loads automatically via direnv (use flake .)
 
 # Format code
 nix fmt

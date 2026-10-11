@@ -4,30 +4,47 @@ on:
   push:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
 jobs:
-  ci:
+  tests:
     name: CI
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Install Nix
-        uses: cachix/install-nix-action@v31
+        uses: cachix/install-nix-action@bec50b45a8bb06017c42af46702a3f502adcfa9e # v31
         with:
-          github_access_token: ${{ secrets.GH_TOKEN }}
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Format check
-        run: nix fmt -- --ci
+      - name: Check
+        run: nix flake check
 
       - name: Install CI dependencies
         run: nix profile add .#ci
-
-      - name: Lint check
-        run: deno lint
 
       - name: Type check
         run: deno task check
 
       - name: Run component tests
         run: npm test
+
+  ci-success:
+    needs: [tests]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Verify all checks passed
+        run: exit 1
+        if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
