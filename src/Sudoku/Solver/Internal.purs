@@ -64,6 +64,14 @@ data Next
   | Expire Timeout
   | Exhaust Unsolvable
 
+-- | Names the transition only. A state has no `Show` instance.
+instance Show Next where
+  show = case _ of
+    Continue _ -> "Continue"
+    Finish _ -> "Finish"
+    Expire _ -> "Expire"
+    Exhaust _ -> "Exhaust"
+
 allDigits :: NonEmptySet Digit
 allDigits = NonEmptySet.fromFoldable1
   (enumFromTo bottom top :: NonEmptyArray Digit)

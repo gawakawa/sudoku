@@ -11,13 +11,6 @@ import Test.Spec.Assertions (fail)
 import Test.Spec.QuickCheck (quickCheck)
 import Test.Sudoku.Gen (genBoard, genBudget)
 
-name :: Next -> String
-name = case _ of
-  Continue _ -> "searching"
-  Finish _ -> "solved"
-  Expire _ -> "timeout"
-  Exhaust _ -> "unsolvable"
-
 -- | A searching state with no budget left ends on the next transition: in the
 -- | unsolvable state if no choices remain, in the timeout state otherwise.
 endNext :: Searching -> Result
@@ -28,7 +21,7 @@ endNext s = case step s of
     ( "budget " <> show (budget s) <> ", choices remain: "
         <> show (hasChoices s)
         <> ", but moved to "
-        <> name next
+        <> show next
     )
 
 -- | The state with its budget set to 0.
@@ -80,4 +73,4 @@ spec = describe "the state machine ends in a finite number of transitions" do
       it "in the unsolvable state when no choices remain" do
         case step (Searching { pending: nil, budget: 0 }) of
           Exhaust _ -> pure unit
-          next -> fail ("moved to " <> name next)
+          next -> fail ("moved to " <> show next)
