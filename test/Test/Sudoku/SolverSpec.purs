@@ -10,7 +10,7 @@ import Test.Spec.QuickCheck (quickCheck)
 import Test.Sudoku.Gen (genBudget, genPuzzle, genUnsolvable)
 import Test.Sudoku.Rules (isCompleteBoardOf)
 
--- | More budget than any search here needs.
+-- | Approximates a sufficiently large budget.
 plenty :: Int
 plenty = top
 
