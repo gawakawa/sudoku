@@ -9,12 +9,6 @@ A Sudoku puzzle game written in PureScript on top of purs-solid (Solid 2.0
 bindings), built with purs-nix and Vite, styled with Tailwind CSS v4. It is a
 static SPA served by a single Cloudflare Worker (no backend).
 
-**Migration in progress:** the app used to be SolidJS + TypeScript. The
-TypeScript sources in `src/` (`App.tsx`, `components/`, `generator/`, `grid/`,
-`lib/`, `solver/`, `types/`) and `tests/` are the reference for the port. They
-are no longer built or tested, and are deleted as each piece is ported to
-PureScript.
-
 ## Development Environment
 
 Requires Nix with flakes enabled. The dev shell loads automatically via direnv

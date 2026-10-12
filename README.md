@@ -17,10 +17,6 @@ PureScript with [purs-solid](https://github.com/aquarazorda/purs-solid) (Solid
 2.0 bindings), built with purs-nix and Vite, styled with Tailwind CSS v4 and
 deployed as static assets on Cloudflare Workers.
 
-> The app is being ported from TypeScript. The TypeScript sources under `src/`
-> and `tests/` are the reference for the port and are removed as each piece is
-> ported.
-
 ## Directory Structure
 
 ```
@@ -28,7 +24,13 @@ deployed as static assets on Cloudflare Workers.
 ├── src
 │   ├── Main.purs                     # Entry point (mounts into #root)
 │   └── Sudoku
-│       └── App.purs                  # Root component
+│       ├── App.purs                  # Root component
+│       ├── Component                 # Cell, Grid, MetricsPanel
+│       ├── Generator.purs            # Puzzle generation
+│       ├── Grid.purs                 # Peers and conflicts
+│       ├── Metrics.purs              # Update counts reported by components
+│       ├── Solver.purs               # Uniqueness-checking solver
+│       └── Types.purs                # Digit, Index, Cell, Grid
 ├── test
 │   ├── Test
 │   │   ├── Main.purs                 # Tests that run on plain node
@@ -36,6 +38,7 @@ deployed as static assets on Cloudflare Workers.
 │   │       └── Main.purs             # Component tests (happy-dom)
 │   └── setup-dom.mjs                 # Registers happy-dom globals
 ├── bench/worstCase                   # Worst-case search tools (node)
+├── docs/DESIGN.md                    # Solver design
 ├── nix                               # flake-parts modules (purs-nix, treefmt, hooks)
 ├── index.html / index.js             # Vite entry
 ├── style.css                         # Tailwind entry
