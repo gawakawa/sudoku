@@ -18,8 +18,9 @@ import Solid.DOM (targetValue)
 import Solid.DOM.HTML as H
 import Solid.Reactivity (createEffect_)
 import Solid.Signal (Accessor, get)
+import Sudoku.Data.Board (Index(..), Position)
+import Sudoku.Data.Puzzle (CellValue, decode, encode)
 import Sudoku.Metrics (Metrics)
-import Sudoku.Types (CellValue, Index(..), Position, decode, encode)
 import Web.Event.Event (Event, currentTarget, preventDefault)
 import Web.HTML.HTMLInputElement (HTMLInputElement)
 import Web.HTML.HTMLInputElement as HTMLInputElement

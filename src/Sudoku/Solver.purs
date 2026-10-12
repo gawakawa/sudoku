@@ -10,9 +10,9 @@ import Prelude
 import Data.Either (Either(..))
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
+import Sudoku.Data.Puzzle (Grid)
 import Sudoku.Solver.Internal (Ended(..), solution)
 import Sudoku.Solver.Internal as Internal
-import Sudoku.Types (Grid)
 
 -- | How a search ends without a solution. `TimedOut` says nothing about
 -- | whether one exists.

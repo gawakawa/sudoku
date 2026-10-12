@@ -22,9 +22,9 @@ import Data.Tuple (Tuple(..), fst, snd)
 import Data.Unfoldable (replicateA)
 import Effect (Effect)
 import Random.LCG (Seed, lcgNext, randomSeed, unSeed)
-import Sudoku.Grid (initCell, initGrid, modifyCell)
+import Sudoku.Data.Board (Index(..), Position, blockOf, modifyCell, positions)
+import Sudoku.Data.Puzzle (Digit(..), Grid, initCell, initGrid)
 import Sudoku.Solver (solve)
-import Sudoku.Types (Digit(..), Grid, Index(..), Position, blockOf, positions)
 
 type Random = State Seed
 

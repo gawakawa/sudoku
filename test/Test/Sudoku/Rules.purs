@@ -5,6 +5,7 @@ module Test.Sudoku.Rules
   , isValid
   , keepGiven
   , isCompleteBoardOf
+  , valueAt
   ) where
 
 import Prelude
@@ -12,8 +13,12 @@ import Prelude
 import Data.Enum (fromEnum)
 import Data.Foldable (all)
 import Data.Maybe (isJust, isNothing)
-import Sudoku.Grid (valueAt)
-import Sudoku.Types (Grid, Position, positions)
+import Sudoku.Data.Board (Position, cellAt, positions)
+import Sudoku.Data.Puzzle (CellValue, Grid)
+
+-- | The value of the cell at a position, if it is on the board and filled.
+valueAt :: Grid -> Position -> CellValue
+valueAt grid pos = cellAt grid pos >>= _.value
 
 shareUnit :: Position -> Position -> Boolean
 shareUnit a b =

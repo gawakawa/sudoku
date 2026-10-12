@@ -3,7 +3,7 @@ module Test.Sudoku.Solver.InternalSpec (spec) where
 import Prelude
 
 import Data.List.Lazy (nil)
-import Sudoku.Grid (initGrid)
+import Sudoku.Data.Puzzle (initGrid)
 import Sudoku.Solver.Internal (Next(..), Searching(..), budget, start, step)
 import Test.QuickCheck (Result(..))
 import Test.QuickCheck.Gen (suchThat)

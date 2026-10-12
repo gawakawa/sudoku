@@ -15,7 +15,7 @@ import Data.Map (Map)
 import Data.Map as Map
 import Effect (Effect)
 import Effect.Ref as Ref
-import Sudoku.Types (Position)
+import Sudoku.Data.Board (Position)
 
 type Metrics =
   { cellUpdated :: Position -> Effect Unit

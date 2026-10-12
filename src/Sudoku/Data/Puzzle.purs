@@ -1,14 +1,11 @@
-module Sudoku.Types
+module Sudoku.Data.Puzzle
   ( Digit(..)
-  , Index(..)
-  , Position
   , CellValue
   , Cell
-  , Board
   , Grid
-  , indices
-  , positions
-  , blockOf
+  , initCell
+  , initGrid
+  , hasConflict
   , class Codec
   , encode
   , decode
@@ -16,11 +13,14 @@ module Sudoku.Types
 
 import Prelude
 
-import Data.Array (find)
+import Data.Array (any, find)
 import Data.Enum (class BoundedEnum, class Enum, Cardinality(..), defaultPred, defaultSucc, enumFromTo, fromEnum, toEnum)
 import Data.Generic.Rep (class Generic)
 import Data.Maybe (Maybe(..))
+import Data.Set as Set
 import Data.Show.Generic (genericShow)
+import Data.Traversable (traverse)
+import Sudoku.Data.Board (Board, Position, getPeers, indices)
 
 data Digit = D1 | D2 | D3 | D4 | D5 | D6 | D7 | D8 | D9
 
@@ -64,82 +64,32 @@ instance BoundedEnum Digit where
     D8 -> 8
     D9 -> 9
 
--- | A row or column index.
-data Index = I0 | I1 | I2 | I3 | I4 | I5 | I6 | I7 | I8
-
-derive instance Eq Index
-derive instance Ord Index
-derive instance Generic Index _
-
-instance Show Index where
-  show = genericShow
-
-instance Bounded Index where
-  bottom = I0
-  top = I8
-
-instance Enum Index where
-  succ = defaultSucc toEnum fromEnum
-  pred = defaultPred toEnum fromEnum
-
-instance BoundedEnum Index where
-  cardinality = Cardinality 9
-  toEnum = case _ of
-    0 -> Just I0
-    1 -> Just I1
-    2 -> Just I2
-    3 -> Just I3
-    4 -> Just I4
-    5 -> Just I5
-    6 -> Just I6
-    7 -> Just I7
-    8 -> Just I8
-    _ -> Nothing
-  fromEnum = case _ of
-    I0 -> 0
-    I1 -> 1
-    I2 -> 2
-    I3 -> 3
-    I4 -> 4
-    I5 -> 5
-    I6 -> 6
-    I7 -> 7
-    I8 -> 8
-
-type Position = { row :: Index, col :: Index }
-
 type CellValue = Maybe Digit
 
 type Cell = { value :: CellValue, isInitial :: Boolean }
 
--- | Nine rows of nine cells, indexed with `Array.index` by `fromEnum` of a row
--- | and a column.
-type Board a = Array (Array a)
-
 type Grid = Board Cell
 
-indices :: Array Index
-indices = enumFromTo bottom top
+-- | A new empty cell on every call. A Solid store tracks state per object, so
+-- | cells sharing one object would change together.
+initCell :: Unit -> Cell
+initCell _ = { value: Nothing, isInitial: false }
 
--- | All 81 positions, row by row.
-positions :: Array Position
-positions = do
-  row <- indices
-  col <- indices
-  pure { row, col }
+-- | A new empty grid on every call, for the same reason as `initCell`.
+initGrid :: Unit -> Grid
+initGrid _ = indices <#> \_ -> indices <#> \_ -> initCell unit
 
--- | The three indices of the 3x3 block containing the given index.
-blockOf :: Index -> Array Index
-blockOf = case _ of
-  I0 -> [ I0, I1, I2 ]
-  I1 -> [ I0, I1, I2 ]
-  I2 -> [ I0, I1, I2 ]
-  I3 -> [ I3, I4, I5 ]
-  I4 -> [ I3, I4, I5 ]
-  I5 -> [ I3, I4, I5 ]
-  I6 -> [ I6, I7, I8 ]
-  I7 -> [ I6, I7, I8 ]
-  I8 -> [ I6, I7, I8 ]
+-- | Whether another cell in the row, column or block holds the same value.
+-- | `m` is how a value is read, so a reactive caller tracks only the cells it
+-- | reads: an empty cell reads no peer.
+hasConflict
+  :: forall m. Monad m => (Position -> m CellValue) -> Position -> m Boolean
+hasConflict valueOf pos = valueOf pos >>= case _ of
+  Nothing -> pure false
+  value -> do
+    peers <- traverse valueOf
+      (Set.toUnfoldable (Set.delete pos (getPeers pos)) :: Array Position)
+    pure (any (_ == value) peers)
 
 -- | Conversion between a value and the text shown in, or typed into, a cell.
 class Codec a where

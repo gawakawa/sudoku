@@ -20,9 +20,9 @@ import Solid.Setup (liftSetup)
 import Solid.Signal (Accessor, sample)
 import Solid.Store (atIndex, atKey, createStore, focusKey, items, set, update, value)
 import Sudoku.Component.Grid (grid)
-import Sudoku.Grid (cellAt, hasConflict)
+import Sudoku.Data.Board (Position, cellAt, indices)
+import Sudoku.Data.Puzzle (CellValue, Grid, hasConflict)
 import Sudoku.Metrics (Metrics)
-import Sudoku.Types (CellValue, Grid, Position, indices)
 
 type Props =
   { initialGrid :: Grid

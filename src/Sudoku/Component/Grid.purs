@@ -24,8 +24,9 @@ import Solid.Setup (liftSetup)
 import Solid.Signal (Accessor, eqEquality, sample)
 import Solid.Store (Store, focusKey, items, value)
 import Sudoku.Component.Cell (Direction(..), cell)
+import Sudoku.Data.Board (Position, indices)
+import Sudoku.Data.Puzzle (CellValue, Grid)
 import Sudoku.Metrics (Metrics)
-import Sudoku.Types (CellValue, Grid, Position, indices)
 import Web.HTML.HTMLElement as HTMLElement
 import Web.HTML.HTMLInputElement (HTMLInputElement)
 import Web.HTML.HTMLInputElement as HTMLInputElement

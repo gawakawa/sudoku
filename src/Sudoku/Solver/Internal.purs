@@ -33,8 +33,8 @@ import Data.Set.NonEmpty (NonEmptySet)
 import Data.Set.NonEmpty as NonEmptySet
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
-import Sudoku.Grid (cellAt, getPeers)
-import Sudoku.Types (Board, Digit, Grid, Position, indices, positions)
+import Sudoku.Data.Board (Board, Position, cellAt, getPeers, indices, positions)
+import Sudoku.Data.Puzzle (Digit, Grid)
 
 -- | A cell of a partial board: either settled, or still open with at least one
 -- | candidate.

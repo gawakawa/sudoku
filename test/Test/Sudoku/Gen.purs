@@ -23,11 +23,11 @@ import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
-import Sudoku.Grid (initCell, initGrid, setValue, valueAt)
-import Sudoku.Types (Cell, CellValue, Digit, Grid, Position, indices, positions)
+import Sudoku.Data.Board (Position, indices, modifyCell, positions)
+import Sudoku.Data.Puzzle (Cell, CellValue, Digit, Grid, initCell, initGrid)
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (Gen, chooseInt, elements, oneOf, shuffle, suchThat, vectorOf)
-import Test.Sudoku.Rules (shareUnit)
+import Test.Sudoku.Rules (shareUnit, valueAt)
 
 genEnum :: forall @a. BoundedEnum a => Gen a
 genEnum = elements (enumFromTo bottom top :: NonEmptyArray a)
@@ -74,12 +74,13 @@ genConflict = do
   q <- genPosition `suchThat` \q -> q /= p && shareUnit p q
   puzzle <- genPuzzle
   let digit = valueAt solution p
-  pure (setValue p digit (setValue q digit puzzle))
+  pure
+    (modifyCell p _ { value = digit } (modifyCell q _ { value = digit } puzzle))
 
 -- | A board with only the given cells filled.
 fromCells :: Array (Tuple Position Digit) -> Grid
 fromCells = foldl
-  (\grid (Tuple pos digit) -> setValue pos (Just digit) grid)
+  (\grid (Tuple pos digit) -> modifyCell pos _ { value = Just digit } grid)
   (initGrid unit)
 
 -- | A cell that sees eight digits in its row and the ninth in its column, so
