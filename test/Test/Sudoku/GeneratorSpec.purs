@@ -2,7 +2,7 @@ module Test.Sudoku.GeneratorSpec (spec) where
 
 import Prelude
 
-import Sudoku.Generator (completeGrid, fallbackGrid, fillDiagonal, removeCells)
+import Sudoku.Generator.Internal (completeGrid, fallbackGrid, fillDiagonal, removeCells)
 import Test.QuickCheck ((===))
 import Test.QuickCheck.Gen (arrayOf)
 import Test.Spec (Spec, describe, it)
