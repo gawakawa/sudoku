@@ -1,4 +1,4 @@
-module Test.Sudoku.GeneratorSpec (spec) where
+module Test.Sudoku.Generator.InternalSpec (spec) where
 
 import Prelude
 

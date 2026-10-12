@@ -6,7 +6,7 @@
   "scripts": {
     "serve": "vite",
     "build": "vite build",
-    "test:dom": "node --conditions=browser --conditions=development --import ./test/setup-dom.mjs -e 'import(\"./output/Test.Dom.Main/index.js\").then((m) => m.main())'",
+    "test:dom": "node --conditions=browser --conditions=development --import ./test/setup-dom.mjs -e 'import(\"./output/Test.Dom/index.js\").then((m) => m.main())'",
     "worst-case": "node bench/worstCase/main.ts",
     "deploy": "wrangler deploy"
   },

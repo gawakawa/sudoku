@@ -7,7 +7,7 @@
 - `nix build --out-link output` - Build `output/` from `src/` only (used by deploy)
 - `purs-nix compile` - Compile `src/` into `output/`
 - `purs-nix test` - Compile `src/` + `test/` into `output/`, run `Test.Main` on node
-- `npm run test:dom` - Run `Test.Dom.Main` under happy-dom (needs `output/` with `test/`)
+- `npm run test:dom` - Run `Test.Dom` under happy-dom (needs `output/` with `test/`)
 - `npm run serve` - Start the Vite dev server on port 3000 (needs `output/`)
 - `npm run build` - Build for production into `dist/` (needs `output/`)
 - `npm run worst-case` - Worst-case solver search (node, TS type stripping)
@@ -29,10 +29,10 @@ so that `node_modules` is linked in for them.
 
 ## Testing
 
-- `test/Test/Main.purs` (spec + spec-node): pure logic only. It must not import
+- `test/Main.purs` (spec + spec-node): pure logic only. It must not import
   any Solid module, directly or transitively, so it runs on plain node quickly.
   `nix flake check` runs it through `ps.test.check`.
-- `test/Test/Dom/Main.purs`: component tests using `Solid.Testing`. These need a
+- `test/Dom.purs`: component tests using `Solid.Testing`. These need a
   DOM, so `npm run test:dom` starts node with happy-dom
   (`test/setup-dom.mjs`) and `--conditions=browser --conditions=development`.
   purs-nix's `ps.test` cannot pass node flags, which is why this is a separate
