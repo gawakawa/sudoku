@@ -1,6 +1,6 @@
 -- | The 9x9 board: a cell per square, with arrow keys moving the focus between
 -- | neighbouring cells.
-module Sudoku.Component.Grid
+module Sudoku.UI.Component.Grid
   ( Props
   , grid
   ) where
@@ -23,10 +23,10 @@ import Solid.Reactivity (createMemoWith)
 import Solid.Setup (liftSetup)
 import Solid.Signal (Accessor, eqEquality, sample)
 import Solid.Store (Store, focusKey, items, value)
-import Sudoku.Component.Cell (Direction(..), cell)
 import Sudoku.Data.Board (Position, indices)
 import Sudoku.Data.Puzzle (CellValue, Grid)
-import Sudoku.Metrics (Metrics)
+import Sudoku.UI.Component.Cell (Direction(..), cell)
+import Sudoku.UI.Metrics (Metrics)
 import Web.HTML.HTMLElement as HTMLElement
 import Web.HTML.HTMLInputElement (HTMLInputElement)
 import Web.HTML.HTMLInputElement as HTMLInputElement

@@ -25,9 +25,15 @@ For development, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ```
 .
-├── src             # Application
-├── test            # Tests
+├── src
+│   ├── Main.purs       # Entry point
+│   └── Sudoku
+│       ├── Data        # Domain model
+│       ├── Solver      # Puzzle solver
+│       ├── Generator   # Puzzle generator
+│       └── UI          # Puzzle UI
+├── test                # Tests
 ├── docs
-│   └── DESIGN.md   # Design doc
-└── nix             # Build configuration
+│   └── DESIGN.md       # Design doc
+└── nix                 # Build configuration
 ```

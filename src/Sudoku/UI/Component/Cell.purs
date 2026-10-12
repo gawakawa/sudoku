@@ -1,6 +1,6 @@
 -- | One square of the board: an input that shows a digit and reports the
 -- | player's edits and arrow-key moves.
-module Sudoku.Component.Cell
+module Sudoku.UI.Component.Cell
   ( Direction(..)
   , Props
   , cell
@@ -20,7 +20,7 @@ import Solid.Reactivity (createEffect_)
 import Solid.Signal (Accessor, get)
 import Sudoku.Data.Board (Index(..), Position)
 import Sudoku.Data.Puzzle (CellValue, decode, encode)
-import Sudoku.Metrics (Metrics)
+import Sudoku.UI.Metrics (Metrics)
 import Web.Event.Event (Event, currentTarget, preventDefault)
 import Web.HTML.HTMLInputElement (HTMLInputElement)
 import Web.HTML.HTMLInputElement as HTMLInputElement

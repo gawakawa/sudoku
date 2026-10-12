@@ -1,6 +1,6 @@
 -- | A panel that polls the counts a `counting` metrics keeps and shows them,
 -- | with a heatmap of how often each cell was updated.
-module Sudoku.Component.MetricsPanel
+module Sudoku.UI.Component.MetricsPanel
   ( Props
   , metricsPanel
   ) where
@@ -23,7 +23,7 @@ import Solid.Lifecycle (onSettled)
 import Solid.Setup (liftSetup)
 import Solid.Signal (Accessor, createSignalWith, eqEquality, set)
 import Sudoku.Data.Board (Position, indices)
-import Sudoku.Metrics (Snapshot, totalCellUpdates)
+import Sudoku.UI.Metrics (Snapshot, totalCellUpdates)
 import Web.HTML (window)
 import Web.HTML.Window (cancelAnimationFrame, requestAnimationFrame)
 

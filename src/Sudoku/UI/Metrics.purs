@@ -1,6 +1,6 @@
 -- | Counts of what the UI did, reported through a `Metrics` the components
 -- | receive. `noop` ignores every report; `counting` keeps the counts.
-module Sudoku.Metrics
+module Sudoku.UI.Metrics
   ( Metrics
   , Snapshot
   , noop

@@ -1,6 +1,6 @@
 -- | The game: the board in one store, with each cell's error state derived
 -- | from the values it shares a row, column or block with.
-module Sudoku.App
+module Sudoku.UI.App
   ( Props
   , app
   ) where
@@ -19,14 +19,16 @@ import Solid.Reactivity (createMemo)
 import Solid.Setup (liftSetup)
 import Solid.Signal (Accessor, sample)
 import Solid.Store (atIndex, atKey, createStore, focusKey, items, set, update, value)
-import Sudoku.Component.Grid (grid)
 import Sudoku.Data.Board (Position, cellAt, indices)
 import Sudoku.Data.Puzzle (CellValue, Grid, hasConflict)
-import Sudoku.Metrics (Metrics)
+import Sudoku.UI.Component.Grid (grid)
+import Sudoku.UI.Component.MetricsPanel (metricsPanel)
+import Sudoku.UI.Metrics (Metrics, Snapshot)
 
 type Props =
   { initialGrid :: Grid
   , metrics :: Metrics
+  , snapshot :: Effect Snapshot
   }
 
 app :: Component Props
@@ -55,17 +57,21 @@ app = component \props -> do
             (atIndex (fromEnum pos.col) (atKey @"value" (set cellValue)))
         )
 
-  pure $ H.div
-    { class:
-        "flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4 md:p-8 md:pr-72"
-    }
-    [ H.h1
-        { class: "text-2xl md:text-4xl font-bold text-gray-800 mb-4 md:mb-8" }
-        "数独"
-    , Component.element grid
-        { grid: store
-        , hasError
-        , onChange: handleChange
-        , metrics: props.metrics
+  pure $ H.div { class: "min-h-screen flex flex-col" }
+    [ H.div
+        { class:
+            "flex-1 bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center p-4 md:p-8 md:pr-72"
         }
+        [ H.h1
+            { class: "text-2xl md:text-4xl font-bold text-gray-800 mb-4 md:mb-8"
+            }
+            "数独"
+        , Component.element grid
+            { grid: store
+            , hasError
+            , onChange: handleChange
+            , metrics: props.metrics
+            }
+        ]
+    , Component.element metricsPanel { snapshot: props.snapshot }
     ]
