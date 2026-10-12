@@ -81,6 +81,7 @@
       dependencies = [
         "arrays"
         "control"
+        "dom-indexed"
         "effect"
         "either"
         "enums"
@@ -94,6 +95,10 @@
         "refs"
         "transformers"
         "tuples"
+        "web-dom"
+        "web-events"
+        "web-html"
+        "web-uievents"
 
         (with-solid purs-solid [
           "Solid.Action"

@@ -8,6 +8,7 @@ import Effect.Class (liftEffect)
 import Solid.Component as Component
 import Solid.Testing (html, mount)
 import Sudoku.App (app)
+import Test.Dom.CellSpec as CellSpec
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldSatisfy)
 import Test.Spec.Reporter.Console (consoleReporter)
@@ -21,3 +22,4 @@ main = runSpecAndExitProcess [ consoleReporter ] do
       markup <- html mounted
       liftEffect mounted.dispose
       markup `shouldSatisfy` contains (Pattern "数独")
+  CellSpec.spec
