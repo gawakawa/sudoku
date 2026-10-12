@@ -7,13 +7,14 @@ module Sudoku.Component.Grid
 
 import Prelude
 
-import Data.Array (concat, zipWith)
-import Data.Enum (pred, succ)
+import Control.Monad.ST.Global (toEffect)
+import Data.Array (concat, replicate, zipWith)
+import Data.Array.ST as STArray
+import Data.Enum (fromEnum, pred, succ)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (for)
 import Effect (Effect)
-import Effect.Ref as Ref
 import Solid.Component (Component, component)
 import Solid.Component as Component
 import Solid.DOM.HTML as H
@@ -21,7 +22,6 @@ import Solid.Setup (liftSetup)
 import Solid.Signal (Accessor, sample)
 import Solid.Store (Store, focusKey, items, value)
 import Sudoku.Component.Cell (Direction(..), cell)
-import Sudoku.Grid (cellAt, modifyCell)
 import Sudoku.Metrics (Metrics)
 import Sudoku.Types (CellValue, Grid, Position, indices)
 import Web.HTML.HTMLElement as HTMLElement
@@ -35,6 +35,10 @@ type Props =
   , metrics :: Metrics
   }
 
+-- | The place of a position in a flat array of the 81 cells, row by row.
+slot :: Position -> Int
+slot pos = fromEnum pos.row * 9 + fromEnum pos.col
+
 -- | The neighbouring position, or `Nothing` at the edge of the board.
 neighbour :: Direction -> Position -> Maybe Position
 neighbour direction pos = case direction of
@@ -46,17 +50,18 @@ neighbour direction pos = case direction of
 grid :: Component Props
 grid = component \props -> do
   liftSetup props.metrics.gridRendered
-  refs <- liftSetup (Ref.new (indices <#> \_ -> indices <#> \_ -> Nothing))
+  refs <- liftSetup (toEffect (STArray.thaw (replicate 81 Nothing)))
   rows <- sample (items props.grid)
   cells <- for rows \row -> sample (items row)
   let
     remember :: Position -> HTMLInputElement -> Effect Unit
-    remember pos input = Ref.modify_ (modifyCell pos (const (Just input))) refs
+    remember pos input =
+      void (toEffect (STArray.poke (slot pos) (Just input) refs))
 
     navigate :: Position -> Direction -> Effect Unit
     navigate pos direction = for_ (neighbour direction pos) \next -> do
-      inputs <- Ref.read refs
-      for_ (join (cellAt inputs next))
+      found <- toEffect (STArray.peek (slot next) refs)
+      for_ (join found)
         (HTMLElement.focus <<< HTMLInputElement.toHTMLElement)
 
     view row col cursor =

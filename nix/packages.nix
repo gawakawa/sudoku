@@ -93,6 +93,7 @@
         "ordered-collections"
         "prelude"
         "refs"
+        "st"
         "transformers"
         "tuples"
         "web-dom"
