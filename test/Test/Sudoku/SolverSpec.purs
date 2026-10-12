@@ -35,10 +35,11 @@ spec = describe "solve" do
             isCompleteBoardOf puzzle grid
               <?> "the result is not a complete board of the puzzle"
           Left _ -> Success
-  describe "completeness" do
-    it "returns a solution for every solvable puzzle given enough budget" do
-      quickCheck do
-        puzzle <- genPuzzle
-        pure case solve plenty puzzle of
-          Right _ -> Success
-          Left failure -> Failed ("expected a solution, got " <> show failure)
+  describe "completeness: a solvable puzzle gets a solution given enough budget"
+    do
+      it "holds for solvable puzzles" do
+        quickCheck do
+          puzzle <- genPuzzle
+          pure case solve plenty puzzle of
+            Right _ -> Success
+            Left failure -> Failed ("expected a solution, got " <> show failure)
