@@ -68,10 +68,10 @@ New files are invisible to flake eval until `git add`-ed.
 
 ## CI Pipeline
 
-GitHub Actions CI runs `nix flake check`, `npm ci`, `purs-nix test`,
-`npm run test:dom` and `npm run build`. Pushes to `main` also run
-`.github/workflows/deploy.yml`, which builds and deploys to Cloudflare Workers
-via `wrangler-action`.
+On pull requests, GitHub Actions CI runs `nix flake check`, `npm ci`,
+`purs-nix test`, `npm run test:dom` and `npm run build`. Pushes to `main` run
+only `.github/workflows/deploy.yml`, which builds and deploys to Cloudflare
+Workers via `wrangler-action`.
 
 ## Skills
 
