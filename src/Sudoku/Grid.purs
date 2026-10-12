@@ -19,11 +19,14 @@ import Data.Set (Set)
 import Data.Set as Set
 import Sudoku.Types (Board, Cell, CellValue, Grid, Position, blockOf, indices)
 
-initCell :: Cell
-initCell = { value: Nothing, isInitial: false }
+-- | A new empty cell on every call. A Solid store tracks state per object, so
+-- | cells sharing one object would change together.
+initCell :: Unit -> Cell
+initCell _ = { value: Nothing, isInitial: false }
 
-initGrid :: Grid
-initGrid = indices <#> \_ -> indices <#> \_ -> initCell
+-- | A new empty grid on every call, for the same reason as `initCell`.
+initGrid :: Unit -> Grid
+initGrid _ = indices <#> \_ -> indices <#> \_ -> initCell unit
 
 cellAt :: forall a. Board a -> Position -> Maybe a
 cellAt board { row, col } =

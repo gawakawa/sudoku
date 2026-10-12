@@ -42,10 +42,10 @@ spec = describe "the state machine ends in a finite number of transitions" do
       describe "when choices remain" do
         it "with budget 0" do
           let budget = 0
-          endNext (start budget initGrid) `shouldEqual` true
+          endNext (start budget (initGrid unit)) `shouldEqual` true
         it "with a negative budget" do
           let budget = -1
-          endNext (start budget initGrid) `shouldEqual` true
+          endNext (start budget (initGrid unit)) `shouldEqual` true
       describe "when no choices remain" do
         it "with budget 0" do
           let budget = 0

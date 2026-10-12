@@ -80,7 +80,7 @@ fillBlock start values grid = foldl put grid (zip blockPositions values)
 fillDiagonal :: Array (Array Digit) -> Grid
 fillDiagonal blocks = foldl
   (\grid (Tuple start values) -> fillBlock start values grid)
-  initGrid
+  (initGrid unit)
   (zip [ I0, I3, I6 ] blocks)
 
 -- | The first of the grids that can be solved, solved.
@@ -99,7 +99,7 @@ generateRandomPositions = do
 
 removeCells :: Array Position -> Grid -> Grid
 removeCells removed grid = foldl
-  (\g pos -> modifyCell pos (const initCell) g)
+  (\g pos -> modifyCell pos (\_ -> initCell unit) g)
   grid
   removed
 

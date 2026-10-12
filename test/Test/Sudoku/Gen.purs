@@ -64,7 +64,7 @@ solution = indices <#> \row ->
 genPuzzle :: Gen Grid
 genPuzzle = traverse (traverse keepOrEmpty) solution
   where
-  keepOrEmpty cell = arbitrary <#> if _ then cell else initCell
+  keepOrEmpty cell = arbitrary <#> if _ then cell else initCell unit
 
 -- | A puzzle in which two cells that share a row, column or block are given
 -- | the same digit.
@@ -80,7 +80,7 @@ genConflict = do
 fromCells :: Array (Tuple Position Digit) -> Grid
 fromCells = foldl
   (\grid (Tuple pos digit) -> setValue pos (Just digit) grid)
-  initGrid
+  (initGrid unit)
 
 -- | A cell that sees eight digits in its row and the ninth in its column, so
 -- | no digit can go there although no digit is repeated.
