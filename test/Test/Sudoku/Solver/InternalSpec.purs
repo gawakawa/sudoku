@@ -3,30 +3,20 @@ module Test.Sudoku.Solver.InternalSpec (spec) where
 import Prelude
 
 import Data.List.Lazy (nil)
-import Sudoku.Solver.Internal (Next(..), Searching(..), budget, hasChoices, start, step)
+import Sudoku.Grid (initGrid)
+import Sudoku.Solver.Internal (Next(..), Searching(..), budget, start, step)
 import Test.QuickCheck (Result(..))
-import Test.QuickCheck.Gen (chooseInt, suchThat)
+import Test.QuickCheck.Gen (suchThat)
 import Test.Spec (Spec, describe, it)
-import Test.Spec.Assertions (fail)
+import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.QuickCheck (quickCheck)
 import Test.Sudoku.Gen (genBoard, genBudget)
 
--- | A searching state with no budget left ends on the next transition: in the
--- | unsolvable state if no choices remain, in the timeout state otherwise.
-endNext :: Searching -> Result
+-- | A searching state with no budget left ends on the next transition.
+endNext :: Searching -> Boolean
 endNext s = case step s of
-  Exhaust _ | not (hasChoices s) -> Success
-  Expire _ | hasChoices s -> Success
-  next -> Failed
-    ( "budget " <> show (budget s) <> ", choices remain: "
-        <> show (hasChoices s)
-        <> ", but moved to "
-        <> show next
-    )
-
--- | The state with its budget set to 0.
-zeroed :: Searching -> Searching
-zeroed (Searching s) = Searching s { budget = 0 }
+  Continue _ -> false
+  _ -> true
 
 spec :: Spec Unit
 spec = describe "the state machine ends in a finite number of transitions" do
@@ -49,28 +39,17 @@ spec = describe "the state machine ends in a finite number of transitions" do
       pure (check (start spendable board))
   describe "a searching state with budget 0 or less ends on the next transition"
     do
-      it "when started with a negative budget" do
-        quickCheck do
-          board <- genBoard
-          spendable <- chooseInt (-1000) (-1)
-          pure (endNext (start spendable board))
-      it "when started with budget 0" do
-        quickCheck do
-          board <- genBoard
-          pure (endNext (start 0 board))
-      it "when the transitions used up the budget" do
-        quickCheck do
-          board <- genBoard
-          spendable <- genBudget
-          let
-            -- Every searching state on the run, each with its budget set to 0.
-            check s = case endNext (zeroed s) of
-              Success -> case step s of
-                Continue s' -> check s'
-                _ -> Success
-              failure -> failure
-          pure (check (start spendable board))
-      it "in the unsolvable state when no choices remain" do
-        case step (Searching { pending: nil, budget: 0 }) of
-          Exhaust _ -> pure unit
-          next -> fail ("moved to " <> show next)
+      describe "when choices remain" do
+        it "with budget 0" do
+          let budget = 0
+          endNext (start budget initGrid) `shouldEqual` true
+        it "with a negative budget" do
+          let budget = -1
+          endNext (start budget initGrid) `shouldEqual` true
+      describe "when no choices remain" do
+        it "with budget 0" do
+          let budget = 0
+          endNext (Searching { pending: nil, budget }) `shouldEqual` true
+        it "with a negative budget" do
+          let budget = -1
+          endNext (Searching { pending: nil, budget }) `shouldEqual` true

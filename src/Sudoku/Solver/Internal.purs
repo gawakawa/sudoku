@@ -15,7 +15,6 @@ module Sudoku.Solver.Internal
   , step
   , solve
   , budget
-  , hasChoices
   , solution
   ) where
 
@@ -27,7 +26,7 @@ import Data.Array.NonEmpty (NonEmptyArray)
 import Data.Enum (enumFromTo)
 import Data.Foldable (foldMap, foldl)
 import Data.Lazy (Lazy, defer, force)
-import Data.List.Lazy (List, concatMap, nil, null, uncons, (:))
+import Data.List.Lazy (List, concatMap, nil, uncons, (:))
 import Data.Maybe (Maybe(..), maybe)
 import Data.Set as Set
 import Data.Set.NonEmpty (NonEmptySet)
@@ -181,10 +180,6 @@ solve spendable grid = go (start spendable grid)
 -- | The transitions left.
 budget :: Searching -> Int
 budget (Searching s) = s.budget
-
--- | Whether any attempt is left to make.
-hasChoices :: Searching -> Boolean
-hasChoices (Searching s) = not (null s.pending)
 
 -- | The board a search finished with.
 solution :: Solved -> Grid
