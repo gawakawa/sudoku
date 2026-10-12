@@ -10,19 +10,22 @@ module Test.Sudoku.Gen
   , genUnsolvable
   , genBoard
   , genBudget
+  , genSeed
+  , genPositions
   ) where
 
 import Prelude
 
-import Data.Array (drop, filter, take, zip)
+import Data.Array (drop, filter, filterA, take, zip)
 import Data.Array.NonEmpty (NonEmptyArray, cons')
 import Data.Enum (class BoundedEnum, enumFromTo, fromEnum)
 import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
+import Random.LCG (Seed, mkSeed)
 import Sudoku.Grid (initCell, initGrid, setValue, valueAt)
-import Sudoku.Types (Cell, CellValue, Digit, Grid, Position, indices)
+import Sudoku.Types (Cell, CellValue, Digit, Grid, Position, indices, positions)
 import Test.QuickCheck.Arbitrary (arbitrary)
 import Test.QuickCheck.Gen (Gen, chooseInt, elements, oneOf, shuffle, suchThat, vectorOf)
 import Test.Sudoku.Rules (shareUnit)
@@ -132,3 +135,10 @@ genBoard = oneOf (cons' genPuzzle [ genUnsolvable ])
 -- | A budget that is small as often as it is large.
 genBudget :: Gen Int
 genBudget = oneOf (cons' (chooseInt 0 200) [ chooseInt 0 1000000 ])
+
+genSeed :: Gen Seed
+genSeed = mkSeed <$> arbitrary
+
+-- | Any subset of the 81 positions.
+genPositions :: Gen (Array Position)
+genPositions = filterA (\_ -> arbitrary) positions

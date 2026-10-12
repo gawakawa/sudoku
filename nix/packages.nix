@@ -86,10 +86,12 @@
         "enums"
         "foldable-traversable"
         "lazy"
+        "lcg"
         "lists"
         "maybe"
         "ordered-collections"
         "prelude"
+        "transformers"
         "tuples"
 
         (with-solid purs-solid [
