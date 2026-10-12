@@ -1,11 +1,14 @@
 -- | Puzzle generation. `Sudoku.Generator` builds the public API on top of it,
--- | and the tests of the generator import this module. Other modules should
--- | use `Sudoku.Generator`.
+-- | and the tests and the benchmark of the generator import this module. Other
+-- | modules should use `Sudoku.Generator`.
 -- |
 -- | Only the choices that need randomness, the digits of the diagonal blocks
 -- | and the cells to empty, are drawn; the rest is pure.
 module Sudoku.Generator.Internal
-  ( fallbackGrid
+  ( Random
+  , budget
+  , shuffleDigits
+  , fallbackGrid
   , fillDiagonal
   , completeGrid
   , removeCells

@@ -4,6 +4,7 @@ _: {
       config,
       pkgs,
       ps,
+      ps-bench,
       purs-nix,
       ...
     }:
@@ -13,6 +14,10 @@ _: {
         ++ config.pre-commit.settings.enabledPackages
         ++ [
           (ps.command { })
+          (ps-bench.command {
+            name = "bench";
+            bundle.module = "Bench.Main";
+          })
           purs-nix.purescript
         ];
     in

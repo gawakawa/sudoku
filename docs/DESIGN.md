@@ -15,7 +15,7 @@ graph TD
 - `Solver`、`Generator`、`UI` はどれも `Data` に依存する。
 - `Data`、`Solver`、`Generator` は `UI` に依存しない。
 - 部分を組み合わせるのは `Main` だけにする。
-- `Internal` を import するのは、その公開 module と test だけにする。
+- `Internal` を import するのは、その公開 module と test、内部の性能を測る bench だけにする。
 
 ## Solver の設計
 
