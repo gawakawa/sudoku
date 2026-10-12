@@ -1,5 +1,22 @@
 # Design
 
+## module の構成
+
+```mermaid
+graph TD
+  Main --> Generator
+  Main --> UI
+  Generator --> Solver
+  Generator --> Data
+  Solver --> Data
+  UI --> Data
+```
+
+- `Solver`、`Generator`、`UI` はどれも `Data` に依存する。
+- `Data`、`Solver`、`Generator` は `UI` に依存しない。
+- 部分を組み合わせるのは `Main` だけにする。
+- `Internal` を import するのは、その公開 module と test だけにする。
+
 ## Solver の設計
 
 solver を状態機械として設計する。実装では、状態を型に、遷移を関数に対応させる。
