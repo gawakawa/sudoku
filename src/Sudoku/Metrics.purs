@@ -22,7 +22,6 @@ type Metrics =
   , appRendered :: Effect Unit
   , gridRendered :: Effect Unit
   , gridUpdated :: Effect Unit
-  , errorUpdated :: Effect Unit
   }
 
 type Snapshot =
@@ -30,7 +29,6 @@ type Snapshot =
   , appRenders :: Int
   , gridRenders :: Int
   , gridUpdates :: Int
-  , errorUpdates :: Int
   }
 
 noop :: Metrics
@@ -39,7 +37,6 @@ noop =
   , appRendered: pure unit
   , gridRendered: pure unit
   , gridUpdated: pure unit
-  , errorUpdated: pure unit
   }
 
 counting :: Effect { metrics :: Metrics, snapshot :: Effect Snapshot }
@@ -49,7 +46,6 @@ counting = do
     , appRenders: 0
     , gridRenders: 0
     , gridUpdates: 0
-    , errorUpdates: 0
     }
   pure
     { metrics:
@@ -63,9 +59,6 @@ counting = do
             ref
         , gridUpdated: Ref.modify_
             (\s -> s { gridUpdates = s.gridUpdates + 1 })
-            ref
-        , errorUpdated: Ref.modify_
-            (\s -> s { errorUpdates = s.errorUpdates + 1 })
             ref
         }
     , snapshot: Ref.read ref

@@ -4,10 +4,9 @@ module Sudoku.Grid
   , cellAt
   , valueAt
   , getPeers
-  , calculateCellError
+  , hasConflict
   , modifyCell
   , setValue
-  , peerErrors
   ) where
 
 import Prelude
@@ -17,6 +16,7 @@ import Data.Enum (fromEnum)
 import Data.Maybe (Maybe(..))
 import Data.Set (Set)
 import Data.Set as Set
+import Data.Traversable (traverse)
 import Sudoku.Types (Board, Cell, CellValue, Grid, Position, blockOf, indices)
 
 -- | A new empty cell on every call. A Solid store tracks state per object, so
@@ -48,11 +48,16 @@ getPeers { row, col } =
     pure { row: r, col: c }
 
 -- | Whether another cell in the row, column or block holds the same value.
-calculateCellError :: Grid -> Position -> Boolean
-calculateCellError grid pos = case valueAt grid pos of
-  Nothing -> false
-  value -> any (\p -> p /= pos && valueAt grid p == value)
-    (Set.toUnfoldable (getPeers pos))
+-- | `m` is how a value is read, so a reactive caller tracks only the cells it
+-- | reads: an empty cell reads no peer.
+hasConflict
+  :: forall m. Monad m => (Position -> m CellValue) -> Position -> m Boolean
+hasConflict valueOf pos = valueOf pos >>= case _ of
+  Nothing -> pure false
+  value -> do
+    peers <- traverse valueOf
+      (Set.toUnfoldable (Set.delete pos (getPeers pos)) :: Array Position)
+    pure (any (_ == value) peers)
 
 modifyCell :: forall a. Position -> (a -> a) -> Board a -> Board a
 modifyCell p f = mapWithIndex \r -> mapWithIndex \c cell ->
@@ -61,11 +66,3 @@ modifyCell p f = mapWithIndex \r -> mapWithIndex \c cell ->
 
 setValue :: Position -> CellValue -> Grid -> Grid
 setValue p value = modifyCell p _ { value = value }
-
--- | Error state of every peer of `pos`, computed from `grid` alone. Solid 2.0
--- | batches store writes, so callers pass the next grid instead of reading the
--- | store back.
-peerErrors :: Grid -> Position -> Array { pos :: Position, hasError :: Boolean }
-peerErrors grid pos =
-  Set.toUnfoldable (getPeers pos) <#> \p ->
-    { pos: p, hasError: calculateCellError grid p }

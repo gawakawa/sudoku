@@ -86,6 +86,7 @@
         "either"
         "enums"
         "foldable-traversable"
+        "identity"
         "lazy"
         "lcg"
         "lists"
