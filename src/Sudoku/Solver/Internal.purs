@@ -10,8 +10,10 @@ module Sudoku.Solver.Internal
   , Timeout
   , Unsolvable
   , Next(..)
+  , Ended(..)
   , start
   , step
+  , solve
   , budget
   , hasChoices
   , solution
@@ -154,6 +156,19 @@ step (Searching s) = case uncons s.pending of
             Just board -> case completed board of
               Nothing -> continue
               Just grid -> Finish (Solved grid)
+
+-- | How a search ends.
+data Ended = Found Solved | GaveUp Timeout | Impossible Unsolvable
+
+-- | Runs the machine from the start until it ends.
+solve :: Int -> Grid -> Ended
+solve spendable grid = go (start spendable grid)
+  where
+  go s = case step s of
+    Continue s' -> go s'
+    Finish solved -> Found solved
+    Expire timeout -> GaveUp timeout
+    Exhaust unsolvable -> Impossible unsolvable
 
 -- | The transitions left.
 budget :: Searching -> Int
