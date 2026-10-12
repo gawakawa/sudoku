@@ -2,9 +2,13 @@
 
 ## Overview
 
-A Sudoku puzzle game written in PureScript on top of purs-solid (Solid 2.0
-bindings), built with purs-nix and Vite, styled with Tailwind CSS v4. It is a
-static SPA served by a single Cloudflare Worker (no backend).
+A Sudoku puzzle game built to learn SolidJS. It runs in the browser.
+
+## Tech Stack
+
+- PureScript on top of purs-solid (Solid 2.0 bindings)
+- Built with purs-nix and Vite, styled with Tailwind CSS v4
+- A static SPA served by a single Cloudflare Worker (no backend)
 
 ## Docs
 

@@ -2,10 +2,7 @@
 
 ## Overview
 
-A Sudoku puzzle game written in PureScript with
-[purs-solid](https://github.com/aquarazorda/purs-solid) (Solid 2.0 bindings),
-built with purs-nix and Vite, styled with Tailwind CSS v4 and deployed as static
-assets on Cloudflare Workers.
+A Sudoku puzzle game built to learn SolidJS. It runs in the browser.
 
 ## Features
 
