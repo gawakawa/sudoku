@@ -8,7 +8,7 @@ import Test.QuickCheck ((===))
 import Test.Spec (Spec, describe, it)
 import Test.Spec.QuickCheck (quickCheck)
 import Test.Sudoku.Gen (genCellValue, genGrid, genPosition)
-import Test.Sudoku.Rules (sharesUnit)
+import Test.Sudoku.Rules (shareUnit)
 
 spec :: Spec Unit
 spec = do
@@ -17,7 +17,7 @@ spec = do
       quickCheck do
         p <- genPosition
         q <- genPosition
-        pure (Set.member q (getPeers p) === sharesUnit p q)
+        pure (Set.member q (getPeers p) === shareUnit p q)
     it "is symmetric" do
       quickCheck do
         p <- genPosition

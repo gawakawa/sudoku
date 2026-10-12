@@ -1,20 +1,22 @@
 -- | The rules of sudoku, written directly from their definition so that tests
 -- | do not depend on the code they check.
 module Test.Sudoku.Rules
-  ( sharesUnit
+  ( shareUnit
   , isValid
+  , keepGiven
+  , isCompleteBoardOf
   ) where
 
 import Prelude
 
 import Data.Enum (fromEnum)
 import Data.Foldable (all)
-import Data.Maybe (isJust)
+import Data.Maybe (isJust, isNothing)
 import Sudoku.Grid (valueAt)
 import Sudoku.Types (Grid, Position, positions)
 
-sharesUnit :: Position -> Position -> Boolean
-sharesUnit a b =
+shareUnit :: Position -> Position -> Boolean
+shareUnit a b =
   a.row == b.row
     || a.col == b.col
     || (block a.row == block b.row && block a.col == block b.col)
@@ -26,6 +28,16 @@ isValid :: Grid -> Boolean
 isValid grid = all ok positions
   where
   ok p = isJust (valueAt grid p) && all (agreeable p) positions
-  agreeable p q = p == q || not (sharesUnit p q) || valueAt grid p /= valueAt
+  agreeable p q = p == q || not (shareUnit p q) || valueAt grid p /= valueAt
     grid
     q
+
+-- | Every digit `puzzle` gives is kept in `grid`.
+keepGiven :: Grid -> Grid -> Boolean
+keepGiven puzzle grid = all keep positions
+  where
+  keep p = isNothing (valueAt puzzle p) || valueAt grid p == valueAt puzzle p
+
+-- | Whether `grid` is a complete board of `puzzle`.
+isCompleteBoardOf :: Grid -> Grid -> Boolean
+isCompleteBoardOf puzzle grid = isValid grid && keepGiven puzzle grid
