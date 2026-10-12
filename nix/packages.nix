@@ -128,7 +128,6 @@
         "spec"
         "spec-node"
         "spec-quickcheck"
-        "strings"
       ];
 
       ps = purs-nix.purs {
