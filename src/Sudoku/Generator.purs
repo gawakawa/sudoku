@@ -1,10 +1,9 @@
--- | Random puzzle generation. Randomness is a `Seed` threaded through `State`;
--- | `Effect` is used only to get the first seed.
+-- | Random puzzle generation. Only the choices that need randomness, the digits
+-- | of the diagonal blocks and the cells to empty, are drawn; the rest is pure.
 module Sudoku.Generator
-  ( Random
-  , fallbackGrid
-  , generateCompleteGrid
-  , generateRandomPositions
+  ( fallbackGrid
+  , fillDiagonal
+  , completeGrid
   , removeCells
   , generateInitialGrid
   ) where
@@ -15,11 +14,12 @@ import Control.Monad.State (State, evalState, state)
 import Data.Array (concatMap, filter, findMap, sortWith, zip, (..))
 import Data.Either (hush)
 import Data.Enum (enumFromTo)
-import Data.Foldable (foldM, foldl)
+import Data.Foldable (foldl)
 import Data.Int.Bits (and, shr)
 import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..), fst, snd)
+import Data.Unfoldable (replicateA)
 import Effect (Effect)
 import Random.LCG (Seed, lcgNext, randomSeed, unSeed)
 import Sudoku.Grid (initCell, initGrid, modifyCell)
@@ -45,10 +45,11 @@ fallbackGrid = table <#> \row -> row <#> \d ->
     , [ D9, D1, D2, D3, D4, D5, D6, D7, D8 ]
     ]
 
--- | How many boards to try, and how many transitions each may spend.
+-- | Parameter: how many boards to try before falling back to `fallbackGrid`.
 attempts :: Int
 attempts = 1
 
+-- | Parameter: how many solver transitions each attempt may spend.
 budget :: Int
 budget = 1000
 
@@ -74,18 +75,18 @@ fillBlock start values grid = foldl put grid (zip blockPositions values)
   put g (Tuple pos d) =
     modifyCell pos _ { value = Just d, isInitial = true } g
 
--- | A grid with the three diagonal blocks filled. They share no row or
--- | column, so any fill is consistent.
-generateDiagonalBlocks :: Random Grid
-generateDiagonalBlocks = foldM
-  (\grid start -> (\values -> fillBlock start values grid) <$> shuffleDigits)
+-- | A grid with the three diagonal blocks filled with the given digits. They
+-- | share no row or column, so any fill is consistent.
+fillDiagonal :: Array (Array Digit) -> Grid
+fillDiagonal blocks = foldl
+  (\grid (Tuple start values) -> fillBlock start values grid)
   initGrid
-  [ I0, I3, I6 ]
+  (zip [ I0, I3, I6 ] blocks)
 
-generateCompleteGrid :: Random Grid
-generateCompleteGrid = do
-  grids <- traverse (const generateDiagonalBlocks) (1 .. attempts)
-  pure (fromMaybe fallbackGrid (findMap (hush <<< solve budget) grids))
+-- | The first of the grids that can be solved, solved.
+completeGrid :: Array Grid -> Grid
+completeGrid grids = fromMaybe fallbackGrid
+  (findMap (hush <<< solve budget) grids)
 
 -- | Three draws give 81 bits of 27 each; a position is picked when its bit
 -- | is set.
@@ -106,6 +107,6 @@ generateInitialGrid :: Effect Grid
 generateInitialGrid = evalState puzzle <$> randomSeed
   where
   puzzle = do
-    complete <- generateCompleteGrid
+    blocks <- replicateA attempts (replicateA 3 shuffleDigits)
     removed <- generateRandomPositions
-    pure (removeCells removed complete)
+    pure (removeCells removed (completeGrid (fillDiagonal <$> blocks)))

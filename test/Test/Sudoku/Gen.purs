@@ -10,7 +10,7 @@ module Test.Sudoku.Gen
   , genUnsolvable
   , genBoard
   , genBudget
-  , genSeed
+  , genDiagonal
   , genPositions
   ) where
 
@@ -23,7 +23,6 @@ import Data.Foldable (foldl)
 import Data.Maybe (Maybe(..))
 import Data.Traversable (traverse)
 import Data.Tuple (Tuple(..))
-import Random.LCG (Seed, mkSeed)
 import Sudoku.Grid (initCell, initGrid, setValue, valueAt)
 import Sudoku.Types (Cell, CellValue, Digit, Grid, Position, indices, positions)
 import Test.QuickCheck.Arbitrary (arbitrary)
@@ -136,8 +135,9 @@ genBoard = oneOf (cons' genPuzzle [ genUnsolvable ])
 genBudget :: Gen Int
 genBudget = oneOf (cons' (chooseInt 0 200) [ chooseInt 0 1000000 ])
 
-genSeed :: Gen Seed
-genSeed = mkSeed <$> arbitrary
+-- | Digits for the three diagonal blocks, each block a permutation.
+genDiagonal :: Gen (Array (Array Digit))
+genDiagonal = vectorOf 3 (shuffle allDigits)
 
 -- | Any subset of the 81 positions.
 genPositions :: Gen (Array Position)
