@@ -17,17 +17,17 @@ Nix with flakes enabled
 
 ## Usage
 
-Play online: https://sudoku.i0ta.dev/
+Play online: https://sudoku.i0ta.dev
 
 For development, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Directory Structure
 
-- `src/Main.purs` — entry point (mounts into `#root`)
-- `src/Sudoku/` — app, components (Cell, Grid, MetricsPanel), generator, solver, grid logic and metrics
-- `test/` — plain-node tests (`Test/Main.purs`) and happy-dom component tests (`Test/Dom/Main.purs`)
-- `bench/worstCase/` — worst-case search tools (node)
-- `docs/DESIGN.md` — solver design
-- `nix/` — flake-parts modules (purs-nix, treefmt, hooks)
-- `index.html`, `index.js`, `style.css`, `vite.config.js` — Vite and Tailwind entry
-- `wrangler.jsonc` — Cloudflare Workers (static assets) config
+```
+.
+├── src             # Application
+├── test            # Tests
+├── docs
+│   └── DESIGN.md   # Design doc
+└── nix             # Build configuration
+```
