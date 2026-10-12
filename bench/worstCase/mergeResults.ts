@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { readFile, writeFile } from "node:fs/promises";
 import type { BlockConfig, DistributionStats } from "./types.ts";
 import type { BatchResult } from "./sampleBatch.ts";
 
@@ -32,14 +32,10 @@ export const mergeResults = (batches: BatchResult[]): MergedResult => {
   const weightedMin = Math.min(...batches.map((b) => b.distribution.min));
   const weightedMax = Math.max(...batches.map((b) => b.distribution.max));
   const weightedMean = Math.round(
-    batches.reduce((acc, b) => acc + b.distribution.mean * b.sampleCount, 0) /
-      totalSamples,
+    batches.reduce((acc, b) => acc + b.distribution.mean * b.sampleCount, 0) / totalSamples,
   );
   const weightedP95 = Math.round(
-    batches.reduce(
-      (acc, b) => acc + b.distribution.percentile95 * b.sampleCount,
-      0,
-    ) / totalSamples,
+    batches.reduce((acc, b) => acc + b.distribution.percentile95 * b.sampleCount, 0) / totalSamples,
   );
 
   return {
@@ -58,28 +54,24 @@ export const mergeResults = (batches: BatchResult[]): MergedResult => {
 
 // CLI entry point
 if (import.meta.main) {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
 
   if (args.length < 1) {
-    console.error(
-      "Usage: deno run --allow-read mergeResults.ts <file1> <file2> ...",
-    );
-    Deno.exit(1);
+    console.error("Usage: deno run --allow-read mergeResults.ts <file1> <file2> ...");
+    process.exit(1);
   }
 
   const batches: BatchResult[] = [];
 
   for (const filePath of args) {
     try {
-      const content = await Deno.readTextFile(filePath);
+      const content = await readFile(filePath, "utf8");
       const batch = JSON.parse(content) as BatchResult;
       batches.push(batch);
-      console.log(
-        `Loaded ${filePath}: ${batch.hardCandidates.length} candidates`,
-      );
+      console.log(`Loaded ${filePath}: ${batch.hardCandidates.length} candidates`);
     } catch (e) {
       console.error(`Failed to load ${filePath}:`, e);
-      Deno.exit(1);
+      process.exit(1);
     }
   }
 
@@ -88,15 +80,13 @@ if (import.meta.main) {
   console.log("\n=== Merged Results ===");
   console.log(`Total samples: ${merged.totalSamples}`);
   console.log(`Total hard candidates: ${merged.hardCandidates.length}`);
-  console.log(
-    `Total duration: ${merged.totalDurationMs}ms (sum of all batches)`,
-  );
+  console.log(`Total duration: ${merged.totalDurationMs}ms (sum of all batches)`);
   console.log(
     `Distribution: min=${merged.distribution.min}, max=${merged.distribution.max}, mean=${merged.distribution.mean}, p95=${merged.distribution.percentile95}`,
   );
 
   // Output merged JSON
   const outputPath = "/tmp/merged_results.json";
-  await Deno.writeTextFile(outputPath, JSON.stringify(merged, null, 2));
+  await writeFile(outputPath, JSON.stringify(merged, null, 2));
   console.log(`\nMerged results saved to: ${outputPath}`);
 }

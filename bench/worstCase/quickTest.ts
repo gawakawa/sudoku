@@ -1,4 +1,3 @@
-/// <reference lib="deno.ns" />
 import { evaluateHardCandidates, fastScreening, hillClimb } from "./search.ts";
 
 const SCREENING_LIMIT = 2_000;

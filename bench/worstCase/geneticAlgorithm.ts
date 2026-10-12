@@ -1,4 +1,4 @@
-import type { Digit } from "../../src/types/Sudoku.ts";
+import type { Digit } from "./sudoku.ts";
 import type { BlockConfig } from "./types.ts";
 import { evaluateConfig, generateRandomConfig } from "./evaluate.ts";
 
@@ -97,11 +97,7 @@ const crossover = (p1: BlockConfig, p2: BlockConfig): BlockConfig =>
   ] as BlockConfig;
 
 /** Swap two positions in a block and return a new array. */
-const swapInBlock = (
-  block: readonly Digit[],
-  i: number,
-  j: number,
-): Digit[] => {
+const swapInBlock = (block: readonly Digit[], i: number, j: number): Digit[] => {
   const newBlock = [...block] as Digit[];
   [newBlock[i], newBlock[j]] = [newBlock[j], newBlock[i]];
   return newBlock;
@@ -126,10 +122,7 @@ const mutate = (config: BlockConfig, rate: number): BlockConfig => {
 /**
  * Run genetic algorithm to find worst-case configurations.
  */
-export const evolve = (
-  seed: BlockConfig | null,
-  options: GAOptions,
-): GAResult => {
+export const evolve = (seed: BlockConfig | null, options: GAOptions): GAResult => {
   const {
     populationSize,
     generations,
@@ -144,7 +137,7 @@ export const evolve = (
   let evaluations = populationSize;
 
   // Track global best
-  let globalBest = population.reduce((a, b) => a.fitness > b.fitness ? a : b);
+  let globalBest = population.reduce((a, b) => (a.fitness > b.fitness ? a : b));
 
   for (let gen = 0; gen < generations; gen++) {
     // Sort by fitness (descending)

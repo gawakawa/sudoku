@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { writeFile } from "node:fs/promises";
 import type { BlockConfig } from "./types.ts";
 import { generateRandomConfig } from "./evaluate.ts";
 import { simulatedAnnealing } from "./simulatedAnnealing.ts";
@@ -21,20 +21,18 @@ import { simulatedAnnealing } from "./simulatedAnnealing.ts";
  *   SA_ITERATIONS=5000 deno run --allow-write --allow-env saBatch.ts /tmp/sa_2.json '[...]'
  */
 
-const STEP_LIMIT = Number(Deno.env.get("SA_STEP_LIMIT")) || 10_000;
-const INITIAL_TEMP = Number(Deno.env.get("SA_INITIAL_TEMP")) || 500;
-const COOLING_RATE = Number(Deno.env.get("SA_COOLING_RATE")) || 0.9995;
-const ITERATIONS = Number(Deno.env.get("SA_ITERATIONS")) || 10_000;
-const MULTI_BLOCK = Deno.env.get("SA_MULTI_BLOCK") === "true";
+const STEP_LIMIT = Number(process.env.SA_STEP_LIMIT) || 10_000;
+const INITIAL_TEMP = Number(process.env.SA_INITIAL_TEMP) || 500;
+const COOLING_RATE = Number(process.env.SA_COOLING_RATE) || 0.9995;
+const ITERATIONS = Number(process.env.SA_ITERATIONS) || 10_000;
+const MULTI_BLOCK = process.env.SA_MULTI_BLOCK === "true";
 
 const main = async (): Promise<void> => {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
 
   if (args.length < 1) {
-    console.error(
-      "Usage: deno run --allow-write saBatch.ts <outputPath> [startConfigJson]",
-    );
-    Deno.exit(1);
+    console.error("Usage: deno run --allow-write saBatch.ts <outputPath> [startConfigJson]");
+    process.exit(1);
   }
 
   const outputPath = args[0];
@@ -68,7 +66,7 @@ const main = async (): Promise<void> => {
     durationMs,
   };
 
-  await Deno.writeTextFile(outputPath, JSON.stringify(output, null, 2));
+  await writeFile(outputPath, JSON.stringify(output, null, 2));
   console.log(`Results saved to: ${outputPath}`);
 };
 

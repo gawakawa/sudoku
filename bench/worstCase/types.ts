@@ -1,14 +1,10 @@
-import type { Digit } from "../../src/types/Sudoku.ts";
+import type { Digit } from "./sudoku.ts";
 
 /**
  * Configuration of three diagonal 3x3 blocks.
  * Each block contains a permutation of digits 1-9.
  */
-export type BlockConfig = readonly [
-  readonly Digit[],
-  readonly Digit[],
-  readonly Digit[],
-];
+export type BlockConfig = readonly [readonly Digit[], readonly Digit[], readonly Digit[]];
 
 /**
  * Result of evaluating a single configuration.

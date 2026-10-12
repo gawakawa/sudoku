@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { writeFile } from "node:fs/promises";
 import type { BlockConfig } from "./types.ts";
 import { evaluateConfig, generateRandomConfig } from "./evaluate.ts";
 
@@ -15,10 +15,10 @@ import { evaluateConfig, generateRandomConfig } from "./evaluate.ts";
  *   TOP_K           - Number of top configs to save (default: 100)
  */
 
-const SAMPLE_SIZE = Number(Deno.env.get("SAMPLE_SIZE")) || 100_000;
-const STEP_LIMIT = Number(Deno.env.get("STEP_LIMIT")) || 15_000;
-const THRESHOLD = Number(Deno.env.get("THRESHOLD")) || 5_000;
-const TOP_K = Number(Deno.env.get("TOP_K")) || 100;
+const SAMPLE_SIZE = Number(process.env.SAMPLE_SIZE) || 100_000;
+const STEP_LIMIT = Number(process.env.STEP_LIMIT) || 15_000;
+const THRESHOLD = Number(process.env.THRESHOLD) || 5_000;
+const TOP_K = Number(process.env.TOP_K) || 100;
 
 type SampleResult = {
   config: BlockConfig;
@@ -26,13 +26,11 @@ type SampleResult = {
 };
 
 const main = async (): Promise<void> => {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
 
   if (args.length < 1) {
-    console.error(
-      "Usage: deno run --allow-write --allow-env largeSample.ts <outputPath>",
-    );
-    Deno.exit(1);
+    console.error("Usage: deno run --allow-write --allow-env largeSample.ts <outputPath>");
+    process.exit(1);
   }
 
   const outputPath = args[0];
@@ -96,7 +94,7 @@ const main = async (): Promise<void> => {
     durationMs,
   };
 
-  await Deno.writeTextFile(outputPath, JSON.stringify(output, null, 2));
+  await writeFile(outputPath, JSON.stringify(output, null, 2));
   console.log(`Results saved to: ${outputPath}`);
 };
 

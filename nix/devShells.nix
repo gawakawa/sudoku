@@ -1,13 +1,20 @@
 _: {
   perSystem =
-    { config, pkgs, ... }:
+    {
+      config,
+      pkgs,
+      ps,
+      purs-nix,
+      ...
+    }:
     let
       devPackages =
         config.ciPackages
         ++ config.pre-commit.settings.enabledPackages
-        ++ (with pkgs; [
-          # Additional development tools can be added here
-        ]);
+        ++ [
+          (ps.command { })
+          purs-nix.purescript
+        ];
     in
     {
       devShells.default = pkgs.mkShell {

@@ -1,10 +1,6 @@
-/// <reference lib="deno.ns" />
+import { writeFile } from "node:fs/promises";
 import type { SearchOutput } from "./types.ts";
-import {
-  evaluateHardCandidates,
-  fastScreening,
-  multiStartHillClimb,
-} from "./search.ts";
+import { evaluateHardCandidates, fastScreening, multiStartHillClimb } from "./search.ts";
 
 // Configuration
 const SCREENING_SAMPLES = 1_000_000;
@@ -23,12 +19,8 @@ const main = async (): Promise<void> => {
   console.log("=== Worst-Case Sudoku Configuration Search ===\n");
   console.log("Parameters:");
   console.log(`  Screening samples: ${SCREENING_SAMPLES.toLocaleString()}`);
-  console.log(
-    `  Screening step limit: ${SCREENING_STEP_LIMIT.toLocaleString()}`,
-  );
-  console.log(
-    `  Deep eval step limit: ${DEEP_EVAL_STEP_LIMIT.toLocaleString()}`,
-  );
+  console.log(`  Screening step limit: ${SCREENING_STEP_LIMIT.toLocaleString()}`);
+  console.log(`  Deep eval step limit: ${DEEP_EVAL_STEP_LIMIT.toLocaleString()}`);
   console.log(`  Top K for hill climb: ${TOP_K_FOR_HILL_CLIMB}`);
   console.log(`  Hill climb iterations: ${HILL_CLIMB_ITERATIONS}`);
   console.log("");
@@ -82,17 +74,16 @@ const main = async (): Promise<void> => {
   const deepEvalDuration = performance.now() - deepEvalStart;
   console.log(`  Completed in ${formatDuration(deepEvalDuration)}`);
   console.log(
-    `  Top step counts: [${
-      evaluated.slice(0, 5).map((r) => r.stepsUsed).join(", ")
-    }]`,
+    `  Top step counts: [${evaluated
+      .slice(0, 5)
+      .map((r) => r.stepsUsed)
+      .join(", ")}]`,
   );
   console.log("");
 
   // Phase C: Hill Climbing
   const topCandidates = evaluated.slice(0, TOP_K_FOR_HILL_CLIMB);
-  console.log(
-    `[Phase C] Hill climbing from top ${topCandidates.length} candidates...`,
-  );
+  console.log(`[Phase C] Hill climbing from top ${topCandidates.length} candidates...`);
   const hillClimbStart = performance.now();
 
   const hillClimbResult = multiStartHillClimb(
@@ -100,9 +91,7 @@ const main = async (): Promise<void> => {
     DEEP_EVAL_STEP_LIMIT,
     HILL_CLIMB_ITERATIONS,
     (climbIdx, total, currentBest) => {
-      console.log(
-        `  Hill climb ${climbIdx}/${total}, current best: ${currentBest} steps`,
-      );
+      console.log(`  Hill climb ${climbIdx}/${total}, current best: ${currentBest} steps`);
     },
   );
 
@@ -111,18 +100,18 @@ const main = async (): Promise<void> => {
   console.log("");
 
   // Results
-  const totalDuration = screeningDuration + deepEvalDuration +
-    hillClimbDuration;
+  const totalDuration = screeningDuration + deepEvalDuration + hillClimbDuration;
   console.log("=== RESULT ===");
   console.log(`Worst-case steps: ${hillClimbResult.stepsUsed}`);
   console.log(`Block 0: [${hillClimbResult.best[0].join(", ")}]`);
   console.log(`Block 1: [${hillClimbResult.best[1].join(", ")}]`);
   console.log(`Block 2: [${hillClimbResult.best[2].join(", ")}]`);
   console.log(
-    `Total configs evaluated: ${
-      (SCREENING_SAMPLES + hardCandidates.length +
-        hillClimbResult.samplesEvaluated).toLocaleString()
-    }`,
+    `Total configs evaluated: ${(
+      SCREENING_SAMPLES +
+      hardCandidates.length +
+      hillClimbResult.samplesEvaluated
+    ).toLocaleString()}`,
   );
   console.log(`Total time: ${formatDuration(totalDuration)}`);
   console.log("");
@@ -132,13 +121,12 @@ const main = async (): Promise<void> => {
     timestamp: new Date().toISOString(),
     stepsUsed: hillClimbResult.stepsUsed,
     best: hillClimbResult.best,
-    samplesEvaluated: SCREENING_SAMPLES + hardCandidates.length +
-      hillClimbResult.samplesEvaluated,
+    samplesEvaluated: SCREENING_SAMPLES + hardCandidates.length + hillClimbResult.samplesEvaluated,
     distribution,
   };
 
   const outputPath = new URL("./results/latest.json", import.meta.url).pathname;
-  await Deno.writeTextFile(outputPath, JSON.stringify(output, null, 2));
+  await writeFile(outputPath, JSON.stringify(output, null, 2));
   console.log(`Results saved to: ${outputPath}`);
 };
 

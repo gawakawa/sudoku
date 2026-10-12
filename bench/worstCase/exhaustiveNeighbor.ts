@@ -1,14 +1,9 @@
-/// <reference lib="deno.ns" />
-import type { Digit } from "../../src/types/Sudoku.ts";
+import type { Digit } from "./sudoku.ts";
 import type { BlockConfig } from "./types.ts";
 import { evaluateConfig } from "./evaluate.ts";
 
 /** Swap two positions in a block and return a new array. */
-const swapInBlock = (
-  block: readonly Digit[],
-  i: number,
-  j: number,
-): Digit[] => {
+const swapInBlock = (block: readonly Digit[], i: number, j: number): Digit[] => {
   const newBlock = [...block] as Digit[];
   [newBlock[i], newBlock[j]] = [newBlock[j], newBlock[i]];
   return newBlock;
@@ -30,7 +25,7 @@ const BEST_CONFIG: BlockConfig = [
   [6, 7, 8, 2, 3, 9, 4, 5, 1],
 ];
 
-const STEP_LIMIT = Number(Deno.env.get("STEP_LIMIT")) || 15_000;
+const STEP_LIMIT = Number(process.env.STEP_LIMIT) || 15_000;
 
 const main = (): void => {
   console.log("Checking all 108 neighbors of best config...");
@@ -55,15 +50,9 @@ const main = (): void => {
       for (let j = i + 1; j < 9; j++) {
         // Create neighbor by swapping positions i and j in block blockIdx
         const neighbor: BlockConfig = [
-          blockIdx === 0
-            ? swapInBlock(BEST_CONFIG[0], i, j)
-            : [...BEST_CONFIG[0]],
-          blockIdx === 1
-            ? swapInBlock(BEST_CONFIG[1], i, j)
-            : [...BEST_CONFIG[1]],
-          blockIdx === 2
-            ? swapInBlock(BEST_CONFIG[2], i, j)
-            : [...BEST_CONFIG[2]],
+          blockIdx === 0 ? swapInBlock(BEST_CONFIG[0], i, j) : [...BEST_CONFIG[0]],
+          blockIdx === 1 ? swapInBlock(BEST_CONFIG[1], i, j) : [...BEST_CONFIG[1]],
+          blockIdx === 2 ? swapInBlock(BEST_CONFIG[2], i, j) : [...BEST_CONFIG[2]],
         ] as BlockConfig;
 
         const result = evaluateConfig(neighbor, STEP_LIMIT);
@@ -77,9 +66,7 @@ const main = (): void => {
             i,
             j,
           });
-          console.log(
-            `Found better: block${blockIdx} swap(${i},${j}) = ${result.stepsUsed}`,
-          );
+          console.log(`Found better: block${blockIdx} swap(${i},${j}) = ${result.stepsUsed}`);
         }
 
         if (result.stepsUsed > maxSteps) {
@@ -107,9 +94,7 @@ const main = (): void => {
       console.log(JSON.stringify(maxConfig));
     }
   } else {
-    console.log(
-      `\nNo better neighbors found - ${baseResult.stepsUsed} is a local optimum`,
-    );
+    console.log(`\nNo better neighbors found - ${baseResult.stepsUsed} is a local optimum`);
   }
 };
 

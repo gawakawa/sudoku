@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { mkdir, writeFile } from "node:fs/promises";
 import type { BlockConfig } from "./types.ts";
 import { evaluateConfig } from "./evaluate.ts";
 import { hillClimb } from "./search.ts";
@@ -32,9 +32,7 @@ const main = async (): Promise<void> => {
   console.log(`Hit limit: ${deepResult.hitLimit}`);
 
   // Phase 2: Hill Climbing
-  console.log(
-    `\n[Phase 2] Hill climbing (iterations=${HILL_CLIMB_ITERATIONS})...`,
-  );
+  console.log(`\n[Phase 2] Hill climbing (iterations=${HILL_CLIMB_ITERATIONS})...`);
   const startTime = performance.now();
 
   const hillResult = hillClimb(
@@ -69,10 +67,10 @@ const main = async (): Promise<void> => {
   };
 
   const outputPath = new URL("./results/final.json", import.meta.url).pathname;
-  await Deno.mkdir(new URL("./results", import.meta.url).pathname, {
+  await mkdir(new URL("./results", import.meta.url).pathname, {
     recursive: true,
   });
-  await Deno.writeTextFile(outputPath, JSON.stringify(output, null, 2));
+  await writeFile(outputPath, JSON.stringify(output, null, 2));
   console.log(`\nResults saved to: ${outputPath}`);
 };
 

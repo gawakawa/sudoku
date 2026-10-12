@@ -3,20 +3,16 @@ _: {
     { pkgs, ... }:
     {
       pre-commit.settings.hooks = {
-        treefmt.enable = true;
+        treefmt = {
+          enable = true;
+          excludes = [ ".*\\.purs$" ]; # avoid purs-tidy's mtime issue
+        };
         statix.enable = true;
         deadnix.enable = true;
         actionlint.enable = true;
         zizmor = {
           enable = true;
           args = [ "--offline" ];
-        };
-        denolint = {
-          enable = true;
-          name = "deno lint";
-          entry = "${pkgs.deno}/bin/deno lint";
-          files = "\\.(ts|tsx|js|jsx)$";
-          pass_filenames = false;
         };
         workflow-timeout = {
           enable = true;

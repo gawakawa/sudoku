@@ -1,8 +1,8 @@
 # Sudoku
 
-## Usage
+## Overview
 
-Play online: https://sudoku.i0ta.dev/
+A Sudoku puzzle game built to learn SolidJS. It runs in the browser.
 
 ## Features
 
@@ -11,67 +11,29 @@ Play online: https://sudoku.i0ta.dev/
 - **Random puzzle generation** - Fast, performance-optimized generation of
   unique puzzles
 
+## Prerequisites
+
+Nix with flakes enabled
+
+## Usage
+
+Play online: https://sudoku.i0ta.dev
+
+For development, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## Directory Structure
 
 ```
 .
 ├── src
-│   ├── components                    # UI components
-│   │   ├── MetricsPanel.tsx          # Render count display
-│   │   ├── SudokuCell.tsx            # Individual cell input
-│   │   └── SudokuGrid.tsx            # 9x9 grid layout
-│   ├── generator                     # Puzzle generation
-│   │   ├── createEmptyGrid.ts        # Empty grid factory
-│   │   ├── generateCompleteGrid.ts   # Full solution generator
-│   │   └── generateInitialGrid.ts    # Puzzle with blanks
-│   ├── lib                           # Hooks and utilities
-│   │   ├── getPeers.ts               # Position peer calculation
-│   │   ├── metrics.ts                # Render tracking
-│   │   └── useErrorStore.ts          # Duplicate error state
-│   ├── solver                        # Constraint solver
-│   │   └── solve.ts                  # Constraint propagation solver
-│   ├── types                         # Type definitions
-│   │   └── Sudoku.ts                 # Grid, Cell, Digit types
-│   ├── App.tsx                       # Main app with grid state
-│   ├── index.css                     # Tailwind CSS entry
-│   └── index.tsx                     # App entry point
-├── tests                             # Vitest component tests
-├── deno.json                         # Deno config and dependencies
-├── flake.nix                         # Nix development environment
-├── vite.config.ts                    # Vite build config
-└── wrangler.jsonc                    # Cloudflare Workers (static assets) config
-```
-
-## Requirements
-
-Nix with flakes enabled
-
-## Development
-
-```bash
-# Dev shell loads automatically via direnv (use flake .)
-
-# Format code
-nix fmt
-
-# Lint code
-deno task lint
-
-# Type check
-deno task check
-
-# Run tests
-npm test
-
-# Start development server
-deno task dev
-
-# Build for production
-deno task build
-
-# Preview production build
-deno task preview
-
-# Deploy to Cloudflare Workers (run `deno task build` first)
-npm run deploy
+│   ├── Main.purs       # Entry point
+│   └── Sudoku
+│       ├── Data        # Domain model
+│       ├── Solver      # Puzzle solver
+│       ├── Generator   # Puzzle generator
+│       └── UI          # Puzzle UI
+├── test                # Tests
+├── docs
+│   └── DESIGN.md       # Design doc
+└── nix                 # Build configuration
 ```

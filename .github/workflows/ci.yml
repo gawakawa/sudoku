@@ -1,7 +1,6 @@
 name: "CI"
 
 on:
-  push:
   pull_request:
 
 concurrency:
@@ -33,11 +32,18 @@ jobs:
       - name: Install CI dependencies
         run: nix profile add .#ci
 
-      - name: Type check
-        run: deno task check
+      - name: Install npm dependencies
+        run: npm ci
 
-      - name: Run component tests
-        run: npm test
+      # Compiles src/ and test/ into output/ and runs the plain-node tests
+      - name: Compile and run node tests
+        run: nix run .#purs-nix -- test
+
+      - name: Run DOM tests
+        run: npm run test:dom
+
+      - name: Build frontend
+        run: npm run build
 
   ci-success:
     needs: [tests]

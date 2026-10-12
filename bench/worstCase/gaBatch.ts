@@ -1,4 +1,4 @@
-/// <reference lib="deno.ns" />
+import { writeFile } from "node:fs/promises";
 import type { BlockConfig } from "./types.ts";
 import { evolve } from "./geneticAlgorithm.ts";
 
@@ -18,30 +18,28 @@ import { evolve } from "./geneticAlgorithm.ts";
  *   GA_STEP_LIMIT   - Step limit for evaluation (default: 12000)
  */
 
-const POPULATION = Number(Deno.env.get("GA_POPULATION")) || 20;
-const GENERATIONS = Number(Deno.env.get("GA_GENERATIONS")) || 50;
-const CROSSOVER = Number(Deno.env.get("GA_CROSSOVER")) || 0.7;
-const MUTATION = Number(Deno.env.get("GA_MUTATION")) || 0.3;
-const TOURNAMENT = Number(Deno.env.get("GA_TOURNAMENT")) || 3;
-const ELITE = Number(Deno.env.get("GA_ELITE")) || 2;
-const STEP_LIMIT = Number(Deno.env.get("GA_STEP_LIMIT")) || 12_000;
+const POPULATION = Number(process.env.GA_POPULATION) || 20;
+const GENERATIONS = Number(process.env.GA_GENERATIONS) || 50;
+const CROSSOVER = Number(process.env.GA_CROSSOVER) || 0.7;
+const MUTATION = Number(process.env.GA_MUTATION) || 0.3;
+const TOURNAMENT = Number(process.env.GA_TOURNAMENT) || 3;
+const ELITE = Number(process.env.GA_ELITE) || 2;
+const STEP_LIMIT = Number(process.env.GA_STEP_LIMIT) || 12_000;
 
 const main = async (): Promise<void> => {
-  const args = Deno.args;
+  const args = process.argv.slice(2);
 
   if (args.length < 1) {
     console.error(
       "Usage: deno run --allow-write --allow-env gaBatch.ts <outputPath> [seedConfigJson]",
     );
-    Deno.exit(1);
+    process.exit(1);
   }
 
   const outputPath = args[0];
   const seedConfig = args[1] ? (JSON.parse(args[1]) as BlockConfig) : null;
 
-  console.log(
-    `Starting GA with ${POPULATION} individuals, ${GENERATIONS} generations...`,
-  );
+  console.log(`Starting GA with ${POPULATION} individuals, ${GENERATIONS} generations...`);
   if (seedConfig) {
     console.log(`Seed config: ${JSON.stringify(seedConfig)}`);
   }
@@ -72,7 +70,7 @@ const main = async (): Promise<void> => {
     durationMs,
   };
 
-  await Deno.writeTextFile(outputPath, JSON.stringify(output, null, 2));
+  await writeFile(outputPath, JSON.stringify(output, null, 2));
   console.log(`Results saved to: ${outputPath}`);
 };
 
