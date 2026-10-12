@@ -91,6 +91,7 @@
         "maybe"
         "ordered-collections"
         "prelude"
+        "refs"
         "transformers"
         "tuples"
 
