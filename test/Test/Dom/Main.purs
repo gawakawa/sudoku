@@ -9,6 +9,7 @@ import Solid.Component as Component
 import Solid.Testing (html, mount)
 import Sudoku.App (app)
 import Test.Dom.CellSpec as CellSpec
+import Test.Dom.GridSpec as GridSpec
 import Test.Spec (describe, it)
 import Test.Spec.Assertions (shouldSatisfy)
 import Test.Spec.Reporter.Console (consoleReporter)
@@ -23,3 +24,4 @@ main = runSpecAndExitProcess [ consoleReporter ] do
       liftEffect mounted.dispose
       markup `shouldSatisfy` contains (Pattern "数独")
   CellSpec.spec
+  GridSpec.spec
