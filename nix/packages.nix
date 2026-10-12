@@ -130,9 +130,21 @@
         "spec-quickcheck"
       ];
 
+      # Only the benchmark needs these; the app and its tests do not.
+      bench-dependencies = [ "console" ];
+
       ps = purs-nix.purs {
         inherit dependencies test-dependencies;
         dir = ./..;
+      };
+
+      ps-bench = purs-nix.purs {
+        dependencies = dependencies ++ bench-dependencies;
+        dir = ./..;
+        srcs = [
+          "src"
+          "bench"
+        ];
       };
     in
     {
@@ -140,6 +152,7 @@
         inherit
           pkgs
           ps
+          ps-bench
           purs-nix
           ;
       };

@@ -10,7 +10,7 @@
 - `npm run test:dom` - Run `Test.Dom` under happy-dom (needs `output/` with `test/`)
 - `npm run serve` - Start the Vite dev server on port 3000 (needs `output/`)
 - `npm run build` - Build for production into `dist/` (needs `output/`)
-- `npm run worst-case` - Worst-case solver search (node, TS type stripping)
+- `bench run` - Measure the solver steps on generated boards
 - `npm run deploy` - `wrangler deploy` of `dist/` (build first)
 
 New files are invisible to flake eval until `git add`-ed.
