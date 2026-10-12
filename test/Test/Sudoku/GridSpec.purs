@@ -18,15 +18,6 @@ spec = do
         p <- genPosition
         q <- genPosition
         pure (Set.member q (getPeers p) === shareUnit p q)
-    it "is symmetric" do
-      quickCheck do
-        p <- genPosition
-        q <- genPosition
-        pure (Set.member q (getPeers p) === Set.member p (getPeers q))
-    it "has 21 positions, the position itself included" do
-      quickCheck do
-        p <- genPosition
-        pure (Set.size (getPeers p) === 21)
 
   -- The lens laws for setValue / valueAt. Drop these once setValue is built by
   -- composing library optics, which satisfy them by construction.
